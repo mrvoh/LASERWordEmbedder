@@ -1,0 +1,5 @@
+2019-05-02 16:30:59,323:INFO: Loading pretrained word embeddings
+2019-05-02 16:30:59,324:INFO: No GPU found.
+2019-05-02 16:31:00,288:INFO: Training Model
+2019-05-02 16:31:00,288:INFO: 
+Epoch: 0
