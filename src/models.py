@@ -169,7 +169,6 @@ class LASEREmbedderIV(nn.Module):
 		self.NUM_LAYERS = 5
 		self.NUM_DIRECTIONS = 2
 		state_dict = torch.load(encoder_path)
-		print(state_dict['params'])
 		self.encoder = encoder(take_diff=True, **state_dict['params'])
 		self.encoder.load_state_dict(state_dict['model'])
 		self.dictionary = state_dict['dictionary']
