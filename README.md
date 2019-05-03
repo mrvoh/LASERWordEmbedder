@@ -6,7 +6,9 @@ This project aims to extract multilingual deep contextualized word embeddings fr
 ## Setup
 1. setup anaconda environment by running from the home folder:
 ```conda env create -f environment.yml```
-2. Run setup as described in senteval_example.ipynb
+2. Run setup as described in ReadME in LASER folder.
+
+Important: the LASER folder has to be added to the PATH variable (in the current session) in order for the code to work. See point 2 for more info.
 
 ## Interface
 The main functionalities of this repo are train.py, eval.py and infer.py, run them as:
