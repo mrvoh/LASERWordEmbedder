@@ -1,6 +1,6 @@
-from bpe import Encoder
+import fastBPE
 
-pbe_encoder = None
+bpe = None
 
 def load_data(path):
     sentences = []
@@ -54,47 +54,44 @@ def vocab2str(vocab):
     return ' '.join(vocab)
 
 
-def pbe_initialise_encoder():
-    global pbe_encoder
+def initialise_bpe():
+    global bpe
 
-    pbe_encoder = Encoder(1000)
+    FCODES_PATH = "/home/vm/Documents/LASERWordEmbedder/LASER/models/93langs.fcodes"
+    FVOCAB_PATH = "/home/vm/Documents/LASERWordEmbedder/LASER/models/93langs.fvocab"
 
-def pbe_generate_tokens(vocab):
-    global pbe_encoder
+    bpe = fastBPE.fastBPE(FCODES_PATH, FVOCAB_PATH)
 
-    pbe_encoder.fit(vocab)
-
-
-def pbe_sentence2tokens(sentence):
-    global pbe_encoder
-
-    encoded_sentence = pbe_encoder.tokenize(sentence)
-
-    return encoded_sentence
-
-
-def pbe_sentence2ids(sentence):
-    global pbe_encoder
-
-    if type(sentence) == str:
-        sentence = [sentence]
-
-    encoded_sentence = pbe_encoder.transform(sentence)
-
-    return encoded_sentence
-
-def pbe_ids2sentence(encoded_sentence):
-    global pbe_encoder
+def bpe_apply(sentences):
+    global bpe
     
-    decoded_sentence = pbe_encoder.inverse_transform(encoded_sentence)
+    return bpe.apply(sentences)
 
-    return decoded_sentence
 
-'''
-print(encoder.tokenize(example))
-# ['__sow', 'vi', 'z', 'zi', 'ni', '__eow', '__sow', ':', '__eow', 'he', 'didn', "'", 't', 'fall', '__sow', '?', '__eow', '__sow', 'in', 'co', 'n', 'ce', 'iv', 'ab', 'le', '__eow', '__sow', '!', '__eow']
-print(next(encoder.transform([example])))
-# [26, 108, 79, 104, 72, 24, 26, 117, 24, 9, 11, 8, 12, 10, 26, 90, 24, 26, 154, 56, 37, 149, 80, 169, 84, 24, 26, 156, 24]
-print(next(encoder.inverse_transform(encoder.transform([example]))))
-# vizzini : he didn ' t fall ? inconceivable !
-'''
+def map_encoded_sentences_to_dataset(dataset, encoded_sentences):
+    mapping = []
+    
+    for i in range(len(dataset)):
+        d = dataset[i]
+        es = encoded_sentences[i].split()
+        es_len = len(es)
+
+        d_counter = 0
+        word_info = d[d_counter]
+        sentence_mapping = []  
+
+        for e in range(es_len):
+            fragment = es[e]
+
+            sentence_mapping.append((fragment, word_info[3]))
+
+            if "@" in fragment:
+                continue
+
+            if word_info[0][-len(fragment):] == fragment and e != (es_len-1):
+                d_counter += 1
+                word_info = d[d_counter]
+
+        mapping.append(sentence_mapping)
+
+    return mapping
