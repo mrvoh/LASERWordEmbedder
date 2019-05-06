@@ -1,19 +1,28 @@
 import fastBPE
+from torchnlp.word_to_vector import FastText
 
 bpe = None
 
 def load_data(path):
     sentences = []
     sentence = []
+    newline = False
 
     with open(path) as f:
         for line in f:
             if line in ['\n', '\r\n']:
-                sentences.append(sentence)
+                if not newline:
+                    sentences.append(sentence)
+
                 sentence = []
+
+                newline = True
                 continue
 
+
+
             else:
+                newline = False
                 sentence.append(line.split())
 
         f.close()
@@ -76,23 +85,34 @@ def map_encoded_sentences_to_dataset(dataset, encoded_sentences):
         es = encoded_sentences[i].split()
         es_len = len(es)
 
-        d_counter = 0
-        word_info = d[d_counter]
-        sentence_mapping = []  
+        try:
+            d_counter = 0
+            word_info = d[d_counter]
+            sentence_mapping = []
 
-        for e in range(es_len):
-            fragment = es[e]
+            for e in range(es_len):
+                fragment = es[e]
 
-            sentence_mapping.append((fragment, word_info[1], word_info[2], word_info[3]))
+                sentence_mapping.append((fragment, word_info[1], word_info[2], word_info[3]))
 
-            if "@" in fragment:
-                continue
+                if "@" in fragment:
+                    continue
 
-            if word_info[0][-len(fragment):] == fragment and e != (es_len-1):
-                d_counter += 1
-                word_info = d[d_counter]
+
+                if word_info[0][-len(fragment):] == fragment and e != (es_len-1):
+                    d_counter += 1
+                    word_info = d[d_counter]
+
+        except Exception as e:
+            print(i)
+            print(es)
+            print(es_len)
+            print(d_counter)
+            print(word_info)
 
         mapping.append(sentence_mapping)
 
     return mapping
+
+
 
