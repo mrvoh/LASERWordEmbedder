@@ -1,5 +1,5 @@
 import os
-
+import torch
 
 from .general_utils import get_logger
 from .data_utils import get_trimmed_glove_vectors, load_vocab, \
@@ -7,7 +7,7 @@ from .data_utils import get_trimmed_glove_vectors, load_vocab, \
 
 
 class Config():
-    def __init__(self, load=True):
+    def __init__(self, load=False):
         """Initialize hyperparameters and load vocabs
 
         Args:
@@ -77,7 +77,7 @@ class Config():
 
     filename_dev = "data/valid.txt"
     filename_test = "data/test.txt"
-    filename_train = "data/train.txt"
+    filename_train = "data/train_bpe.txt"
 
     max_iter = None  # if not None, max number of examples in Dataset
 
@@ -104,11 +104,20 @@ class Config():
 
     ner_model_path = "saves/ner_{}e_glove".format(nepochs)
 
-    # elmo config
-    use_elmo = False
-    dim_elmo = 1024
+    use_laser = True
+    use_muse = not use_laser
+    label_to_idx = {'O':0,'I-PER': 1, 'I-ORG': 2, 'I-LOC': 3, 'I-MISC': 4,
+     'B-PER': 5, 'B-ORG': 6, 'B-LOC': 7, 'B-MISC': 8}
+    ntags = len(label_to_idx)
 
     # NOTE: if both chars and crf, only 1.6x slower on GPU
     use_crf = True  # if crf, training is 1.7x slower on CPU
-    # if char embedding, training is 3.5x slower on CPU
-    use_chars = False if use_elmo else True
+
+    if use_laser:
+        model_path = os.path.join('..','LASER','models', 'bilstm.93langs.2018-12-26.pt')
+        word_to_idx = torch.load(model_path)['dictionary']
+    else:
+        None
+        #TODO: load MUSE word_to_idx
+
+

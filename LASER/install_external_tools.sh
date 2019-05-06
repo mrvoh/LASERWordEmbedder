@@ -15,7 +15,7 @@
 # This bash script installs third party software 
 #
 
-if [ -z ${LASER} ] ; then 
+if [ -z ${LASER} ] ; then
   echo "Please set the environment variable 'LASER'"
   exit
 fi
