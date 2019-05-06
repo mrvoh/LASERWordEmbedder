@@ -1,14 +1,10 @@
 import fastBPE
-<<<<<<< HEAD
 from urllib.request import  urlopen
-=======
-from torchnlp.word_to_vector import FastText
 from torchnlp.datasets import Dataset
 from torchnlp.samplers import BucketBatchSampler
 from torchnlp.encoders.text import stack_and_pad_tensors
 from torch.utils.data import DataLoader
 import torch
->>>>>>> df162f8257143c4d6d5e2fffb7d3e423ee762ddc
 
 bpe = None
 
