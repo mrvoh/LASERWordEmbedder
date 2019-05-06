@@ -40,8 +40,9 @@ BPEfastApply(tokenized_f,
 ############################################################
 # Load + infer model
 ############################################################
-
-model = LASEREmbedderIV(LASER+'/models/bilstm.93langs.2018-12-26.pt', LASERHiddenExtractor, 300,100, 10)
+model_path = LASER+'/models/bilstm.93langs.2018-12-26.pt'
+model = LASEREmbedderIV(model_path, LASERHiddenExtractor, 300,100, 10)
+bpe_to_idx = torch.load(model_path)['dictionary']
 
 tokens = torch.LongTensor([[1,2,3],[4,5,6],[6,7,8],[7,8,9]])
 embeddings = model(tokens)
