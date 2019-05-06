@@ -153,6 +153,7 @@ def collate_fn_eval(batch):
     # PyTorch RNN requires batches to be transposed for speed and integration with CUDA
     transpose = (lambda b: b.t_().squeeze(0).contiguous())
 
+    # return (word_ids_batch, seq_len_batch, label_batch)
     return (transpose(word_ids_batch), transpose(seq_len_batch), transpose(label_batch))
 
 
@@ -160,12 +161,17 @@ def get_data_loader(data, batch_size, drop_last, collate_fn=collate_fn_eval):
     sampler = BucketBatchSampler(data,
                                  batch_size,
                                  drop_last=drop_last,
-                                 sort_key=lambda row: len(row['word_ids']))
+                                 sort_key=lambda row: -len(row['word_ids']))
 
     loader = DataLoader(data,
                         batch_sampler=sampler,
                         collate_fn=collate_fn)
 
     return loader
+
+def get_padded_accuracy(logits, targets, seq_lengths):
+
+    predictions = logits.argmax(dim=-1)
+    B = targets.size(0)
 
 

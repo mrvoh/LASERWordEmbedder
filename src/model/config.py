@@ -106,7 +106,7 @@ class Config():
 
     use_laser = True
     use_muse = not use_laser
-    label_to_idx = {'O': 0, 'I-PER': 1, 'I-ORG': 2, 'I-LOC': 3, 'I-MISC': 4,
+    label_to_idx = {'O':0,'I-PER': 1, 'I-ORG': 2, 'I-LOC': 3, 'I-MISC': 4,
      'B-PER': 5, 'B-ORG': 6, 'B-LOC': 7, 'B-MISC': 8}
     ntags = len(label_to_idx)
 

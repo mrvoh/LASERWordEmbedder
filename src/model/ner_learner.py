@@ -9,6 +9,7 @@ if os.name == "posix": from allennlp.modules.elmo import batch_to_ids # AllenNLP
 
 import sys
 from utils import *
+from torchnlp.metrics import get_accuracy
 # LASER = os.environ['LASER']
 # sys.path.append(LASER + '/source/lib')
 # from text_processing import Token, BPEfastApply
@@ -172,29 +173,29 @@ class NERLearner(object):
                 continue
 
             total_step = batch_idx
-            targets = T(targets, cuda=self.use_cuda).transpose(0,1).contiguous()
+            # targets = T(targets, cuda=self.use_cuda).transpose(0,1).contiguous()
             self.optimizer.zero_grad()
 
 
 
-            inputs = T(inputs, cuda=self.use_cuda)
-            inputs, targets = Variable(inputs, requires_grad=False), \
-                                              Variable(targets)
+            # inputs = T(inputs, cuda=self.use_cuda)
+            # inputs, targets = Variable(inputs, requires_grad=False), \
+            #                                   Variable(targets)
 
-
-            outputs = self.model(inputs)
+            seq_len = inputs.size(0)
+            outputs = self.model(inputs).view(seq_len,-1,9)
 
             # Create mask
-            #mask = create_mask(sequence_lengths, targets, cuda=self.use_cuda)
+            mask = create_mask(sequence_lengths, targets, cuda=self.use_cuda)
 
             # Get CRF Loss
-            loss = -1*self.criterion(outputs, targets, None) # mask=mask)
+            loss = -1*self.criterion(outputs, targets, mask=mask)
             loss.backward()
             self.optimizer.step()
 
             # Callbacks
             train_loss += loss.item()
-            predictions = self.criterion.decode(outputs) #, mask=mask)
+            predictions = self.criterion.decode(outputs, mask=mask)
             masked_targets = mask_targets(targets, sequence_lengths)
 
             t_ = mask.type(torch.LongTensor).sum().item()
@@ -223,12 +224,12 @@ class NERLearner(object):
                 continue
 
             total_step = batch_idx
-            targets = T(targets, cuda=self.use_cuda).transpose(0,1).contiguous()
+            #targets = T(targets, cuda=self.use_cuda).transpose(0,1).contiguous()
 
 
-            inputs = T(inputs, cuda=self.use_cuda)
-            inputs, targets = Variable(inputs, requires_grad=False), \
-                                              Variable(targets)
+            # inputs = T(inputs, cuda=self.use_cuda)
+            # inputs, targets = Variable(inputs, requires_grad=False), \
+            #                                   Variable(targets)
 
             outputs = self.model(inputs)
 
