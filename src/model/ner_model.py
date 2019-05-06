@@ -10,7 +10,7 @@ class NERModel(nn.Module):
         self.embedder = embedder # LASERWordEmbedder
 
         self.dropout = nn.Dropout(p=config.dropout)
-        self.word_lstm = nn.LSTM(config.embedding_dim,
+        self.word_lstm = nn.LSTM(embedder.embedding_dim,
                                  config.hidden_size_lstm, bidirectional=True)
 
         self.linear = LinearClassifier(self.config, layers=[self.config.hidden_size_lstm*2, self.config.ntags], drops=[0.5])

@@ -75,9 +75,9 @@ class LASERHiddenExtractor(Encoder):
 
 class LASEREmbedderI(nn.Module):
 
-	def __init__(self, encoder_path, encoder, hidden_dim, nr_classes):
+	def __init__(self, encoder_path, encoder = LASERHiddenExtractor):
 		super().__init__()
-		self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
+		self.ENCODER_SIZE = self.embedding_dim = 512  # LASER encoder encodes to 512 dims
 		self.NUM_LAYERS = 5
 		self.NUM_DIRECTIONS = 2
 		state_dict = torch.load(encoder_path)
@@ -102,9 +102,9 @@ class LASEREmbedderI(nn.Module):
 
 class LASEREmbedderII(nn.Module):
 
-	def __init__(self, encoder_path, encoder):
+	def __init__(self, encoder_path, encoder = LASERHiddenExtractor):
 		super().__init__()
-		self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
+		self.ENCODER_SIZE = self.embedding_dim = 512  # LASER encoder encodes to 512 dims
 		self.NUM_LAYERS = 5
 		self.NUM_DIRECTIONS = 2
 		state_dict = torch.load(encoder_path)
@@ -128,7 +128,7 @@ class LASEREmbedderII(nn.Module):
 
 class LASEREmbedderIII(nn.Module):
 
-	def __init__(self, encoder_path, encoder, embedding_dim):
+	def __init__(self, encoder_path, embedding_dim, encoder = LASERHiddenExtractor):
 		super().__init__()
 		self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
 		self.NUM_LAYERS = 5
@@ -140,6 +140,7 @@ class LASEREmbedderIII(nn.Module):
 		self.pad_index = self.dictionary['<pad>']
 		self.eos_index = self.dictionary['</s>']
 		self.unk_index = self.dictionary['<unk>']
+		self.embedding_dim = embedding_dim
 
 		self.hidden_decoder = nn.Linear(self.NUM_LAYERS * self.ENCODER_SIZE, embedding_dim)
 
@@ -163,7 +164,7 @@ class LASEREmbedderIII(nn.Module):
 
 class LASEREmbedderIV(nn.Module):
 
-	def __init__(self, encoder_path, encoder, embedding_dim):
+	def __init__(self, encoder_path,  embedding_dim, encoder = LASERHiddenExtractor):
 		super().__init__()
 		self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
 		self.NUM_LAYERS = 5
@@ -175,6 +176,7 @@ class LASEREmbedderIV(nn.Module):
 		self.pad_index = self.dictionary['<pad>']
 		self.eos_index = self.dictionary['</s>']
 		self.unk_index = self.dictionary['<unk>']
+		self.embedding_dim = embedding_dim
 
 		self.hidden_decoder = nn.Linear(self.NUM_LAYERS * self.ENCODER_SIZE, embedding_dim)
 

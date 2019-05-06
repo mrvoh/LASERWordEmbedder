@@ -8,9 +8,10 @@ from torch.optim.lr_scheduler import StepLR
 if os.name == "posix": from allennlp.modules.elmo import batch_to_ids # AllenNLP is currently only supported on linux
 
 import sys
-LASER = os.environ['LASER']
-sys.path.append(LASER + '/source/lib')
-from text_processing import Token, BPEfastApply
+from utils import *
+# LASER = os.environ['LASER']
+# sys.path.append(LASER + '/source/lib')
+# from text_processing import Token, BPEfastApply
 
 class NERLearner(object):
     """
@@ -26,7 +27,7 @@ class NERLearner(object):
 
 
         self.idx_to_tag = {idx: tag for tag, idx in
-                           self.config.vocab_tags.items()}
+                           self.config.label_to_idx.items()}
 
         self.criterion = CRF(self.config.ntags)
         self.optimizer = optim.Adam(self.model.parameters())
@@ -72,12 +73,12 @@ class NERLearner(object):
         load_ner_model(self.model, fn, strict=True)
         self.logger.info(f"Loaded model from {fn}")
 
-    def batch_iter(self, train, batch_size, return_lengths=False, shuffle=False, sorter=False):
+    def batch_iter(self, train, batch_size, return_lengths=False, shuffle=False, sorter=False, drop_last =True):
         """
         Builds a generator from the given dataloader to be fed into the model
 
         Args:
-            train: DataLoader
+            train: Dataset
             batch_size: size of each batch
             return_lengths: if True, generator returns a list of sequence lengths for each
                             sample in the batch
@@ -98,30 +99,9 @@ class NERLearner(object):
         """
         nbatches = (len(train) + batch_size - 1) // batch_size
 
-        def data_generator():
-            while True:
-                if shuffle: train.shuffle()
-                elif sorter==True and train.sorter: train.sort()
+        dataloader = get_data_loader(train, batch_size, drop_last)
 
-                for i, (words, labels) in enumerate(minibatches(train, batch_size)):
-
-                    # pad sequences
-                    word_ids, sequence_lengths = pad_sequences(words, 0)
-
-                    if labels:
-                        labels, _ = pad_sequences(labels, 0)
-                        # if categorical
-                        ## labels = [to_categorical(label, num_classes=len(train.tag_itos)) for label in labels]
-
-                    # build dictionary
-                    inputs = word_ids
-
-                    if return_lengths:
-                        yield(inputs, np.asarray(labels), sequence_lengths)
-                    else:
-                        yield (inputs, np.asarray(labels))
-
-        return (nbatches, data_generator())
+        return (nbatches, dataloader)
 
 
     def fine_tune(self, train, dev=None):
@@ -142,11 +122,9 @@ class NERLearner(object):
             epochs = self.config.nepochs
         batch_size = self.config.batch_size
 
-        nbatches_train, train_generator = self.batch_iter(train, batch_size,
-                                                          return_lengths=True)
+        nbatches_train, train_generator = self.batch_iter(train, batch_size, drop_last=True)
         if dev:
-            nbatches_dev, dev_generator = self.batch_iter(dev, batch_size,
-                                                      return_lengths=True)
+            nbatches_dev, dev_generator = self.batch_iter(dev, batch_size, drop_last=False)
 
         scheduler = StepLR(self.optimizer, step_size=1, gamma=self.config.lr_decay)
 
@@ -186,7 +164,7 @@ class NERLearner(object):
 
         prog = Progbar(target=nbatches_train)
 
-        for batch_idx, (inputs, targets, sequence_lengths) in enumerate(train_generator):
+        for batch_idx, (inputs, sequence_lengths, targets) in enumerate(train_generator):
 
             if batch_idx == nbatches_train: break
             if inputs.shape[0] == 1:
@@ -207,16 +185,16 @@ class NERLearner(object):
             outputs = self.model(inputs)
 
             # Create mask
-            mask = create_mask(sequence_lengths, targets, cuda=self.use_cuda)
+            #mask = create_mask(sequence_lengths, targets, cuda=self.use_cuda)
 
             # Get CRF Loss
-            loss = -1*self.criterion(outputs, targets, mask=mask)
+            loss = -1*self.criterion(outputs, targets, None) # mask=mask)
             loss.backward()
             self.optimizer.step()
 
             # Callbacks
             train_loss += loss.item()
-            predictions = self.criterion.decode(outputs, mask=mask)
+            predictions = self.criterion.decode(outputs) #, mask=mask)
             masked_targets = mask_targets(targets, sequence_lengths)
 
             t_ = mask.type(torch.LongTensor).sum().item()

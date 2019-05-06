@@ -1,4 +1,9 @@
 import fastBPE
+from torchnlp.datasets import Dataset
+from torchnlp.samplers import BucketBatchSampler
+from torchnlp.encoders.text import stack_and_pad_tensors
+from torch.utils.data import DataLoader
+import torch
 
 bpe = None
 
@@ -57,8 +62,8 @@ def vocab2str(vocab):
 def initialise_bpe():
     global bpe
 
-    FCODES_PATH = "/home/vm/Documents/LASERWordEmbedder/LASER/models/93langs.fcodes"
-    FVOCAB_PATH = "/home/vm/Documents/LASERWordEmbedder/LASER/models/93langs.fvocab"
+    FCODES_PATH = "/home/developer/Desktop/LASERWordEmbedder/LASER/models/93langs.fcodes"
+    FVOCAB_PATH = "/home/developer/Desktop/LASERWordEmbedder/LASER/models/93langs.fvocab"
 
     bpe = fastBPE.fastBPE(FCODES_PATH, FVOCAB_PATH)
 
@@ -95,4 +100,72 @@ def map_encoded_sentences_to_dataset(dataset, encoded_sentences):
         mapping.append(sentence_mapping)
 
     return mapping
+
+
+def parse_dataset(path, label_to_idx, word_to_idx):
+    sentences = []
+    sentence = []
+
+    with open(path) as f:
+
+        sample = {'word_ids': [], 'labels': []}
+        for line in f:
+
+            if line in ['\n', '\r\n']:
+                sample['word_ids'] = torch.LongTensor(sample['word_ids'])
+                sample['labels'] = torch.LongTensor(sample['labels'])
+                sentences.append(sample)
+                sample = {'word_ids': [], 'labels': []}
+                continue
+            else:
+                word = line.split()[0]
+                label = line.split()[-1]
+                sample['word_ids'].append(word_to_idx[word] if word in word_to_idx.keys() else 3)  # 3 -> <unk>
+                sample['labels'].append(label_to_idx[label])
+
+    return Dataset(sentences)
+
+
+def collate_fn_infer(batch):
+    """ list of tensors to a batch tensors """
+    batch, _ = stack_and_pad_tensors([row['word_ids'] for row in batch])
+
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    batch = batch.to(device)
+
+    # PyTorch RNN requires batches to be transposed for speed and integration with CUDA
+    transpose = (lambda b: b.t_().squeeze(0).contiguous())
+
+    return transpose(batch)
+
+
+def collate_fn_eval(batch):
+    """ list of tensors to a batch tensors """
+    word_ids_batch, _ = stack_and_pad_tensors([seq['word_ids'] for seq in batch])
+    label_batch, _ = stack_and_pad_tensors([seq['labels'] for seq in batch])
+    seq_len_batch = torch.LongTensor([len(seq['word_ids']) for seq in batch])
+
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    word_ids_batch = word_ids_batch.to(device)
+    seq_len_batch =  seq_len_batch.to(device)
+    label_batch = label_batch.to(device)
+
+    # PyTorch RNN requires batches to be transposed for speed and integration with CUDA
+    transpose = (lambda b: b.t_().squeeze(0).contiguous())
+
+    return (transpose(word_ids_batch), transpose(seq_len_batch), transpose(label_batch))
+
+
+def get_data_loader(data, batch_size, drop_last, collate_fn=collate_fn_eval):
+    sampler = BucketBatchSampler(data,
+                                 batch_size,
+                                 drop_last=drop_last,
+                                 sort_key=lambda row: len(row['word_ids']))
+
+    loader = DataLoader(data,
+                        batch_sampler=sampler,
+                        collate_fn=collate_fn)
+
+    return loader
+
 

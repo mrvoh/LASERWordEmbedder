@@ -49,9 +49,9 @@ class CRF(nn.Module):
         The parameters will be initialized randomly from a uniform distribution
         between -0.1 and 0.1.
         """
-        nn.init.uniform(self.start_transitions, -0.1, 0.1)
-        nn.init.uniform(self.end_transitions, -0.1, 0.1)
-        nn.init.uniform(self.transitions, -0.1, 0.1)
+        nn.init.uniform_(self.start_transitions, -0.1, 0.1)
+        nn.init.uniform_(self.end_transitions, -0.1, 0.1)
+        nn.init.uniform_(self.transitions, -0.1, 0.1)
 
     def __repr__(self) -> str:
         return f'{self.__class__.__name__}(num_tags={self.num_tags})'
