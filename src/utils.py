@@ -83,7 +83,7 @@ def map_encoded_sentences_to_dataset(dataset, encoded_sentences):
         for e in range(es_len):
             fragment = es[e]
 
-            sentence_mapping.append((fragment, word_info[3]))
+            sentence_mapping.append((fragment, word_info[1], word_info[2], word_info[3]))
 
             if "@" in fragment:
                 continue
@@ -95,3 +95,4 @@ def map_encoded_sentences_to_dataset(dataset, encoded_sentences):
         mapping.append(sentence_mapping)
 
     return mapping
+
