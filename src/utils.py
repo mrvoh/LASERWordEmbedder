@@ -1,5 +1,5 @@
 import fastBPE
-from torchnlp.word_to_vector import FastText
+from urllib.request import  urlopen
 
 bpe = None
 
@@ -113,6 +113,67 @@ def map_encoded_sentences_to_dataset(dataset, encoded_sentences):
         mapping.append(sentence_mapping)
 
     return mapping
+
+def get_conll_vocab():
+    TRAIN_FILE_PATH = "./data/train.txt"
+    TEST_FILE_PATH = "./data/test.txt"
+    VALID_FILE_PATH = "./data/valid.txt"
+
+    dataset_paths = [TRAIN_FILE_PATH, TEST_FILE_PATH, VALID_FILE_PATH]
+
+    vocab = []
+
+    for dp in dataset_paths:
+        with open(dp) as f:
+            for line in f:
+                word = line[:line.find(" ")]
+
+                vocab.append(word)
+
+            f.close()
+
+    vocab = list(set(vocab))
+
+    return vocab
+
+def get_muse_vectors():
+    embeddings_url = "https://dl.fbaipublicfiles.com/arrival/vectors/wiki.multi.en.vec"
+    vectors = {}
+
+    with urlopen(embeddings_url) as f:
+        f.readline()
+
+        for line in f:
+            w_vec = line.decode("utf-8").split()
+
+            vectors[w_vec[0]] = w_vec[1:]
+
+        f.close()
+
+    return vectors
+
+
+def get_conll_muse_vectors():
+    conll_muse_vectors = {}
+    conll_words_not_in_muse_vectors = []
+
+    conll_vocab = get_conll_vocab()
+    muse_vectors = get_muse_vectors()
+
+    for word in conll_vocab:
+        if word in muse_vectors:
+            conll_muse_vectors[word] = muse_vectors[word]
+
+        else:
+            conll_words_not_in_muse_vectors.append(word)
+
+    return conll_muse_vectors, conll_words_not_in_muse_vectors
+
+
+
+
+
+
 
 
 
