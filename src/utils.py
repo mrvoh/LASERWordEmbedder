@@ -126,7 +126,7 @@ def get_conll_vocab():
             for line in f:
                 word = line[:line.find(" ")]
 
-                vocab.append(word)
+                vocab.append(word.lower())
 
             f.close()
 
@@ -144,7 +144,7 @@ def get_muse_vectors():
         for line in f:
             w_vec = line.decode("utf-8").split()
 
-            vectors[w_vec[0]] = w_vec[1:]
+            vectors[str(w_vec[0]).lower()] = w_vec[1:]
 
         f.close()
 
