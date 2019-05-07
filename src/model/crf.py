@@ -99,7 +99,10 @@ class CRF(nn.Module):
                     f'size of tags and mask must match, got {tuple(tags.size())} '
                     f'and {tuple(mask.size())}'
                 )
-            if not all(mask[0].data):
+            if not all(mask[0].data): #TODO: reverse HACKY stuff
+                print(emissions.size())
+                print(mask.size())
+                print(tags.size())
                 raise ValueError('mask of the first timestep must all be on')
 
         if mask is None:

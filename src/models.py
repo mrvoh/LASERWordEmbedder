@@ -3,11 +3,12 @@ import torch.nn as nn
 import sys
 import os
 LASER = os.environ['LASER']
-sys.path.append(LASER + '/source/')
-sys.path.append(LASER + '/source/lib')
+sys.path.append(os.path.join(LASER, 'source'))
+sys.path.append(os.path.join(LASER, 'source', 'lib'))
+
 # from the LASER library
 from embed import Encoder, SentenceEncoder
-from text_processing import Token, BPEfastApply
+
 
 
 class LASERHiddenExtractor(Encoder):
@@ -35,7 +36,9 @@ class LASERHiddenExtractor(Encoder):
 	def forward(self, src_tokens):
 		# Adjusted version of original LASER forward pass to store cell states
 
-		B, seq_len = src_tokens.size()
+		# B, seq_len = src_tokens.size()
+		seq_len, B = src_tokens.size()
+
 		# embed tokens
 		token_embeddings = self.embed_tokens(src_tokens)
 
@@ -44,7 +47,7 @@ class LASERHiddenExtractor(Encoder):
 		prev_h = torch.zeros(10, B, self.hidden_size).to(self.device)  # 10 = 2*5 = num_layers * directions
 		prev_c = torch.zeros(10, B, self.hidden_size).to(self.device)
 		for i in range(seq_len):
-			s, (prev_h, prev_c) = self.lstm(token_embeddings[:, i, :].unsqueeze(0), (prev_h, prev_c))
+			s, (prev_h, prev_c) = self.lstm(token_embeddings[i, :, :].unsqueeze(0), (prev_h, prev_c))
 			hidden_states.append(prev_h.view(5, 2, B, self.hidden_size))
 
 		hidden_states = torch.stack(hidden_states)
@@ -65,9 +68,9 @@ class LASERHiddenExtractor(Encoder):
 			# reconstruct hidden states per layer
 			hidden_states = [torch.stack([h_f, h_b], dim=2) for (h_f, h_b) in zip(forward_diff, backward_diff)]
 			# stack hidden states per time stap back into one tensor
-			hidden_states = torch.stack(hidden_states).view(seq_len, self.num_layers,
-															self.num_directions, B, self.hidden_size)
-
+			hidden_states = torch.stack(hidden_states).permute(0,3,1,2)b.view(seq_len, self.num_layers,self.num_directions, B, self.hidden_size)
+		#
+			#.permute(1,0,2)
 		return hidden_states
 ###########################################################################
 # Classes to extract/learn embeddings from LASER encoder
@@ -127,7 +130,7 @@ class LASEREmbedderII(nn.Module):
 
 
 class LASEREmbedderIII(nn.Module):
-
+	#TODO: use ELMO LSTM
 	def __init__(self, encoder_path, embedding_dim, encoder = LASERHiddenExtractor):
 		super().__init__()
 		self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
@@ -145,8 +148,8 @@ class LASEREmbedderIII(nn.Module):
 		self.hidden_decoder = nn.Linear(self.NUM_LAYERS * self.ENCODER_SIZE, embedding_dim)
 
 	def forward(self, tokens):
-		B = tokens.size(0)
-		seq_len = tokens.size(1)
+		B = tokens.size(1)
+		seq_len = tokens.size(0)
 		# assume encoder to return token embeddings
 		hidden_states = self.encoder(tokens)
 		max_pooled, _ = hidden_states.max(dim=2)
@@ -154,12 +157,14 @@ class LASEREmbedderIII(nn.Module):
 		embeddings = []
 		for b in range(B):
 			# apply fc per sequence
-			embeddings.append(self.hidden_decoder(max_pooled[:, :, b, :].contiguous().view(seq_len, -1)))
+			m = max_pooled[:, :, b, :].contiguous().view(seq_len, -1)
+			et = self.hidden_decoder(m)
+			embeddings.append(et)
 
 		# stack embeddings back together
-		embeddings = torch.stack(embeddings)
+		embeddings = torch.stack(embeddings).permute(1,0,2) #.view(seq_len, B, -1)
 
-		return embeddings
+		return torch.tanh(embeddings)
 
 
 class LASEREmbedderIV(nn.Module):
@@ -197,4 +202,17 @@ class LASEREmbedderIV(nn.Module):
 		return embeddings
 
 
+class BPEDecoder(nn.Module):
+    """
+        MVP: BPEemb GRU
+        Bonus: + attention
+    """
+
+    def __init__(self, config):
+        super(BPEDecoder, self).__init__()
+
+
+
+    def forward(self, x):
+       return x
 

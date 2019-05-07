@@ -1,7 +1,7 @@
-import fastBPE
+# import fastBPE
 from torchnlp.word_to_vector import FastText
 from torchnlp.datasets import Dataset
-from torchnlp.samplers import BucketBatchSampler
+from torchnlp.samplers import BucketBatchSampler, ShuffleBatchSampler, SortedSampler
 from torchnlp.encoders.text import stack_and_pad_tensors
 from torch.utils.data import DataLoader
 import torch
@@ -132,7 +132,8 @@ def parse_dataset(path, label_to_idx, word_to_idx):
             if line in ['\n', '\r\n']:
                 sample['word_ids'] = torch.LongTensor(sample['word_ids'])
                 sample['labels'] = torch.LongTensor(sample['labels'])
-                sentences.append(sample)
+                if len(sample['word_ids']) > 0:
+                    sentences.append(sample)
                 sample = {'word_ids': [], 'labels': []}
                 continue
             else:
@@ -172,7 +173,8 @@ def collate_fn_eval(batch):
     transpose = (lambda b: b.t_().squeeze(0).contiguous())
 
     # return (word_ids_batch, seq_len_batch, label_batch)
-    return (transpose(word_ids_batch), transpose(seq_len_batch), transpose(label_batch))
+
+    return (transpose(word_ids_batch), seq_len_batch, transpose(label_batch))
 
 
 def get_data_loader(data, batch_size, drop_last, collate_fn=collate_fn_eval):
@@ -181,9 +183,19 @@ def get_data_loader(data, batch_size, drop_last, collate_fn=collate_fn_eval):
                                  drop_last=drop_last,
                                  sort_key=lambda row: -len(row['word_ids']))
 
+    # sampler = ShuffleBatchSampler(
+    #     SortedSampler(data,
+    #                   sort_key=lambda row: -len(row['word_ids'])
+    #                   ),
+    #     batch_size,
+    #     drop_last=drop_last,
+    #     shuffle=True
+    # )
+
     loader = DataLoader(data,
                         batch_sampler=sampler,
-                        collate_fn=collate_fn)
+                        collate_fn=collate_fn,
+                        num_workers=0)
 
     return loader
 

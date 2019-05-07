@@ -75,8 +75,8 @@ class Config():
 
     # filename_dev = filename_test = filename_train = "data/test.txt" # test
 
-    filename_dev = "data/valid.txt"
-    filename_test = "data/test.txt"
+    filename_dev = "data/valid_bpe.txt"
+    filename_test = "data/test_bpe.txt"
     filename_train = "data/train_bpe.txt"
 
     max_iter = None  # if not None, max number of examples in Dataset
@@ -88,21 +88,22 @@ class Config():
 
     # training
     train_embeddings = False
-    nepochs = 15
+    nepochs = 25
     dropout = 0.5
-    batch_size = 5
+    batch_size = 64
     lr_method = "adam"
     lr = 0.001
-    lr_decay = 0.9
-    epoch_drop = 1  # Step Decay: per # epochs to apply lr_decay
-    clip = -1  # if negative, no clipping
+    lr_decay = 0.1
+    epoch_drop = 3  # Step Decay: per # epochs to apply lr_decay
+    clip = 5  # if negative, no clipping
     nepoch_no_imprv = 3
 
     # model hyperparameters
     hidden_size_char = 100  # lstm on chars
     hidden_size_lstm = 300  # lstm on word embeddings
 
-    ner_model_path = "saves/ner_{}e_glove".format(nepochs)
+    model_name = 'LASERNERII.pt'
+    ner_model_path = os.path.join('saves', model_name) #'"saves/ner_{}e_glove".format(nepochs)
 
     use_laser = True
     use_muse = not use_laser
