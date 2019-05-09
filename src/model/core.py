@@ -4,7 +4,6 @@ import torch.nn.functional as F
 from torch.autograd import Variable
 import numpy as np
 import os
-import spacy
 
 USE_GPU = torch.cuda.is_available()
 
@@ -41,7 +40,8 @@ def T(a, half=False, cuda=True):
         elif a.dtype in (np.float32, np.float64):
             a = torch.cuda.HalfTensor(a) if half else torch.FloatTensor(a)
         else: raise NotImplementedError(a.dtype)
-    if cuda: a = to_gpu(a, async=True)
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    a = a.to(device)
     return a
 
 def load_ner_model(m, p, strict=True):

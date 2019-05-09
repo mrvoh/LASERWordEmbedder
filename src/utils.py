@@ -1,4 +1,5 @@
-import fastBPE
+# import fastBPE
+from torchnlp.word_to_vector import FastText
 from urllib.request import  urlopen
 from torchnlp.datasets import Dataset
 from torchnlp.samplers import BucketBatchSampler
@@ -193,7 +194,8 @@ def parse_dataset(path, label_to_idx, word_to_idx):
             if line in ['\n', '\r\n']:
                 sample['word_ids'] = torch.LongTensor(sample['word_ids'])
                 sample['labels'] = torch.LongTensor(sample['labels'])
-                sentences.append(sample)
+                if len(sample['word_ids']) > 0:
+                    sentences.append(sample)
                 sample = {'word_ids': [], 'labels': []}
                 continue
             else:

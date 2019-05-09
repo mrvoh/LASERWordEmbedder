@@ -64,8 +64,10 @@ class NERLearner(object):
     def save(self, name=None):
         if not name:
             name = self.config.ner_model_path
-        save_model(self.model, self.get_model_path(name))
-        self.logger.info(f"Saved model at {self.get_model_path(name)}")
+
+        torch.save(self.model, name)
+        # save_model(self.model, name)
+        self.logger.info(f"Saved model at {name}")
 
 
     def load(self, fn=None):
@@ -150,7 +152,7 @@ class NERLearner(object):
 
         if fine_tune:
             self.save(self.config.ner_ft_path)
-        else :
+        else:
             self.save(self.config.ner_model_path)
 
 
@@ -182,8 +184,8 @@ class NERLearner(object):
             # inputs, targets = Variable(inputs, requires_grad=False), \
             #                                   Variable(targets)
 
-            seq_len = inputs.size(0)
-            outputs = self.model(inputs).view(seq_len,-1,9)
+            # seq_len = inputs.size(0)
+            outputs = self.model(inputs) #.view(seq_len,-1,9)
 
             # Create mask
             mask = create_mask(sequence_lengths, targets, cuda=self.use_cuda)
@@ -217,9 +219,9 @@ class NERLearner(object):
         total_preds = 0
         total_step = None
 
-        for batch_idx, (inputs, targets, sequence_lengths) in enumerate(val_generator):
+        for batch_idx, (inputs, sequence_lengths, targets ) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
-            if inputs['word_ids'].shape[0] == 1:
+            if inputs.shape[0] == 1:
                 self.logger.info('Skipping batch of size=1')
                 continue
 
@@ -230,8 +232,8 @@ class NERLearner(object):
             # inputs = T(inputs, cuda=self.use_cuda)
             # inputs, targets = Variable(inputs, requires_grad=False), \
             #                                   Variable(targets)
-
-            outputs = self.model(inputs)
+            # seq_len = inputs.size(0)
+            outputs = self.model(inputs) #.view(seq_len,-1,9)
 
             # Create mask
             mask = create_mask(sequence_lengths, targets, cuda=self.use_cuda)
@@ -248,9 +250,9 @@ class NERLearner(object):
 
                 accs += [1 if a==b else 0 for (a, b) in zip(lab, lab_pred)]
 
-                lab_chunks = set(get_chunks(lab, self.config.vocab_tags))
+                lab_chunks = set(get_chunks(lab, self.config.label_to_idx))
                 lab_pred_chunks = set(get_chunks(lab_pred,
-                                                 self.config.vocab_tags))
+                                                 self.config.label_to_idx))
 
                 correct_preds += len(lab_chunks & lab_pred_chunks)
                 total_preds   += len(lab_pred_chunks)
@@ -328,7 +330,8 @@ class NERLearner(object):
 def create_mask(sequence_lengths, targets, cuda, batch_first=False):
     """ Creates binary mask """
     mask = Variable(torch.ones(targets.size()).type(torch.ByteTensor))
-    if cuda: mask = mask.cuda()
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    mask = mask.to(device)
 
     for i,l in enumerate(sequence_lengths):
         if batch_first:
@@ -336,6 +339,7 @@ def create_mask(sequence_lengths, targets, cuda, batch_first=False):
                 mask.data[i, l:] = 0
         else:
             if l < targets.size(0):
+                # print((l, targets.size(0)))
                 mask.data[l:, i] = 0
 
     return mask

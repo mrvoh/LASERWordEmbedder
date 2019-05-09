@@ -32,8 +32,8 @@ import torch.nn as nn
 assert os.environ.get('LASER'), 'Please set the enviornment variable LASER'
 LASER = os.environ['LASER']
 
-sys.path.append(LASER + '/source/lib')
-from text_processing import Token, BPEfastApply
+# sys.path.append(LASER + '/source/lib')
+# from text_processing import Token, BPEfastApply
 
 
 SPACE_NORMALIZER = re.compile("\s+")

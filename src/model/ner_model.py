@@ -13,7 +13,7 @@ class NERModel(nn.Module):
         self.word_lstm = nn.LSTM(embedder.embedding_dim,
                                  config.hidden_size_lstm, bidirectional=True)
 
-        self.linear = LinearClassifier(self.config, layers=[self.config.hidden_size_lstm*2, self.config.ntags], drops=[0.5])
+        self.linear = LinearClassifier(self.config, layers=[self.config.hidden_size_lstm*2, self.config.ntags], drops=[config.dropout])
 
 
     def forward(self, input):
