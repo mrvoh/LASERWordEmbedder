@@ -71,8 +71,8 @@ def vocab2str(vocab):
 def initialise_bpe():
     global bpe
 
-    FCODES_PATH = "/home/developer/Desktop/LASERWordEmbedder/LASER/models/93langs.fcodes"
-    FVOCAB_PATH = "/home/developer/Desktop/LASERWordEmbedder/LASER/models/93langs.fvocab"
+    FCODES_PATH = "/home/vm/Documents/LASERWordEmbedder/LASER/models/93langs.fcodes"
+    FVOCAB_PATH = "/home/vm/Documents/LASERWordEmbedder/LASER/models/93langs.fvocab"
 
     bpe = fastBPE.fastBPE(FCODES_PATH, FVOCAB_PATH)
 
@@ -112,7 +112,7 @@ def map_encoded_sentences_to_dataset(dataset, encoded_sentences):
 
     return mapping
 
-def get_conll_vocab():
+def get_conll_vocab(case_insensitive=False):
     TRAIN_FILE_PATH = "./data/train.txt"
     TEST_FILE_PATH = "./data/test.txt"
     VALID_FILE_PATH = "./data/valid.txt"
@@ -126,7 +126,10 @@ def get_conll_vocab():
             for line in f:
                 word = line[:line.find(" ")]
 
-                vocab.append(word.lower())
+                if case_insensitive:
+                    word = word.lower()
+
+                vocab.append(word)
 
             f.close()
 
@@ -134,7 +137,7 @@ def get_conll_vocab():
 
     return vocab
 
-def get_muse_vectors():
+def get_muse_vectors(case_insensitive=False):
     embeddings_url = "https://dl.fbaipublicfiles.com/arrival/vectors/wiki.multi.en.vec"
     vectors = {}
 
@@ -143,20 +146,24 @@ def get_muse_vectors():
 
         for line in f:
             w_vec = line.decode("utf-8").split()
+            v = w_vec[0]
 
-            vectors[str(w_vec[0]).lower()] = w_vec[1:]
+            if case_insensitive:
+                v = str(v).lower()
+
+            vectors[v] = w_vec[1:]
 
         f.close()
 
     return vectors
 
 
-def get_conll_muse_vectors():
+def get_conll_muse_vectors(case_insensitive=True):
     conll_muse_vectors = {}
     conll_words_not_in_muse_vectors = []
 
-    conll_vocab = get_conll_vocab()
-    muse_vectors = get_muse_vectors()
+    conll_vocab = get_conll_vocab(case_insensitive)
+    muse_vectors = get_muse_vectors(case_insensitive)
 
     for word in conll_vocab:
         if word in muse_vectors:
@@ -245,5 +252,31 @@ def get_padded_accuracy(logits, targets, seq_lengths):
 
     predictions = logits.argmax(dim=-1)
     B = targets.size(0)
+
+
+def words2fragments(dataset, encoded_sentences):
+    mapping = []
+
+    for sentence_index in range(len(dataset)):
+        fragment_counter = 0
+
+        for word in dataset[sentence_index]:
+            word_mapping = word
+            w = word_mapping[0]
+            fragments = encoded_sentences[sentence_index].split()
+            fragments_for_word = []
+
+            for f in range(fragment_counter, len(fragments)):
+                fragments_for_word.append(fragments[f])
+                fragment_counter += 1
+
+                if w[-len(fragments[f]):] == fragments[f]:
+                    break
+
+            word_mapping += fragments_for_word
+            mapping.append(word_mapping)
+
+    return mapping
+
 
 
