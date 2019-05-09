@@ -1,4 +1,4 @@
-# import fastBPE
+import fastBPE
 from torchnlp.word_to_vector import FastText
 from urllib.request import  urlopen
 from torchnlp.datasets import Dataset
@@ -258,14 +258,33 @@ def get_padded_accuracy(logits, targets, seq_lengths):
 
 def words2fragments(dataset, encoded_sentences):
     mapping = []
+    print(dataset[0])
+    print(encoded_sentences[0])
+    print("--")
 
     for sentence_index in range(len(dataset)):
+        sentence_mapping = []
         fragment_counter = 0
 
         for word in dataset[sentence_index]:
             word_mapping = word
             w = word_mapping[0]
             fragments = encoded_sentences[sentence_index].split()
+            checked_fragments = []
+
+            for fr in range(len(fragments)):
+                for sc in [".", ",", "!", "?"]:
+                    if sc in fragments[fr]:
+                        checked_fragments.append(fragments[fr][:fragments[fr].find(sc)])
+                        checked_fragments.append(fragments[fr][fragments[fr].find(sc):])
+
+                    else:
+                        checked_fragments.append(fragments[fr])
+
+                    break
+
+            fragments = checked_fragments
+
             fragments_for_word = []
 
             for f in range(fragment_counter, len(fragments)):
@@ -276,7 +295,9 @@ def words2fragments(dataset, encoded_sentences):
                     break
 
             word_mapping += fragments_for_word
-            mapping.append(word_mapping)
+            sentence_mapping.append(word_mapping)
+
+        mapping.append(sentence_mapping)
 
     return mapping
 
