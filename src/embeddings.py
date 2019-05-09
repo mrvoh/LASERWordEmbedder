@@ -6,14 +6,14 @@ TEST_FILE_PATH = "./data/test.txt"
 VALID_FILE_PATH = "./data/valid.txt"
 
 initialise_bpe()
-data = load_data(VALID_FILE_PATH)
+data = load_data(TRAIN_FILE_PATH)
 
 sentences = dataset2sentences(data)
 encoded_sentences = bpe_apply(sentences)
 m = mapped_encoded_sentences = map_encoded_sentences_to_dataset(data, encoded_sentences)
 
 
-with open("data/valid_bpe.txt", "w") as f:
+with open("data/train1.txt", "w") as f:
     for s in m:
         for word in s:
             f.write(str(" ".join(word) + "\n"))

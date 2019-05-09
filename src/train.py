@@ -13,7 +13,7 @@ def main():
     # create instance of config
     config = Config()
     # build model
-    model = NERModel(config, LASEREmbedderII(config.model_path))
+    model = NERModel(config, LASEREmbedderBase(config.model_path))
 
     # create datasets
     # dev = CoNLLDataset(config.filename_dev, config.processing_word,
@@ -21,8 +21,8 @@ def main():
     # train = CoNLLDataset(config.filename_train, config.processing_word,
     #                      config.processing_tag, config.max_iter, config.use_crf)
 
-    train = parse_dataset(config.filename_train, config.label_to_idx, config.word_to_idx)
-    dev = parse_dataset(config.filename_dev, config.label_to_idx, config.word_to_idx) #TODO: change back to dev set
+    train, pad_len = parse_dataset(config.filename_train, config.label_to_idx, config.word_to_idx)
+    dev, pad_len = parse_dataset(config.filename_dev, config.label_to_idx, config.word_to_idx) #TODO: change back to dev set
 
     learn = NERLearner(config, model)
     learn.fit(train, dev)
