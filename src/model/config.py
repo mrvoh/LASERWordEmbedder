@@ -77,7 +77,7 @@ class Config():
 
     filename_dev = "data/valid_bpe.txt"
     filename_test = "data/test_bpe.txt"
-    filename_train = "data/train_bpe.txt"
+    filename_train = "data/train_mini.txt"
 
     max_iter = None  # if not None, max number of examples in Dataset
 
@@ -90,7 +90,7 @@ class Config():
     train_embeddings = False
     nepochs = 25
     dropout = 0.5
-    batch_size = 64
+    batch_size = 2
     lr_method = "adam"
     lr = 0.001
     lr_decay = 0.1
