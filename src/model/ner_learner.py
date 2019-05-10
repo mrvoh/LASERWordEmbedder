@@ -19,12 +19,14 @@ class NERLearner(object):
     NERLearner class that encapsulates a pytorch nn.Module model and ModelData class
     Contains methods for training a testing the model
     """
-    def __init__(self, config, model):
+    def __init__(self, config, model, tr_pad_len, dev_pad_len):
         super().__init__()
         self.config = config
         self.logger = self.config.logger
         self.model = model
         self.model_path = config.dir_model
+        self.tr_pad_len = tr_pad_len
+        self.dev_pad_len = dev_pad_len
 
 
         self.idx_to_tag = {idx: tag for tag, idx in
@@ -136,10 +138,12 @@ class NERLearner(object):
         f1s = []
 
         for epoch in range(epochs):
+            self.model.set_bpe_pad_len(self.tr_pad_len)
             scheduler.step()
             self.train(epoch, nbatches_train, train_generator, fine_tune=fine_tune)
 
             if dev:
+                self.model.set_bpe_pad_len(self.dev_pad_len)
                 f1 = self.test(nbatches_dev, dev_generator, fine_tune=fine_tune)
 
             # Early stopping
@@ -170,7 +174,7 @@ class NERLearner(object):
         for batch_idx, (inputs, sequence_lengths, targets) in enumerate(train_generator):
 
             if batch_idx == nbatches_train: break
-            if inputs.shape[0] == 1:
+            if inputs.shape[0] == self.model.embedder.bpe_pad_len:
                 self.logger.info('Skipping batch of size=1')
                 continue
 
@@ -221,7 +225,7 @@ class NERLearner(object):
 
         for batch_idx, (inputs, sequence_lengths, targets ) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
-            if inputs.shape[0] == 1:
+            if inputs.shape[0] == self.model.embedder.bpe_pad_len:
                 self.logger.info('Skipping batch of size=1')
                 continue
 

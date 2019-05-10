@@ -21,10 +21,10 @@ def main():
     #                      config.processing_tag, config.max_iter, config.use_crf)
 
     train, tr_pad_len = parse_dataset(config.filename_train, config.label_to_idx, config.word_to_idx)
-    dev, dev_pad_len = parse_dataset(config.filename_dev, config.label_to_idx, config.word_to_idx)
+    dev, dev_pad_len = parse_dataset(config.filename_dev, config.label_to_idx, config.word_to_idx, pad_len = tr_pad_len)
     # build model
-    model = NERModel(config, LASEREmbedderIII(config.model_path, bpe_pad_len=tr_pad_len)) #TODO: check longest pad len test, train, dev
-    learn = NERLearner(config, model)
+    model = NERModel(config, LASEREmbedderBase(config.model_path, bpe_pad_len=tr_pad_len), tr_pad_len) #TODO: check longest pad len test, train, dev
+    learn = NERLearner(config, model, tr_pad_len, dev_pad_len)
     learn.fit(train, dev)
 
 

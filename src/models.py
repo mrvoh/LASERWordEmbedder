@@ -147,8 +147,7 @@ class LASEREmbedderBase(nn.Module):
         seq_len, B = tokens.size()
         token_seq_len = int(seq_len /self.bpe_pad_len)
         # Encode embeddings as emb_size x (B * seq_len)
-        bpe_embeddings = self.bpe_emb(tokens) #.permute(2,1,0) #.view(self.ENCODER_SIZE,-1)
-
+        bpe_embeddings = self.bpe_emb(tokens.view(self.bpe_pad_len, token_seq_len, B)) #.permute(2,1,0) #.view(self.ENCODER_SIZE,-1)
         # reshape to in order to aggregate over BPE sequence to word
         bpe_embeddings = bpe_embeddings.view(self.bpe_pad_len, token_seq_len*B, self.ENCODER_SIZE)
 

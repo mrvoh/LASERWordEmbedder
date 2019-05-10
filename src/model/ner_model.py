@@ -3,10 +3,10 @@ from .core import *
 
 class NERModel(nn.Module):
 
-    def __init__(self, config, embedder):
+    def __init__(self, config, embedder, bpe_pad_len):
         super().__init__()
         self.config = config
-
+        self.bpe_pad_len = bpe_pad_len
         self.embedder = embedder # LASERWordEmbedder
 
         self.dropout = nn.Dropout(p=config.dropout)
@@ -26,6 +26,9 @@ class NERModel(nn.Module):
 
         output = self.linear(output)
         return output #shape = S*B*ntags
+
+    def set_bpe_pad_len(self, l):
+        self.embedder.bpe_pad_len = l
 
 class LinearBlock(nn.Module):
     def __init__(self, ni, nf, drop):

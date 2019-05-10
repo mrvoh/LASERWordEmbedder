@@ -1,4 +1,5 @@
-import fastBPE
+
+
 from torchnlp.word_to_vector import FastText
 from urllib.request import  urlopen
 from torchnlp.datasets import Dataset
@@ -7,7 +8,7 @@ from torchnlp.encoders.text import stack_and_pad_tensors, pad_tensor
 from torch.utils.data import DataLoader
 import torch
 import os
-
+if os.name == 'posix': import fastBPE
 LASER = os.environ['LASER']
 
 
@@ -23,7 +24,6 @@ def load_data(path):
             if line in ['\n', '\r\n']:
                 if not newline:
                     sentences.append(sentence)
-
                 sentence = []
 
                 newline = True
@@ -185,7 +185,7 @@ def get_conll_muse_vectors(case_insensitive=True):
     return conll_muse_vectors, conll_words_not_in_muse_vectors
 
 
-def parse_dataset(path, label_to_idx, word_to_idx):
+def parse_dataset(path, label_to_idx, word_to_idx, pad_len = None):
     sentences = []
     UNK = 3
     PAD = 1
@@ -194,11 +194,10 @@ def parse_dataset(path, label_to_idx, word_to_idx):
 
         sample = {'word_ids': [], 'labels': []}
         max_len_token = 0
-        for line in f:
-
-            if line in ['\n', '\r\n']:  # end of sequence
-                sample['labels'] = torch.LongTensor(sample['labels'])
-                if len(sample['word_ids']) > 0:
+        for line in f.read().splitlines():
+            if line in ['\n', '\r\n', '']:  # end of sequence
+                if len(sample['labels']) > 0:
+                    sample['labels'] = torch.LongTensor(sample['labels'])
                     sentences.append(sample)
                 sample = {'word_ids': [], 'labels': []}
                 continue
@@ -207,12 +206,18 @@ def parse_dataset(path, label_to_idx, word_to_idx):
                 max_len_token = max(max_len_token, len(ls[4:]))
                 word = ls[4:]
                 label = ls[3]
-                sample['word_ids'].append(
-                    torch.LongTensor([word_to_idx[w] if w in word_to_idx.keys() else UNK for w in word])
-                )  # 3 -> <unk>
-                sample['labels'].append(label_to_idx[label])
+                if len(word) > 0:
+                    word_ids = [word_to_idx[w.lower()] if w.lower() in word_to_idx.keys() else UNK for w in word]
+                    sample['word_ids'].append(
+                        torch.LongTensor(word_ids)
+                    )  # 3 -> <unk>
+                    sample['labels'].append(label_to_idx[label])
+                    if len(word_ids) > 20:
+                        print(line)
 
     # padd all BPE encodings to max length in dataset
+    if pad_len is not None:
+        max_len_token = max(pad_len, max_len_token)
     for s in range(len(sentences)):
         sen = sentences[s]
         for i in range(len(sen['word_ids'])):
