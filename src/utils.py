@@ -1,7 +1,5 @@
-
-
 from torchnlp.word_to_vector import FastText
-from urllib.request import  urlopen
+from urllib.request import urlopen
 from torchnlp.datasets import Dataset
 from torchnlp.samplers import BucketBatchSampler
 from torchnlp.encoders.text import stack_and_pad_tensors, pad_tensor
@@ -12,8 +10,8 @@ import os
 if os.name == 'posix': import fastBPE
 LASER = os.environ['LASER']
 
-
 bpe = None
+
 
 def load_data(path):
     sentences = []
@@ -22,6 +20,8 @@ def load_data(path):
 
     with open(path) as f:
         for line in f:
+            if 'DOCSTART' in line:
+                continue
             if line in ['\n', '\r\n']:
                 if not newline:
                     sentences.append(sentence)
@@ -34,22 +34,32 @@ def load_data(path):
 
             else:
                 newline = False
-                sentence.append(line.split())
+                l= line.split()
+                word = l[0].replace('--', '')
+                if len(word) == 0: word = '-'
+                l[0] = word
+                sentence.append(l)
 
         f.close()
 
     return sentences
 
+
 def dataset2sentences(dataset):
     sentences = []
 
     for sentence in dataset:
+        st = ""
 
         s = [s[0] for s in sentence]
-        st = ' '.join(s)
+
+        for w in s:
+            st += " " + w #if w not in [".", ",", "!", "?"] else w
+
+        st = st[1:]
 
         sentences.append(st)
-    
+
     return sentences
 
 
@@ -72,14 +82,15 @@ def vocab2str(vocab):
 def initialise_bpe():
     global bpe
 
-    FCODES_PATH = LASER+"/models/93langs.fcodes"
-    FVOCAB_PATH = LASER+"models/93langs.fvocab"
+    FCODES_PATH = LASER + "/models/93langs.fcodes"
+    FVOCAB_PATH = LASER + "models/93langs.fvocab"
 
     bpe = fastBPE.fastBPE(FCODES_PATH, FVOCAB_PATH)
 
+
 def bpe_apply(sentences):
     global bpe
-    
+
     return bpe.apply(sentences)
 
 
@@ -101,15 +112,13 @@ def map_encoded_sentences_to_dataset(dataset, encoded_sentences):
 
             fragments.append(fragment)
 
-
             if "@" in fragment:
                 continue
             else:
                 sentence_mapping.append((word_info[0], word_info[1], word_info[2], word_info[3], ' '.join(fragments)))
                 fragments = []
 
-            if word_info[0][-len(fragment):] == fragment and e != (es_len-1):
-
+            if word_info[0][-len(fragment):] == fragment and e != (es_len - 1):
                 d_counter += 1
                 word_info = d[d_counter]
 
@@ -142,6 +151,7 @@ def get_conll_vocab(case_insensitive=False):
     vocab = list(set(vocab))
 
     return vocab
+
 
 def get_muse_vectors(case_insensitive=False):
     embeddings_url = "https://dl.fbaipublicfiles.com/arrival/vectors/wiki.multi.en.vec"
@@ -181,7 +191,7 @@ def get_conll_muse_vectors(case_insensitive=True):
     return conll_muse_vectors, conll_words_not_in_muse_vectors
 
 
-def parse_dataset(path, label_to_idx, word_to_idx, pad_len = None):
+def parse_dataset(path, label_to_idx, word_to_idx, pad_len=None):
     sentences = []
     UNK = 3
     PAD = 1
@@ -270,8 +280,6 @@ def get_data_loader(data, batch_size, drop_last, collate_fn=collate_fn_eval):
     return loader
 
 
-
-
 def words2fragments(dataset, encoded_sentences):
     mapping = []
 
@@ -314,6 +322,7 @@ def words2fragments(dataset, encoded_sentences):
 
     return mapping
 
+
 def i2b(i_dataset):
     b_format = []
 
@@ -330,7 +339,6 @@ def i2b(i_dataset):
                 if not previous_named_entity_tag_i:
                     word_b_format[3] = 'B' + word_b_format[3][1:]
 
-
             previous_named_entity_tag_i = named_entity_tag_i
 
             sentence_b_format.append(word_b_format)
@@ -338,6 +346,3 @@ def i2b(i_dataset):
         b_format.append(sentence_b_format)
 
     return b_format
-
-
-
