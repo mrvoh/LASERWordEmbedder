@@ -44,7 +44,6 @@ def dataset2sentences(dataset):
     sentences = []
 
     for sentence in dataset:
-        counter += 1
 
         s = [s[0] for s in sentence]
         st = ' '.join(s)
