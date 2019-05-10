@@ -90,63 +90,6 @@ def bpe_apply(sentences):
 def map_encoded_sentences_to_dataset(dataset, encoded_sentences):
     mapping = []
 
-    '''
-    for i in range(len(dataset)):
-        sentence_word_information = dataset[i]
-        fragments = encoded_sentences[i].split()
-        sentence_mapping = []
-
-        current_word = 0
-        current_character = 0
-        word = sentence_word_information[current_word][0]
-
-        for fragment in fragments:
-            split_fragment = False
-            updated_fragment = fragment.replace("@", "")
-            len_fragment = len(updated_fragment)
-
-            for ch in updated_fragment:
-                if len(word) == current_character:
-                    if i==0: print(ch)
-                    if word[-1:] != fragment[current_character:current_character+1]:
-                        split_fragment = True
-                        sentence_mapping.append([fragment[:current_character-1]] + sentence_word_information[current_word][1:])
-                    
-
-                    current_word += 1
-                    current_character = 0
-
-                    if current_word < len(sentence_word_information):
-                        word = sentence_word_information[current_word][0]
-
-                
-                if i == 0:
-                    print(ch)
-                    print(word[current_character:current_character+1])
-                    print("--")
-                
-
-                if ch != word[current_character:current_character+1]:
-                    #something is wrong
-                    pass
-
-                else:
-                    current_character += 1
-
-            if not split_fragment:
-                sentence_mapping.append([fragment] + sentence_word_information[current_word][1:])
-
-            
-            else:
-                sentence_mapping.append(
-                    [fragment[current_character - 1:current_character]] + sentence_word_information[current_word][1:])
-            
-        mapping.append(sentence_mapping)
-
-    return mapping
-    '''
-
-
     for i in range(len(dataset)):
         d = dataset[i]
         es = encoded_sentences[i].split()
