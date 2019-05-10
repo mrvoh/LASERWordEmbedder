@@ -81,11 +81,18 @@ class LASERHiddenExtractor(Encoder):
 
 class LASEREmbedderI(nn.Module):
 
-    def __init__(self, encoder_path, encoder = LASERHiddenExtractor):
+    def __init__(self, encoder_path, bpe_pad_len=43, embedding_dim=320, encoder = LASERHiddenExtractor):
         super().__init__()
-        self.ENCODER_SIZE = self.embedding_dim = 512  # LASER encoder encodes to 512 dims
+        self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
         self.NUM_DIRECTIONS = 2
+
+        self.bpe_pad_len = bpe_pad_len
+        self.embedding_dim = embedding_dim
+        gru = RNNEncoder(self.ENCODER_SIZE, int(self.embedding_dim / 2))
+        att = Attention(self.embedding_dim)
+        self.token_embedder = TokenEncoder(gru, att, self.embedding_dim)
+
         state_dict = torch.load(encoder_path)
         self.encoder = encoder(**state_dict['params'])
         self.encoder.load_state_dict(state_dict['model'])
@@ -95,14 +102,22 @@ class LASEREmbedderI(nn.Module):
         self.unk_index = self.dictionary['<unk>']
 
     def forward(self, tokens):
+        seq_len, B = tokens.size()
+        token_seq_len = int(seq_len / self.bpe_pad_len)
+
         # Take hidden states of final layer
         hidden_states = self.encoder(tokens)[:, -1, :, :, :]
 
         # max pool the forward and backward hidden states
-        max_pooled, _ = hidden_states.max(dim=1)
+        bpe_embeddings, _ = hidden_states.max(dim=1)
+        # reshape to in order to aggregate over BPE sequence to word
+        bpe_embeddings = bpe_embeddings.view(self.bpe_pad_len, token_seq_len * B, self.ENCODER_SIZE)
 
-        embeddings = max_pooled
+        # max pool the forward and backward hidden states
+        embeddings = self.token_embedder(bpe_embeddings)
 
+        # resize to token-level embeddings
+        embeddings = embeddings.view(token_seq_len, B, self.embedding_dim)
         return embeddings
 
 
@@ -121,7 +136,7 @@ class LASEREmbedderBase(nn.Module):
         self.bpe_emb = encoder.embed_tokens
         gru = RNNEncoder(self.ENCODER_SIZE, int(self.embedding_dim/2))
         att = Attention(self.embedding_dim)
-        self.token_embedder = TokenEncoder(gru, att, self.embedding_dim, 1)
+        self.token_embedder = TokenEncoder(gru, att, self.embedding_dim)
         self.dictionary = state_dict['dictionary']
         self.pad_index = self.dictionary['<pad>']
         self.eos_index = self.dictionary['</s>']
@@ -141,7 +156,6 @@ class LASEREmbedderBase(nn.Module):
         embeddings = self.token_embedder(bpe_embeddings)
 
         # resize to token-level embeddings
-
         embeddings = embeddings.view(token_seq_len, B, self.ENCODER_SIZE)
 
         return embeddings
@@ -257,11 +271,10 @@ class Attention(nn.Module):
     return energy, linear_combination
 
 class TokenEncoder(nn.Module):
-  def __init__(self, encoder, attention, hidden_dim, num_classes):
+  def __init__(self, encoder, attention, hidden_dim):
     super(TokenEncoder, self).__init__()
     self.encoder = encoder
     self.attention = attention
-    self.decoder = nn.Linear(hidden_dim, num_classes)
 
     size = 0
     for p in self.parameters():
@@ -277,7 +290,7 @@ class TokenEncoder(nn.Module):
     if self.encoder.bidirectional: # need to concat the last 2 hidden layers
       hidden = torch.cat([hidden[-1], hidden[-2]], dim=1)
     else:
-      hidden = hidden.view(-1,320)
+      hidden = hidden[-1]
 
     energy, linear_combination = self.attention(hidden, outputs, outputs)
     return linear_combination
