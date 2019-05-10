@@ -8,6 +8,7 @@ from torchnlp.encoders.text import stack_and_pad_tensors, pad_tensor
 from torch.utils.data import DataLoader
 import torch
 import os
+
 if os.name == 'posix': import fastBPE
 LASER = os.environ['LASER']
 
@@ -43,14 +44,10 @@ def dataset2sentences(dataset):
     sentences = []
 
     for sentence in dataset:
-        st = ""
+        counter += 1
 
         s = [s[0] for s in sentence]
-
-        for w in s: 
-            st += " " + w
-
-        st = st[1:]
+        st = ' '.join(s)
 
         sentences.append(st)
     
