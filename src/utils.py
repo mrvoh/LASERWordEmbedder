@@ -183,6 +183,7 @@ def get_conll_muse_vectors(case_insensitive=True):
 def parse_dataset(path, label_to_idx, word_to_idx):
     sentences = []
     UNK = 3
+    PAD = 1
 
     with open(path) as f:
 
@@ -210,7 +211,7 @@ def parse_dataset(path, label_to_idx, word_to_idx):
     for s in range(len(sentences)):
         sen = sentences[s]
         for i in range(len(sen['word_ids'])):
-            sen['word_ids'][i] = pad_tensor(sen['word_ids'][i], length=max_len_token, padding_index=UNK)
+            sen['word_ids'][i] = pad_tensor(sen['word_ids'][i], length=max_len_token, padding_index=PAD)
 
         # stack word ids back together
         sen['word_ids'] = torch.stack(sen['word_ids'], dim=0).view(-1)

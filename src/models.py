@@ -108,17 +108,18 @@ class LASEREmbedderI(nn.Module):
 
 class LASEREmbedderBase(nn.Module):
 
-    def __init__(self, encoder_path, encoder = LASERHiddenExtractor):
+    def __init__(self, encoder_path, bpe_pad_len = 43, encoder = LASERHiddenExtractor):
         super().__init__()
         self.ENCODER_SIZE = self.embedding_dim = 320  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
         self.NUM_DIRECTIONS = 2
+        self.bpe_pad_len = bpe_pad_len
         state_dict = torch.load(encoder_path)
         encoder = encoder(take_diff=False, **state_dict['params'])
         encoder.load_state_dict(state_dict['model'])
 
         self.bpe_emb = encoder.embed_tokens
-        gru = RNNEncoder(self.ENCODER_SIZE, int(self.embedding_dim))
+        gru = RNNEncoder(self.ENCODER_SIZE, int(self.embedding_dim/2))
         att = Attention(self.embedding_dim)
         self.token_embedder = TokenEncoder(gru, att, self.embedding_dim, 1)
         self.dictionary = state_dict['dictionary']
@@ -127,10 +128,21 @@ class LASEREmbedderBase(nn.Module):
         self.unk_index = self.dictionary['<unk>']
 
     def forward(self, tokens):
+
+        seq_len, B = tokens.size()
+        token_seq_len = int(seq_len /self.bpe_pad_len)
         # Encode embeddings as emb_size x (B * seq_len)
         bpe_embeddings = self.bpe_emb(tokens) #.permute(2,1,0) #.view(self.ENCODER_SIZE,-1)
+
+        # reshape to in order to aggregate over BPE sequence to word
+        bpe_embeddings = bpe_embeddings.view(self.bpe_pad_len, token_seq_len*B, self.ENCODER_SIZE)
+
         # max pool the forward and backward hidden states
         embeddings = self.token_embedder(bpe_embeddings)
+
+        # resize to token-level embeddings
+
+        embeddings = embeddings.view(token_seq_len, B, self.ENCODER_SIZE)
 
         return embeddings
 
@@ -263,16 +275,11 @@ class TokenEncoder(nn.Module):
       hidden = hidden[1] # take the cell state
 
     if self.encoder.bidirectional: # need to concat the last 2 hidden layers
-      hidden, _ = hidden.max(dim=1)
+      hidden = torch.cat([hidden[-1], hidden[-2]], dim=1)
     else:
       hidden = hidden.view(-1,320)
 
-    # # max pool forward and backward
-    # hidden,_ = hidden.max(dim=1)
-    # outputs,_ = outputs.max(dim=1)
-    #TODO: problem: many to one attention
     energy, linear_combination = self.attention(hidden, outputs, outputs)
     return linear_combination
-    # logits = self.decoder(linear_combination)
-    # return logits, energy
+
 
