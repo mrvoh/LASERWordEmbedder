@@ -258,9 +258,6 @@ def get_padded_accuracy(logits, targets, seq_lengths):
 
 def words2fragments(dataset, encoded_sentences):
     mapping = []
-    print(dataset[0])
-    print(encoded_sentences[0])
-    print("--")
 
     for sentence_index in range(len(dataset)):
         sentence_mapping = []
@@ -300,6 +297,31 @@ def words2fragments(dataset, encoded_sentences):
         mapping.append(sentence_mapping)
 
     return mapping
+
+def i2b(i_dataset):
+    b_format = []
+
+    for dp in i_dataset:
+        previous_named_entity_tag_i = False
+        sentence_b_format = []
+
+        for word in dp:
+            word_b_format = list(word)
+
+            named_entity_tag_i = True if word[3][:1] in ['I', 'B'] else False
+
+            if named_entity_tag_i:
+                if not previous_named_entity_tag_i:
+                    word_b_format[3] = 'B' + word_b_format[3][1:]
+
+
+            previous_named_entity_tag_i = named_entity_tag_i
+
+            sentence_b_format.append(word_b_format)
+
+        b_format.append(sentence_b_format)
+
+    return b_format
 
 
 
