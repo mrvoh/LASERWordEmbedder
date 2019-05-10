@@ -6,6 +6,9 @@ from torchnlp.samplers import BucketBatchSampler
 from torchnlp.encoders.text import stack_and_pad_tensors, pad_tensor
 from torch.utils.data import DataLoader
 import torch
+import os
+
+LASER = os.environ['LASER']
 
 bpe = None
 
@@ -72,8 +75,8 @@ def vocab2str(vocab):
 def initialise_bpe():
     global bpe
 
-    FCODES_PATH = "/home/vm/Documents/LASERWordEmbedder/LASER/models/93langs.fcodes"
-    FVOCAB_PATH = "/home/vm/Documents/LASERWordEmbedder/LASER/models/93langs.fvocab"
+    FCODES_PATH = LASER+"/models/93langs.fcodes"
+    FVOCAB_PATH = LASER+"models/93langs.fvocab"
 
     bpe = fastBPE.fastBPE(FCODES_PATH, FVOCAB_PATH)
 
