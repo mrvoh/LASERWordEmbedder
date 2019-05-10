@@ -156,18 +156,25 @@ class LASEREmbedderBase(nn.Module):
         embeddings = self.token_embedder(bpe_embeddings)
 
         # resize to token-level embeddings
-        embeddings = embeddings.view(token_seq_len, B, self.ENCODER_SIZE)
+        embeddings = embeddings.view(token_seq_len, B, self.embedding_dim)
 
         return embeddings
 
 
 class LASEREmbedderIII(nn.Module):
     #TODO: use ELMO LSTM
-    def __init__(self, encoder_path, embedding_dim, encoder = LASERHiddenExtractor):
+    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
         self.NUM_DIRECTIONS = 2
+
+        self.bpe_pad_len = bpe_pad_len
+        self.embedding_dim = embedding_dim
+        gru = RNNEncoder(self.embedding_dim, int(self.embedding_dim / 2))
+        att = Attention(self.embedding_dim)
+        self.token_embedder = TokenEncoder(gru, att, self.embedding_dim)
+
         state_dict = torch.load(encoder_path)
         self.encoder = encoder(**state_dict['params'])
         self.encoder.load_state_dict(state_dict['model'])
@@ -180,8 +187,8 @@ class LASEREmbedderIII(nn.Module):
         self.hidden_decoder = nn.Linear(self.NUM_LAYERS * self.ENCODER_SIZE, embedding_dim)
 
     def forward(self, tokens):
-        B = tokens.size(1)
-        seq_len = tokens.size(0)
+        seq_len, B = tokens.size()
+        token_seq_len = int(seq_len / self.bpe_pad_len)
         # assume encoder to return token embeddings
         hidden_states = self.encoder(tokens)
         max_pooled, _ = hidden_states.max(dim=2)
@@ -194,9 +201,16 @@ class LASEREmbedderIII(nn.Module):
             embeddings.append(et)
 
         # stack embeddings back together
-        embeddings = torch.stack(embeddings).permute(1,0,2) #.view(seq_len, B, -1)
+        bpe_embeddings = torch.stack(embeddings).permute(1,0,2)
+        # reshape to in order to aggregate over BPE sequence to word
+        bpe_embeddings = bpe_embeddings.contiguous().view(self.bpe_pad_len, token_seq_len * B, self.embedding_dim)
 
-        return torch.tanh(embeddings)
+        # max pool the forward and backward hidden states
+        embeddings = self.token_embedder(bpe_embeddings)
+        # resize to token-level embeddings
+        embeddings = embeddings.view(token_seq_len, B, self.embedding_dim)
+
+        return embeddings
 
 
 class LASEREmbedderIV(nn.Module):
