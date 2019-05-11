@@ -134,16 +134,24 @@ class LASEREmbedderBaseGRU(nn.Module):
 
         seq_len, B = tokens.size()
         token_seq_len = int(seq_len /self.bpe_pad_len)
-        # Encode embeddings as emb_size x (B * seq_len)
-        bpe_embeddings = self.bpe_emb(tokens.view(self.bpe_pad_len, token_seq_len, B)) #.permute(2,1,0) #.view(self.ENCODER_SIZE,-1)
-        # reshape to in order to aggregate over BPE sequence to word
-        bpe_embeddings = bpe_embeddings.view(self.bpe_pad_len, token_seq_len*B, self.ENCODER_SIZE)
+        # get BPE embeddings
+        # Split token sequences into words
+        tok = torch.split(tokens, split_size_or_sections=self.bpe_pad_len, dim=0)
+        # Reconstruct tensor as [seq_len, B, bpe_pad_len]
+        # tok = torch.stack(tok).permute(0, 2, 1)
+        #
+        # bpe_embeddings = self.bpe_emb(tok)
+        # bpe_embeddings = bpe_embeddings.permute(2,0,1,3).view(self.bpe_pad_len, token_seq_len*B, self.ENCODER_SIZE)
+        tok = torch.stack(tok).permute(1,2,0).contiguous().view(self.bpe_pad_len, -1)
+        bpe_embeddings = self.bpe_emb(tok)
 
-        # max pool the forward and backward hidden states
+        # apply GRU with self-attention
         embeddings = self.token_embedder(bpe_embeddings)
 
-        # resize to token-level embeddings
-        embeddings = embeddings.view(token_seq_len, B, self.embedding_dim)
+        # Resize to sequence length level
+        embeddings = torch.split(embeddings, split_size_or_sections=token_seq_len, dim=0)
+        embeddings = torch.stack(embeddings).permute(1, 0, 2)
+
 
         return embeddings
 
@@ -319,7 +327,7 @@ class TokenEncoder(nn.Module):
   def __init__(self, encoder, attention, hidden_dim):
     super(TokenEncoder, self).__init__()
     self.encoder = encoder
-    self.attention = attention
+    # self.attention = attention
 
     size = 0
     for p in self.parameters():
@@ -329,6 +337,9 @@ class TokenEncoder(nn.Module):
 
   def forward(self, input):
     outputs, hidden = self.encoder(input)
+
+    max_pool, _ = outputs.max(dim=0)
+    return max_pool
     if isinstance(hidden, tuple): # LSTM
       hidden = hidden[1] # take the cell state
 

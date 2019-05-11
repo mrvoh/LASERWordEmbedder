@@ -332,3 +332,1191 @@ Epoch: 0
 2019-05-09 15:29:25,169:INFO: Training Model
 2019-05-09 15:29:25,169:INFO: 
 Epoch: 0
+2019-05-10 10:51:29,568:INFO: GPU found.
+2019-05-10 10:51:33,506:INFO: Training Model
+2019-05-10 10:51:33,506:INFO: 
+Epoch: 0
+2019-05-10 10:52:59,329:INFO: GPU found.
+2019-05-10 10:53:01,429:INFO: Training Model
+2019-05-10 10:53:01,429:INFO: 
+Epoch: 0
+2019-05-10 10:55:56,865:INFO: GPU found.
+2019-05-10 10:55:58,978:INFO: Training Model
+2019-05-10 10:55:58,979:INFO: 
+Epoch: 0
+2019-05-10 10:59:59,781:INFO: GPU found.
+2019-05-10 11:00:01,902:INFO: Training Model
+2019-05-10 11:00:01,903:INFO: 
+Epoch: 0
+2019-05-10 11:01:19,328:INFO: GPU found.
+2019-05-10 11:01:21,466:INFO: Training Model
+2019-05-10 11:01:21,466:INFO: 
+Epoch: 0
+2019-05-10 11:01:35,778:INFO: Skipping batch of size=1
+2019-05-10 11:01:38,079:INFO: Skipping batch of size=1
+2019-05-10 11:01:41,109:INFO: Skipping batch of size=1
+2019-05-10 11:01:42,764:INFO: Skipping batch of size=1
+2019-05-10 11:01:46,550:INFO: Skipping batch of size=1
+2019-05-10 11:01:53,653:INFO: Skipping batch of size=1
+2019-05-10 11:01:55,731:INFO: Skipping batch of size=1
+2019-05-10 11:01:59,327:INFO: Skipping batch of size=1
+2019-05-10 11:02:00,883:INFO: Skipping batch of size=1
+2019-05-10 11:02:03,057:INFO: Skipping batch of size=1
+2019-05-10 11:02:03,697:INFO: Skipping batch of size=1
+2019-05-10 11:02:05,483:INFO: Skipping batch of size=1
+2019-05-10 11:02:08,937:INFO: Skipping batch of size=1
+2019-05-10 11:02:09,998:INFO: Skipping batch of size=1
+2019-05-10 11:02:18,870:INFO: Skipping batch of size=1
+2019-05-10 11:02:29,104:INFO: Skipping batch of size=1
+2019-05-10 11:02:29,680:INFO: Skipping batch of size=1
+2019-05-10 11:02:32,388:INFO: Train Loss: 1118.808, Train Accuracy: 63.450% (125681/198080)
+2019-05-10 11:05:55,722:INFO: GPU found.
+2019-05-10 11:05:57,845:INFO: Training Model
+2019-05-10 11:05:57,845:INFO: 
+Epoch: 0
+2019-05-10 11:06:04,706:INFO: Skipping batch of size=1
+2019-05-10 11:06:06,954:INFO: Skipping batch of size=1
+2019-05-10 11:06:21,966:INFO: Skipping batch of size=1
+2019-05-10 11:06:22,185:INFO: Skipping batch of size=1
+2019-05-10 11:06:24,680:INFO: Skipping batch of size=1
+2019-05-10 11:06:26,823:INFO: Skipping batch of size=1
+2019-05-10 11:06:28,838:INFO: Skipping batch of size=1
+2019-05-10 11:06:32,195:INFO: Skipping batch of size=1
+2019-05-10 11:06:34,119:INFO: Skipping batch of size=1
+2019-05-10 11:06:38,732:INFO: Skipping batch of size=1
+2019-05-10 11:06:40,516:INFO: Skipping batch of size=1
+2019-05-10 11:06:47,073:INFO: Skipping batch of size=1
+2019-05-10 11:06:48,672:INFO: Skipping batch of size=1
+2019-05-10 11:06:50,087:INFO: Skipping batch of size=1
+2019-05-10 11:06:55,528:INFO: Skipping batch of size=1
+2019-05-10 11:06:58,993:INFO: Skipping batch of size=1
+2019-05-10 11:07:02,785:INFO: Skipping batch of size=1
+2019-05-10 11:07:04,289:INFO: Skipping batch of size=1
+2019-05-10 11:07:09,871:INFO: Train Loss: 1107.162, Train Accuracy: 64.083% (126894/198016)
+2019-05-10 11:26:38,660:INFO: GPU found.
+2019-05-10 12:03:10,397:INFO: GPU found.
+2019-05-10 12:03:12,638:INFO: Training Model
+2019-05-10 12:03:12,638:INFO: 
+Epoch: 0
+2019-05-10 12:03:22,778:INFO: Skipping batch of size=1
+2019-05-10 12:03:23,968:INFO: Skipping batch of size=1
+2019-05-10 12:03:37,281:INFO: Skipping batch of size=1
+2019-05-10 12:03:37,672:INFO: Skipping batch of size=1
+2019-05-10 12:03:40,506:INFO: Skipping batch of size=1
+2019-05-10 12:03:43,826:INFO: Skipping batch of size=1
+2019-05-10 12:03:48,574:INFO: Skipping batch of size=1
+2019-05-10 12:03:49,576:INFO: Skipping batch of size=1
+2019-05-10 12:03:55,392:INFO: Skipping batch of size=1
+2019-05-10 12:03:56,986:INFO: Skipping batch of size=1
+2019-05-10 12:03:58,972:INFO: Skipping batch of size=1
+2019-05-10 12:04:01,540:INFO: Skipping batch of size=1
+2019-05-10 12:04:01,848:INFO: Skipping batch of size=1
+2019-05-10 12:04:02,459:INFO: Skipping batch of size=1
+2019-05-10 12:04:20,050:INFO: Skipping batch of size=1
+2019-05-10 12:04:20,051:INFO: Skipping batch of size=1
+2019-05-10 12:04:27,490:INFO: Train Loss: 1103.682, Train Accuracy: 67.386% (143656/213184)
+2019-05-10 12:07:12,549:INFO: GPU found.
+2019-05-10 12:07:14,726:INFO: Training Model
+2019-05-10 12:07:14,727:INFO: 
+Epoch: 0
+2019-05-10 12:07:53,102:INFO: GPU found.
+2019-05-10 12:07:55,274:INFO: Training Model
+2019-05-10 12:07:55,275:INFO: 
+Epoch: 0
+2019-05-10 12:09:06,388:INFO: Skipping batch of size=1
+2019-05-10 12:09:47,693:INFO: Skipping batch of size=1
+2019-05-10 12:10:52,205:INFO: Skipping batch of size=1
+2019-05-10 12:11:09,330:INFO: Skipping batch of size=1
+2019-05-10 12:11:16,038:INFO: Skipping batch of size=1
+2019-05-10 12:11:17,789:INFO: Skipping batch of size=1
+2019-05-10 12:11:29,407:INFO: Skipping batch of size=1
+2019-05-10 12:11:31,941:INFO: Skipping batch of size=1
+2019-05-10 12:11:31,945:INFO: Skipping batch of size=1
+2019-05-10 12:11:34,470:INFO: Skipping batch of size=1
+2019-05-10 12:11:40,025:INFO: Skipping batch of size=1
+2019-05-10 12:11:53,817:INFO: Skipping batch of size=1
+2019-05-10 12:11:58,422:INFO: Skipping batch of size=1
+2019-05-10 12:11:58,427:INFO: Skipping batch of size=1
+2019-05-10 12:12:04,407:INFO: Skipping batch of size=1
+2019-05-10 12:12:05,798:INFO: Skipping batch of size=1
+2019-05-10 12:12:11,794:INFO: Train Loss: 1095.421, Train Accuracy: 68.181% (146310/214592)
+2019-05-10 12:21:12,267:INFO: GPU found.
+2019-05-10 12:21:14,400:INFO: Training Model
+2019-05-10 12:21:14,400:INFO: 
+Epoch: 0
+2019-05-10 12:21:22,356:INFO: Skipping batch of size=1
+2019-05-10 12:21:38,309:INFO: Skipping batch of size=1
+2019-05-10 12:21:38,757:INFO: Skipping batch of size=1
+2019-05-10 12:21:40,462:INFO: Skipping batch of size=1
+2019-05-10 12:21:44,257:INFO: Skipping batch of size=1
+2019-05-10 12:21:48,062:INFO: Skipping batch of size=1
+2019-05-10 12:21:50,509:INFO: Skipping batch of size=1
+2019-05-10 12:21:58,076:INFO: Skipping batch of size=1
+2019-05-10 12:22:05,572:INFO: Skipping batch of size=1
+2019-05-10 12:22:08,426:INFO: Skipping batch of size=1
+2019-05-10 12:22:09,878:INFO: Skipping batch of size=1
+2019-05-10 12:22:12,982:INFO: Skipping batch of size=1
+2019-05-10 12:22:19,277:INFO: Skipping batch of size=1
+2019-05-10 12:22:19,701:INFO: Skipping batch of size=1
+2019-05-10 12:22:23,554:INFO: Skipping batch of size=1
+2019-05-10 12:22:27,856:INFO: Skipping batch of size=1
+2019-05-10 12:22:32,410:INFO: Train Loss: 1073.963, Train Accuracy: 68.951% (148140/214848)
+2019-05-10 12:23:39,411:INFO: GPU found.
+2019-05-10 12:23:41,537:INFO: Training Model
+2019-05-10 12:23:41,537:INFO: 
+Epoch: 0
+2019-05-10 12:24:00,118:INFO: GPU found.
+2019-05-10 12:24:02,216:INFO: Training Model
+2019-05-10 12:24:02,216:INFO: 
+Epoch: 0
+2019-05-10 12:24:10,224:INFO: Skipping batch of size=1
+2019-05-10 12:24:10,226:INFO: Skipping batch of size=1
+2019-05-10 12:24:16,152:INFO: Skipping batch of size=1
+2019-05-10 12:24:23,951:INFO: Skipping batch of size=1
+2019-05-10 12:24:38,127:INFO: Skipping batch of size=1
+2019-05-10 12:24:38,963:INFO: Skipping batch of size=1
+2019-05-10 12:24:39,069:INFO: Skipping batch of size=1
+2019-05-10 12:24:41,264:INFO: Skipping batch of size=1
+2019-05-10 12:24:41,903:INFO: Skipping batch of size=1
+2019-05-10 12:24:42,523:INFO: Skipping batch of size=1
+2019-05-10 12:24:47,776:INFO: Skipping batch of size=1
+2019-05-10 12:24:53,275:INFO: Skipping batch of size=1
+2019-05-10 12:25:01,025:INFO: Skipping batch of size=1
+2019-05-10 12:25:01,979:INFO: Skipping batch of size=1
+2019-05-10 12:25:11,172:INFO: Skipping batch of size=1
+2019-05-10 12:25:15,831:INFO: Skipping batch of size=1
+2019-05-10 12:25:19,953:INFO: Train Loss: 1086.623, Train Accuracy: 68.688% (147180/214272)
+2019-05-10 12:32:08,546:INFO: GPU found.
+2019-05-10 12:32:10,674:INFO: Training Model
+2019-05-10 12:32:10,674:INFO: 
+Epoch: 0
+2019-05-10 12:32:17,899:INFO: Skipping batch of size=1
+2019-05-10 12:32:21,797:INFO: Skipping batch of size=1
+2019-05-10 12:32:23,214:INFO: Skipping batch of size=1
+2019-05-10 12:32:39,977:INFO: Skipping batch of size=1
+2019-05-10 12:32:43,302:INFO: Skipping batch of size=1
+2019-05-10 12:32:43,303:INFO: Skipping batch of size=1
+2019-05-10 12:32:43,304:INFO: Skipping batch of size=1
+2019-05-10 12:32:52,640:INFO: Skipping batch of size=1
+2019-05-10 12:32:56,781:INFO: Skipping batch of size=1
+2019-05-10 12:33:00,832:INFO: Skipping batch of size=1
+2019-05-10 12:33:02,680:INFO: Skipping batch of size=1
+2019-05-10 12:33:11,502:INFO: Skipping batch of size=1
+2019-05-10 12:33:11,891:INFO: Skipping batch of size=1
+2019-05-10 12:33:16,653:INFO: Skipping batch of size=1
+2019-05-10 12:33:25,358:INFO: Skipping batch of size=1
+2019-05-10 12:33:25,359:INFO: Skipping batch of size=1
+2019-05-10 12:33:26,863:INFO: Train Loss: 1077.347, Train Accuracy: 68.365% (146486/214272)
+2019-05-10 12:38:43,157:INFO: GPU found.
+2019-05-10 12:38:45,283:INFO: Training Model
+2019-05-10 12:38:45,283:INFO: 
+Epoch: 0
+2019-05-10 12:39:00,783:INFO: GPU found.
+2019-05-10 12:39:02,894:INFO: Training Model
+2019-05-10 12:39:02,894:INFO: 
+Epoch: 0
+2019-05-10 12:39:11,458:INFO: Skipping batch of size=1
+2019-05-10 12:39:19,957:INFO: Skipping batch of size=1
+2019-05-10 12:39:20,861:INFO: Skipping batch of size=1
+2019-05-10 12:39:23,417:INFO: Skipping batch of size=1
+2019-05-10 12:39:25,030:INFO: Skipping batch of size=1
+2019-05-10 12:39:35,081:INFO: Skipping batch of size=1
+2019-05-10 12:39:35,826:INFO: Skipping batch of size=1
+2019-05-10 12:39:45,665:INFO: Skipping batch of size=1
+2019-05-10 12:39:49,652:INFO: Skipping batch of size=1
+2019-05-10 12:39:52,062:INFO: Skipping batch of size=1
+2019-05-10 12:39:54,801:INFO: Skipping batch of size=1
+2019-05-10 12:39:56,522:INFO: Skipping batch of size=1
+2019-05-10 12:40:03,249:INFO: Skipping batch of size=1
+2019-05-10 12:40:14,978:INFO: Skipping batch of size=1
+2019-05-10 12:40:18,799:INFO: Skipping batch of size=1
+2019-05-10 12:40:19,977:INFO: Train Loss: 1045.819, Train Accuracy: 70.055% (150422/214720)
+2019-05-10 12:42:09,328:INFO: GPU found.
+2019-05-10 12:42:11,562:INFO: Training Model
+2019-05-10 12:42:11,562:INFO: 
+Epoch: 0
+2019-05-10 12:42:24,910:INFO: Skipping batch of size=1
+2019-05-10 12:42:31,912:INFO: Skipping batch of size=1
+2019-05-10 12:43:03,931:INFO: GPU found.
+2019-05-10 12:43:06,051:INFO: Training Model
+2019-05-10 12:43:06,051:INFO: 
+Epoch: 0
+2019-05-10 12:43:29,776:INFO: GPU found.
+2019-05-10 12:43:31,866:INFO: Training Model
+2019-05-10 12:43:31,866:INFO: 
+Epoch: 0
+2019-05-10 12:48:21,864:INFO: GPU found.
+2019-05-10 12:48:24,120:INFO: Training Model
+2019-05-10 12:48:24,120:INFO: 
+Epoch: 0
+2019-05-10 12:48:53,151:INFO: GPU found.
+2019-05-10 12:48:55,422:INFO: Training Model
+2019-05-10 12:48:55,423:INFO: 
+Epoch: 0
+2019-05-10 12:49:02,670:INFO: Skipping batch of size=1
+2019-05-10 12:49:04,780:INFO: Skipping batch of size=1
+2019-05-10 12:49:08,545:INFO: Skipping batch of size=1
+2019-05-10 12:49:10,893:INFO: Skipping batch of size=1
+2019-05-10 12:49:15,419:INFO: Skipping batch of size=1
+2019-05-10 12:49:19,948:INFO: Skipping batch of size=1
+2019-05-10 12:49:28,916:INFO: Skipping batch of size=1
+2019-05-10 12:49:38,170:INFO: Skipping batch of size=1
+2019-05-10 12:49:49,204:INFO: Skipping batch of size=1
+2019-05-10 12:49:53,996:INFO: Skipping batch of size=1
+2019-05-10 12:49:55,952:INFO: Skipping batch of size=1
+2019-05-10 12:49:56,383:INFO: Skipping batch of size=1
+2019-05-10 12:49:57,171:INFO: Skipping batch of size=1
+2019-05-10 12:50:00,420:INFO: Skipping batch of size=1
+2019-05-10 12:50:07,518:INFO: Skipping batch of size=1
+2019-05-10 12:50:10,510:INFO: Skipping batch of size=1
+2019-05-10 12:50:14,719:INFO: Train Loss: 1045.124, Train Accuracy: 69.516% (148597/213760)
+2019-05-10 12:50:30,544:INFO: Skipping batch of size=1
+2019-05-10 12:50:30,545:INFO: Skipping batch of size=1
+2019-05-10 12:50:30,545:INFO: Skipping batch of size=1
+2019-05-10 12:50:38,641:INFO: Skipping batch of size=1
+2019-05-10 12:50:42,103:INFO: Val Loss : 739.171, Val Accuracy: 84.765%, Val F1: 0.000%
+2019-05-10 12:50:42,103:INFO: 
+Epoch: 1
+2019-05-10 12:50:50,797:INFO: Skipping batch of size=1
+2019-05-10 12:50:52,518:INFO: Skipping batch of size=1
+2019-05-10 12:50:59,374:INFO: Skipping batch of size=1
+2019-05-10 12:51:07,200:INFO: Skipping batch of size=1
+2019-05-10 12:51:11,823:INFO: Skipping batch of size=1
+2019-05-10 12:51:12,214:INFO: Skipping batch of size=1
+2019-05-10 12:51:13,781:INFO: Skipping batch of size=1
+2019-05-10 12:51:15,715:INFO: Skipping batch of size=1
+2019-05-10 12:51:23,421:INFO: Skipping batch of size=1
+2019-05-10 12:51:26,431:INFO: Skipping batch of size=1
+2019-05-10 12:51:30,807:INFO: Skipping batch of size=1
+2019-05-10 12:51:31,383:INFO: Skipping batch of size=1
+2019-05-10 12:51:37,289:INFO: Skipping batch of size=1
+2019-05-10 12:51:40,812:INFO: Skipping batch of size=1
+2019-05-10 12:51:42,424:INFO: Skipping batch of size=1
+2019-05-10 12:51:54,538:INFO: Skipping batch of size=1
+2019-05-10 12:51:58,305:INFO: Skipping batch of size=1
+2019-05-10 12:51:59,090:INFO: Train Loss: 579.538, Train Accuracy: 84.883% (182479/214976)
+2019-05-10 12:52:12,969:INFO: Skipping batch of size=1
+2019-05-10 12:52:13,885:INFO: Skipping batch of size=1
+2019-05-10 12:52:17,056:INFO: Skipping batch of size=1
+2019-05-10 12:52:19,225:INFO: Skipping batch of size=1
+2019-05-10 12:52:26,112:INFO: Val Loss : 686.297, Val Accuracy: 84.795%, Val F1: 0.067%
+2019-05-10 12:52:26,113:INFO: 
+Epoch: 2
+2019-05-10 12:52:32,926:INFO: Skipping batch of size=1
+2019-05-10 12:52:32,927:INFO: Skipping batch of size=1
+2019-05-10 12:52:43,826:INFO: Skipping batch of size=1
+2019-05-10 12:52:46,119:INFO: Skipping batch of size=1
+2019-05-10 12:52:49,620:INFO: Skipping batch of size=1
+2019-05-10 12:52:51,073:INFO: Skipping batch of size=1
+2019-05-10 12:52:58,171:INFO: Skipping batch of size=1
+2019-05-10 12:53:06,525:INFO: Skipping batch of size=1
+2019-05-10 12:53:08,249:INFO: Skipping batch of size=1
+2019-05-10 12:53:10,682:INFO: Skipping batch of size=1
+2019-05-10 12:53:19,342:INFO: Skipping batch of size=1
+2019-05-10 12:53:27,649:INFO: Skipping batch of size=1
+2019-05-10 12:53:27,650:INFO: Skipping batch of size=1
+2019-05-10 12:53:30,648:INFO: Skipping batch of size=1
+2019-05-10 12:53:36,382:INFO: Skipping batch of size=1
+2019-05-10 12:53:37,400:INFO: Skipping batch of size=1
+2019-05-10 12:53:41,631:INFO: Train Loss: 566.420, Train Accuracy: 84.984% (181770/213888)
+2019-05-10 12:53:51,821:INFO: Skipping batch of size=1
+2019-05-10 12:53:59,895:INFO: Skipping batch of size=1
+2019-05-10 12:54:01,726:INFO: Skipping batch of size=1
+2019-05-10 12:54:03,273:INFO: Skipping batch of size=1
+2019-05-10 12:54:08,459:INFO: Val Loss : 671.397, Val Accuracy: 84.784%, Val F1: 0.100%
+2019-05-10 12:54:08,459:INFO: 
+Epoch: 3
+2019-05-10 12:54:18,478:INFO: Skipping batch of size=1
+2019-05-10 12:54:28,917:INFO: Skipping batch of size=1
+2019-05-10 12:54:31,003:INFO: Skipping batch of size=1
+2019-05-10 12:54:31,004:INFO: Skipping batch of size=1
+2019-05-10 12:54:35,540:INFO: Skipping batch of size=1
+2019-05-10 12:54:37,018:INFO: Skipping batch of size=1
+2019-05-10 12:54:41,508:INFO: Skipping batch of size=1
+2019-05-10 12:57:10,831:INFO: GPU found.
+2019-05-10 12:57:12,980:INFO: Training Model
+2019-05-10 12:57:12,981:INFO: 
+Epoch: 0
+2019-05-10 12:58:24,017:INFO: GPU found.
+2019-05-10 12:58:26,139:INFO: Training Model
+2019-05-10 12:58:26,139:INFO: 
+Epoch: 0
+2019-05-10 12:58:54,539:INFO: GPU found.
+2019-05-10 12:58:56,639:INFO: Training Model
+2019-05-10 12:58:56,639:INFO: 
+Epoch: 0
+2019-05-10 12:59:08,343:INFO: Skipping batch of size=1
+2019-05-10 12:59:14,432:INFO: Skipping batch of size=1
+2019-05-10 12:59:15,657:INFO: Skipping batch of size=1
+2019-05-10 12:59:21,594:INFO: Skipping batch of size=1
+2019-05-10 12:59:26,898:INFO: Skipping batch of size=1
+2019-05-10 12:59:27,354:INFO: Skipping batch of size=1
+2019-05-10 12:59:39,005:INFO: Skipping batch of size=1
+2019-05-10 12:59:41,622:INFO: Skipping batch of size=1
+2019-05-10 12:59:48,777:INFO: Skipping batch of size=1
+2019-05-10 12:59:54,118:INFO: Skipping batch of size=1
+2019-05-10 12:59:55,631:INFO: Skipping batch of size=1
+2019-05-10 12:59:57,055:INFO: Skipping batch of size=1
+2019-05-10 12:59:57,981:INFO: Skipping batch of size=1
+2019-05-10 13:00:01,440:INFO: Skipping batch of size=1
+2019-05-10 13:00:03,576:INFO: Skipping batch of size=1
+2019-05-10 13:00:11,688:INFO: Skipping batch of size=1
+2019-05-10 13:00:12,693:INFO: Train Loss: 1112.507, Train Accuracy: 67.555% (144189/213440)
+2019-05-10 13:00:21,308:INFO: Skipping batch of size=1
+2019-05-10 13:00:25,733:INFO: Skipping batch of size=1
+2019-05-10 13:00:25,734:INFO: Skipping batch of size=1
+2019-05-10 13:00:32,191:INFO: Skipping batch of size=1
+2019-05-10 13:00:39,447:INFO: Val Loss : 699.502, Val Accuracy: 84.770%, Val F1: 0.067%
+2019-05-10 13:00:39,447:INFO: 
+Epoch: 1
+2019-05-10 13:00:53,701:INFO: Skipping batch of size=1
+2019-05-10 13:00:57,367:INFO: Skipping batch of size=1
+2019-05-10 13:00:57,933:INFO: Skipping batch of size=1
+2019-05-10 13:01:02,443:INFO: Skipping batch of size=1
+2019-05-10 13:01:06,052:INFO: Skipping batch of size=1
+2019-05-10 13:01:06,536:INFO: Skipping batch of size=1
+2019-05-10 13:01:15,934:INFO: Skipping batch of size=1
+2019-05-10 13:01:19,416:INFO: Skipping batch of size=1
+2019-05-10 13:01:19,891:INFO: Skipping batch of size=1
+2019-05-10 13:01:20,739:INFO: Skipping batch of size=1
+2019-05-10 13:01:29,481:INFO: Skipping batch of size=1
+2019-05-10 13:01:38,015:INFO: Skipping batch of size=1
+2019-05-10 13:01:41,970:INFO: Skipping batch of size=1
+2019-05-10 13:01:42,221:INFO: Skipping batch of size=1
+2019-05-10 13:01:53,737:INFO: Skipping batch of size=1
+2019-05-10 13:01:53,738:INFO: Skipping batch of size=1
+2019-05-10 13:01:55,924:INFO: Train Loss: 598.107, Train Accuracy: 84.644% (181259/214144)
+2019-05-10 13:02:08,640:INFO: Skipping batch of size=1
+2019-05-10 13:02:10,357:INFO: Skipping batch of size=1
+2019-05-10 13:02:15,195:INFO: Skipping batch of size=1
+2019-05-10 13:02:17,036:INFO: Skipping batch of size=1
+2019-05-10 13:02:21,881:INFO: Val Loss : 686.584, Val Accuracy: 84.715%, Val F1: 0.133%
+2019-05-10 13:02:21,882:INFO: 
+Epoch: 2
+2019-05-10 13:02:28,878:INFO: Skipping batch of size=1
+2019-05-10 13:02:32,475:INFO: Skipping batch of size=1
+2019-05-10 13:02:35,408:INFO: Skipping batch of size=1
+2019-05-10 13:02:35,841:INFO: Skipping batch of size=1
+2019-05-10 13:02:37,133:INFO: Skipping batch of size=1
+2019-05-10 13:02:41,455:INFO: Skipping batch of size=1
+2019-05-10 13:02:41,555:INFO: Skipping batch of size=1
+2019-05-10 13:02:59,198:INFO: Skipping batch of size=1
+2019-05-10 13:02:59,198:INFO: Skipping batch of size=1
+2019-05-10 13:03:05,438:INFO: Skipping batch of size=1
+2019-05-10 13:03:09,559:INFO: Skipping batch of size=1
+2019-05-10 13:03:11,275:INFO: Skipping batch of size=1
+2019-05-10 13:03:13,359:INFO: Skipping batch of size=1
+2019-05-10 13:08:37,894:INFO: GPU found.
+2019-05-10 13:08:40,009:INFO: Training Model
+2019-05-10 13:08:40,009:INFO: 
+Epoch: 0
+2019-05-10 13:08:50,216:INFO: Skipping batch of size=1
+2019-05-10 13:08:51,338:INFO: Skipping batch of size=1
+2019-05-10 13:08:56,403:INFO: Skipping batch of size=1
+2019-05-10 13:08:58,833:INFO: Skipping batch of size=1
+2019-05-10 13:09:00,402:INFO: Skipping batch of size=1
+2019-05-10 13:09:00,762:INFO: Skipping batch of size=1
+2019-05-10 13:09:14,110:INFO: Skipping batch of size=1
+2019-05-10 13:09:19,456:INFO: Skipping batch of size=1
+2019-05-10 13:09:20,675:INFO: Skipping batch of size=1
+2019-05-10 13:09:23,318:INFO: Skipping batch of size=1
+2019-05-10 13:09:34,494:INFO: Skipping batch of size=1
+2019-05-10 13:09:43,245:INFO: Skipping batch of size=1
+2019-05-10 13:09:45,163:INFO: Skipping batch of size=1
+2019-05-10 13:09:46,415:INFO: Skipping batch of size=1
+2019-05-10 13:09:53,751:INFO: Skipping batch of size=1
+2019-05-10 13:09:54,898:INFO: Skipping batch of size=1
+2019-05-10 13:09:57,094:INFO: Train Loss: 1098.433, Train Accuracy: 68.131% (146159/214528)
+2019-05-10 13:10:06,576:INFO: Skipping batch of size=1
+2019-05-10 13:10:07,356:INFO: Skipping batch of size=1
+2019-05-10 13:10:12,558:INFO: Skipping batch of size=1
+2019-05-10 13:10:15,083:INFO: Skipping batch of size=1
+2019-05-10 13:10:22,834:INFO: Val Loss : 755.893, Val Accuracy: 84.767%, Val F1: 0.000%
+2019-05-10 13:10:22,835:INFO: 
+Epoch: 1
+2019-05-10 13:10:35,001:INFO: Skipping batch of size=1
+2019-05-10 13:10:37,477:INFO: Skipping batch of size=1
+2019-05-10 13:10:40,000:INFO: Skipping batch of size=1
+2019-05-10 13:10:41,763:INFO: Skipping batch of size=1
+2019-05-10 13:10:45,505:INFO: Skipping batch of size=1
+2019-05-10 13:10:45,712:INFO: Skipping batch of size=1
+2019-05-10 13:10:48,700:INFO: Skipping batch of size=1
+2019-05-10 13:11:09,906:INFO: Skipping batch of size=1
+2019-05-10 13:11:11,524:INFO: Skipping batch of size=1
+2019-05-10 13:11:11,525:INFO: Skipping batch of size=1
+2019-05-10 13:11:16,663:INFO: Skipping batch of size=1
+2019-05-10 13:11:20,512:INFO: Skipping batch of size=1
+2019-05-10 13:11:25,378:INFO: Skipping batch of size=1
+2019-05-10 13:11:28,004:INFO: Skipping batch of size=1
+2019-05-10 13:11:30,191:INFO: Skipping batch of size=1
+2019-05-10 13:11:33,242:INFO: Skipping batch of size=1
+2019-05-10 13:11:40,124:INFO: Train Loss: 588.938, Train Accuracy: 84.692% (181416/214208)
+2019-05-10 13:11:49,134:INFO: Skipping batch of size=1
+2019-05-10 13:11:54,898:INFO: Skipping batch of size=1
+2019-05-10 13:11:54,899:INFO: Skipping batch of size=1
+2019-05-10 13:12:01,355:INFO: Skipping batch of size=1
+2019-05-10 13:12:05,608:INFO: Val Loss : 643.392, Val Accuracy: 84.765%, Val F1: 0.000%
+2019-05-10 13:12:05,609:INFO: 
+Epoch: 2
+2019-05-10 13:12:13,588:INFO: Skipping batch of size=1
+2019-05-10 13:12:19,227:INFO: Skipping batch of size=1
+2019-05-10 13:12:23,070:INFO: Skipping batch of size=1
+2019-05-10 13:12:26,659:INFO: Skipping batch of size=1
+2019-05-10 13:12:30,449:INFO: Skipping batch of size=1
+2019-05-10 13:12:36,302:INFO: Skipping batch of size=1
+2019-05-10 13:12:38,341:INFO: Skipping batch of size=1
+2019-05-10 13:12:45,697:INFO: Skipping batch of size=1
+2019-05-10 13:12:48,306:INFO: Skipping batch of size=1
+2019-05-10 13:12:49,601:INFO: Skipping batch of size=1
+2019-05-10 13:12:50,309:INFO: Skipping batch of size=1
+2019-05-10 13:12:52,426:INFO: Skipping batch of size=1
+2019-05-10 13:13:08,988:INFO: Skipping batch of size=1
+2019-05-10 13:13:10,711:INFO: Skipping batch of size=1
+2019-05-10 13:13:19,554:INFO: Skipping batch of size=1
+2019-05-10 13:13:20,004:INFO: Skipping batch of size=1
+2019-05-10 13:13:22,677:INFO: Train Loss: 577.746, Train Accuracy: 84.860% (182158/214656)
+2019-05-10 13:13:32,420:INFO: Skipping batch of size=1
+2019-05-10 13:13:42,166:INFO: Skipping batch of size=1
+2019-05-10 13:13:44,703:INFO: Skipping batch of size=1
+2019-05-10 13:13:47,940:INFO: Skipping batch of size=1
+2019-05-10 13:13:48,674:INFO: Val Loss : 648.102, Val Accuracy: 84.767%, Val F1: 0.000%
+2019-05-10 13:13:48,674:INFO: 
+Epoch: 3
+2019-05-10 13:13:58,891:INFO: Skipping batch of size=1
+2019-05-10 13:14:07,573:INFO: Skipping batch of size=1
+2019-05-10 13:14:08,365:INFO: Skipping batch of size=1
+2019-05-10 13:14:21,817:INFO: Skipping batch of size=1
+2019-05-10 13:14:25,273:INFO: Skipping batch of size=1
+2019-05-10 13:14:25,470:INFO: Skipping batch of size=1
+2019-05-10 13:14:25,695:INFO: Skipping batch of size=1
+2019-05-10 13:14:29,098:INFO: Skipping batch of size=1
+2019-05-10 13:14:32,336:INFO: Skipping batch of size=1
+2019-05-10 13:14:37,841:INFO: Skipping batch of size=1
+2019-05-10 13:14:48,211:INFO: Skipping batch of size=1
+2019-05-10 13:14:50,138:INFO: Skipping batch of size=1
+2019-05-10 13:14:53,076:INFO: Skipping batch of size=1
+2019-05-10 13:14:55,619:INFO: Skipping batch of size=1
+2019-05-10 13:15:03,391:INFO: Skipping batch of size=1
+2019-05-10 13:15:04,226:INFO: Skipping batch of size=1
+2019-05-10 13:15:05,869:INFO: Train Loss: 574.889, Train Accuracy: 84.910% (182048/214400)
+2019-05-10 13:15:14,069:INFO: Skipping batch of size=1
+2019-05-10 13:15:14,950:INFO: Skipping batch of size=1
+2019-05-10 13:15:15,467:INFO: Skipping batch of size=1
+2019-05-10 13:15:16,625:INFO: Skipping batch of size=1
+2019-05-10 13:15:32,839:INFO: Val Loss : 642.980, Val Accuracy: 84.767%, Val F1: 0.000%
+2019-05-10 13:15:32,839:INFO: 
+Epoch: 4
+2019-05-10 13:15:40,927:INFO: Skipping batch of size=1
+2019-05-10 13:15:41,597:INFO: Skipping batch of size=1
+2019-05-10 13:15:42,885:INFO: Skipping batch of size=1
+2019-05-10 13:15:45,212:INFO: Skipping batch of size=1
+2019-05-10 13:15:45,490:INFO: Skipping batch of size=1
+2019-05-10 13:15:47,795:INFO: Skipping batch of size=1
+2019-05-10 13:16:01,578:INFO: Skipping batch of size=1
+2019-05-10 13:16:15,914:INFO: Skipping batch of size=1
+2019-05-10 13:16:23,387:INFO: Skipping batch of size=1
+2019-05-10 13:16:29,085:INFO: Skipping batch of size=1
+2019-05-10 13:16:29,800:INFO: Skipping batch of size=1
+2019-05-10 13:16:29,801:INFO: Skipping batch of size=1
+2019-05-10 13:16:30,818:INFO: Skipping batch of size=1
+2019-05-10 13:16:38,453:INFO: Skipping batch of size=1
+2019-05-10 13:16:43,055:INFO: Skipping batch of size=1
+2019-05-10 13:16:44,729:INFO: Skipping batch of size=1
+2019-05-10 13:16:50,631:INFO: Train Loss: 576.266, Train Accuracy: 84.892% (182444/214912)
+2019-05-10 13:18:56,155:INFO: GPU found.
+2019-05-10 13:18:58,301:INFO: Training Model
+2019-05-10 13:18:58,301:INFO: 
+Epoch: 0
+2019-05-10 13:21:48,485:INFO: GPU found.
+2019-05-10 13:21:50,688:INFO: Training Model
+2019-05-10 13:21:50,689:INFO: 
+Epoch: 0
+2019-05-10 13:33:27,667:INFO: GPU found.
+2019-05-10 13:33:29,874:INFO: Training Model
+2019-05-10 13:33:29,875:INFO: 
+Epoch: 0
+2019-05-10 13:39:22,007:INFO: GPU found.
+2019-05-10 13:39:24,175:INFO: Training Model
+2019-05-10 13:39:24,176:INFO: 
+Epoch: 0
+2019-05-10 13:43:13,875:INFO: GPU found.
+2019-05-10 13:43:15,991:INFO: Training Model
+2019-05-10 13:43:15,991:INFO: 
+Epoch: 0
+2019-05-10 13:43:44,686:INFO: GPU found.
+2019-05-10 13:43:46,790:INFO: Training Model
+2019-05-10 13:43:46,790:INFO: 
+Epoch: 0
+2019-05-10 13:43:54,005:INFO: Skipping batch of size=1
+2019-05-10 13:43:57,995:INFO: Skipping batch of size=1
+2019-05-10 13:43:57,995:INFO: Skipping batch of size=1
+2019-05-10 13:44:00,096:INFO: Skipping batch of size=1
+2019-05-10 13:44:14,336:INFO: Skipping batch of size=1
+2019-05-10 13:44:16,717:INFO: Skipping batch of size=1
+2019-05-10 13:44:19,663:INFO: Skipping batch of size=1
+2019-05-10 13:44:25,688:INFO: Skipping batch of size=1
+2019-05-10 13:44:26,042:INFO: Skipping batch of size=1
+2019-05-10 13:44:28,996:INFO: Skipping batch of size=1
+2019-05-10 13:44:35,443:INFO: Skipping batch of size=1
+2019-05-10 13:44:38,806:INFO: Skipping batch of size=1
+2019-05-10 13:44:40,036:INFO: Skipping batch of size=1
+2019-05-10 13:44:46,631:INFO: Skipping batch of size=1
+2019-05-10 13:44:52,596:INFO: Skipping batch of size=1
+2019-05-10 13:44:56,478:INFO: Skipping batch of size=1
+2019-05-10 13:45:02,350:INFO: Train Loss: 1053.737, Train Accuracy: 69.543% (148209/213120)
+2019-05-10 13:45:19,157:INFO: Skipping batch of size=1
+2019-05-10 13:45:21,269:INFO: Skipping batch of size=1
+2019-05-10 13:45:21,385:INFO: Skipping batch of size=1
+2019-05-10 13:45:28,123:INFO: Skipping batch of size=1
+2019-05-10 13:45:29,405:INFO: Val Loss : 658.048, Val Accuracy: 84.729%, Val F1: 0.033%
+2019-05-10 13:45:29,406:INFO: 
+Epoch: 1
+2019-05-10 13:45:41,038:INFO: Skipping batch of size=1
+2019-05-10 13:45:46,924:INFO: Skipping batch of size=1
+2019-05-10 13:45:46,925:INFO: Skipping batch of size=1
+2019-05-10 13:45:53,316:INFO: Skipping batch of size=1
+2019-05-10 13:45:53,856:INFO: Skipping batch of size=1
+2019-05-10 13:45:54,942:INFO: Skipping batch of size=1
+2019-05-10 13:46:02,198:INFO: Skipping batch of size=1
+2019-05-10 13:46:05,932:INFO: Skipping batch of size=1
+2019-05-10 13:46:07,634:INFO: Skipping batch of size=1
+2019-05-10 13:46:10,063:INFO: Skipping batch of size=1
+2019-05-10 13:46:18,046:INFO: Skipping batch of size=1
+2019-05-10 13:46:26,315:INFO: Skipping batch of size=1
+2019-05-10 13:46:33,041:INFO: Skipping batch of size=1
+2019-05-10 13:46:35,705:INFO: Skipping batch of size=1
+2019-05-10 13:46:36,025:INFO: Skipping batch of size=1
+2019-05-10 13:46:42,536:INFO: Skipping batch of size=1
+2019-05-10 13:46:45,685:INFO: Train Loss: 578.035, Train Accuracy: 84.774% (181756/214400)
+2019-05-10 13:46:53,463:INFO: Skipping batch of size=1
+2019-05-10 13:46:53,865:INFO: Skipping batch of size=1
+2019-05-10 13:46:58,412:INFO: Skipping batch of size=1
+2019-05-10 13:47:04,812:INFO: Skipping batch of size=1
+2019-05-10 13:47:11,580:INFO: Val Loss : 642.824, Val Accuracy: 84.540%, Val F1: 0.450%
+2019-05-10 13:47:11,581:INFO: 
+Epoch: 2
+2019-05-10 13:47:22,272:INFO: Skipping batch of size=1
+2019-05-10 13:47:27,434:INFO: Skipping batch of size=1
+2019-05-10 13:47:31,883:INFO: Skipping batch of size=1
+2019-05-10 13:47:35,114:INFO: Skipping batch of size=1
+2019-05-10 13:47:40,962:INFO: Skipping batch of size=1
+2019-05-10 13:47:41,884:INFO: Skipping batch of size=1
+2019-05-10 13:47:44,822:INFO: Skipping batch of size=1
+2019-05-10 13:47:49,377:INFO: Skipping batch of size=1
+2019-05-10 13:47:55,078:INFO: Skipping batch of size=1
+2019-05-10 13:47:55,310:INFO: Skipping batch of size=1
+2019-05-10 13:47:59,784:INFO: Skipping batch of size=1
+2019-05-10 13:48:01,902:INFO: Skipping batch of size=1
+2019-05-10 13:48:09,832:INFO: Skipping batch of size=1
+2019-05-10 13:48:14,185:INFO: Skipping batch of size=1
+2019-05-10 13:48:18,603:INFO: Skipping batch of size=1
+2019-05-10 13:48:19,802:INFO: Skipping batch of size=1
+2019-05-10 13:48:29,221:INFO: Train Loss: 568.558, Train Accuracy: 84.961% (182537/214848)
+2019-05-10 13:48:39,192:INFO: Skipping batch of size=1
+2019-05-10 13:48:42,088:INFO: Skipping batch of size=1
+2019-05-10 13:48:42,089:INFO: Skipping batch of size=1
+2019-05-10 13:48:55,575:INFO: Skipping batch of size=1
+2019-05-10 13:48:55,578:INFO: Val Loss : 643.747, Val Accuracy: 84.761%, Val F1: 0.000%
+2019-05-10 13:48:55,887:INFO: Saved model at saves\LASERNERBase.pt
+2019-05-10 13:55:34,360:INFO: GPU found.
+2019-05-10 13:55:36,516:INFO: Training Model
+2019-05-10 13:55:36,516:INFO: 
+Epoch: 0
+2019-05-10 13:56:31,414:INFO: GPU found.
+2019-05-10 13:56:33,535:INFO: Training Model
+2019-05-10 13:56:33,535:INFO: 
+Epoch: 0
+2019-05-10 13:57:12,159:INFO: GPU found.
+2019-05-10 13:57:14,286:INFO: Training Model
+2019-05-10 13:57:14,286:INFO: 
+Epoch: 0
+2019-05-10 13:57:20,569:INFO: Skipping batch of size=1
+2019-05-10 13:57:22,789:INFO: Skipping batch of size=1
+2019-05-10 13:57:27,019:INFO: Skipping batch of size=1
+2019-05-10 13:57:31,750:INFO: Skipping batch of size=1
+2019-05-10 13:57:33,003:INFO: Skipping batch of size=1
+2019-05-10 13:57:36,274:INFO: Skipping batch of size=1
+2019-05-10 13:57:36,275:INFO: Skipping batch of size=1
+2019-05-10 13:57:38,813:INFO: Skipping batch of size=1
+2019-05-10 13:57:38,813:INFO: Skipping batch of size=1
+2019-05-10 13:57:38,814:INFO: Skipping batch of size=1
+2019-05-10 13:57:38,815:INFO: Skipping batch of size=1
+2019-05-10 13:57:40,272:INFO: Skipping batch of size=1
+2019-05-10 13:57:40,767:INFO: Skipping batch of size=1
+2019-05-10 13:57:42,499:INFO: Skipping batch of size=1
+2019-05-10 13:57:51,970:INFO: Skipping batch of size=1
+2019-05-10 13:57:56,046:INFO: Skipping batch of size=1
+2019-05-10 13:57:56,115:INFO: Skipping batch of size=1
+2019-05-10 13:57:58,032:INFO: Skipping batch of size=1
+2019-05-10 13:58:04,690:INFO: Skipping batch of size=1
+2019-05-10 13:58:09,174:INFO: Skipping batch of size=1
+2019-05-10 13:58:09,174:INFO: Skipping batch of size=1
+2019-05-10 13:58:10,976:INFO: Skipping batch of size=1
+2019-05-10 13:58:14,167:INFO: Skipping batch of size=1
+2019-05-10 13:58:16,038:INFO: Skipping batch of size=1
+2019-05-10 13:58:16,472:INFO: Skipping batch of size=1
+2019-05-10 13:58:22,085:INFO: Skipping batch of size=1
+2019-05-10 13:58:27,004:INFO: Skipping batch of size=1
+2019-05-10 13:58:28,370:INFO: Skipping batch of size=1
+2019-05-10 13:58:31,233:INFO: Skipping batch of size=1
+2019-05-10 13:58:36,476:INFO: Skipping batch of size=1
+2019-05-10 13:58:39,142:INFO: Skipping batch of size=1
+2019-05-10 13:58:40,592:INFO: Skipping batch of size=1
+2019-05-10 13:58:41,209:INFO: Skipping batch of size=1
+2019-05-10 13:58:42,882:INFO: Skipping batch of size=1
+2019-05-10 13:58:44,475:INFO: Train Loss: 435.753, Train Accuracy: 74.524% (157203/210944)
+2019-05-10 13:58:48,639:INFO: Skipping batch of size=1
+2019-05-10 13:58:49,574:INFO: Skipping batch of size=1
+2019-05-10 13:58:55,578:INFO: Skipping batch of size=1
+2019-05-10 13:58:57,474:INFO: Skipping batch of size=1
+2019-05-10 13:59:05,668:INFO: Skipping batch of size=1
+2019-05-10 13:59:06,263:INFO: Skipping batch of size=1
+2019-05-10 13:59:10,628:INFO: Skipping batch of size=1
+2019-05-10 13:59:10,631:INFO: Val Loss : 329.543, Val Accuracy: 85.378%, Val F1: 11.451%
+2019-05-10 13:59:10,631:INFO: 
+Epoch: 1
+2019-05-10 13:59:19,086:INFO: Skipping batch of size=1
+2019-05-10 13:59:21,545:INFO: Skipping batch of size=1
+2019-05-10 13:59:22,140:INFO: Skipping batch of size=1
+2019-05-10 13:59:25,920:INFO: Skipping batch of size=1
+2019-05-10 13:59:29,810:INFO: Skipping batch of size=1
+2019-05-10 13:59:33,661:INFO: Skipping batch of size=1
+2019-05-10 13:59:35,990:INFO: Skipping batch of size=1
+2019-05-10 13:59:39,056:INFO: Skipping batch of size=1
+2019-05-10 13:59:40,109:INFO: Skipping batch of size=1
+2019-05-10 13:59:46,061:INFO: Skipping batch of size=1
+2019-05-10 13:59:47,239:INFO: Skipping batch of size=1
+2019-05-10 13:59:48,076:INFO: Skipping batch of size=1
+2019-05-10 13:59:50,969:INFO: Skipping batch of size=1
+2019-05-10 13:59:53,550:INFO: Skipping batch of size=1
+2019-05-10 13:59:55,259:INFO: Skipping batch of size=1
+2019-05-10 13:59:57,591:INFO: Skipping batch of size=1
+2019-05-10 14:00:00,246:INFO: Skipping batch of size=1
+2019-05-10 14:00:03,023:INFO: Skipping batch of size=1
+2019-05-10 14:00:03,023:INFO: Skipping batch of size=1
+2019-05-10 14:00:04,664:INFO: Skipping batch of size=1
+2019-05-10 14:00:10,949:INFO: Skipping batch of size=1
+2019-05-10 14:00:11,602:INFO: Skipping batch of size=1
+2019-05-10 14:00:13,422:INFO: Skipping batch of size=1
+2019-05-10 14:00:17,123:INFO: Skipping batch of size=1
+2019-05-10 14:00:19,442:INFO: Skipping batch of size=1
+2019-05-10 14:00:20,107:INFO: Skipping batch of size=1
+2019-05-10 14:00:23,919:INFO: Skipping batch of size=1
+2019-05-10 14:00:31,050:INFO: Skipping batch of size=1
+2019-05-10 14:00:31,050:INFO: Skipping batch of size=1
+2019-05-10 14:00:32,123:INFO: Skipping batch of size=1
+2019-05-10 14:00:34,592:INFO: Skipping batch of size=1
+2019-05-10 14:00:42,236:INFO: Train Loss: 267.802, Train Accuracy: 85.574% (180650/211104)
+2019-05-10 14:00:47,832:INFO: Skipping batch of size=1
+2019-05-10 14:00:51,546:INFO: Skipping batch of size=1
+2019-05-10 14:00:54,813:INFO: Skipping batch of size=1
+2019-05-10 14:00:57,840:INFO: Skipping batch of size=1
+2019-05-10 14:01:01,543:INFO: Skipping batch of size=1
+2019-05-10 14:01:05,948:INFO: Skipping batch of size=1
+2019-05-10 14:01:09,930:INFO: Skipping batch of size=1
+2019-05-10 14:01:10,129:INFO: Val Loss : 304.287, Val Accuracy: 85.707%, Val F1: 12.050%
+2019-05-10 14:01:10,130:INFO: 
+Epoch: 2
+2019-05-10 14:01:17,195:INFO: Skipping batch of size=1
+2019-05-10 14:01:21,048:INFO: Skipping batch of size=1
+2019-05-10 14:01:27,296:INFO: Skipping batch of size=1
+2019-05-10 14:01:29,003:INFO: Skipping batch of size=1
+2019-05-10 14:01:30,235:INFO: Skipping batch of size=1
+2019-05-10 14:01:30,781:INFO: Skipping batch of size=1
+2019-05-10 14:01:32,924:INFO: Skipping batch of size=1
+2019-05-10 14:01:34,341:INFO: Skipping batch of size=1
+2019-05-10 14:01:37,960:INFO: Skipping batch of size=1
+2019-05-10 14:01:37,961:INFO: Skipping batch of size=1
+2019-05-10 14:01:39,606:INFO: Skipping batch of size=1
+2019-05-10 14:01:39,670:INFO: Skipping batch of size=1
+2019-05-10 14:01:39,671:INFO: Skipping batch of size=1
+2019-05-10 14:01:42,706:INFO: Skipping batch of size=1
+2019-05-10 14:01:44,409:INFO: Skipping batch of size=1
+2019-05-10 14:01:54,310:INFO: Skipping batch of size=1
+2019-05-10 14:01:58,107:INFO: Skipping batch of size=1
+2019-05-10 14:01:59,550:INFO: Skipping batch of size=1
+2019-05-10 14:02:01,861:INFO: Skipping batch of size=1
+2019-05-10 14:02:02,584:INFO: Skipping batch of size=1
+2019-05-10 14:02:04,072:INFO: Skipping batch of size=1
+2019-05-10 14:02:05,993:INFO: Skipping batch of size=1
+2019-05-10 14:02:11,463:INFO: Skipping batch of size=1
+2019-05-10 14:02:12,940:INFO: Skipping batch of size=1
+2019-05-10 14:02:13,163:INFO: Skipping batch of size=1
+2019-05-10 14:02:17,170:INFO: Skipping batch of size=1
+2019-05-10 14:02:18,987:INFO: Skipping batch of size=1
+2019-05-10 14:02:20,845:INFO: Skipping batch of size=1
+2019-05-10 14:02:25,151:INFO: Skipping batch of size=1
+2019-05-10 14:02:29,283:INFO: Skipping batch of size=1
+2019-05-10 14:02:32,368:INFO: Skipping batch of size=1
+2019-05-10 14:02:32,369:INFO: Skipping batch of size=1
+2019-05-10 14:02:40,393:INFO: Skipping batch of size=1
+2019-05-10 14:02:41,007:INFO: Train Loss: 262.876, Train Accuracy: 85.746% (181041/211136)
+2019-05-10 14:02:45,551:INFO: Skipping batch of size=1
+2019-05-10 14:02:47,639:INFO: Skipping batch of size=1
+2019-05-10 14:02:52,256:INFO: Skipping batch of size=1
+2019-05-10 14:02:53,263:INFO: Skipping batch of size=1
+2019-05-10 14:02:53,264:INFO: Skipping batch of size=1
+2019-05-10 14:03:00,519:INFO: Skipping batch of size=1
+2019-05-10 14:03:04,572:INFO: Skipping batch of size=1
+2019-05-10 14:03:06,835:INFO: Val Loss : 304.899, Val Accuracy: 85.325%, Val F1: 11.323%
+2019-05-10 14:03:07,155:INFO: Saved model at saves\LASERNERBase.pt
+2019-05-10 16:29:00,134:INFO: GPU found.
+2019-05-10 16:29:04,656:INFO: Training Model
+2019-05-10 16:29:04,658:INFO: 
+Epoch: 0
+2019-05-10 16:30:04,141:INFO: GPU found.
+2019-05-10 16:30:06,309:INFO: Training Model
+2019-05-10 16:30:06,310:INFO: 
+Epoch: 0
+2019-05-10 16:30:24,846:INFO: Skipping batch of size=1
+2019-05-10 16:30:44,852:INFO: Skipping batch of size=1
+2019-05-10 16:30:50,097:INFO: Skipping batch of size=1
+2019-05-10 16:31:26,339:INFO: Skipping batch of size=1
+2019-05-10 16:31:36,019:INFO: Train Loss: 469.253, Train Accuracy: 75.186% (158792/211200)
+2019-05-10 16:32:02,532:INFO: Val Loss : 341.733, Val Accuracy: 84.956%, Val F1: 15.618%
+2019-05-10 16:32:02,532:INFO: 
+Epoch: 1
+2019-05-10 16:32:10,524:INFO: Skipping batch of size=1
+2019-05-10 16:32:41,519:INFO: Skipping batch of size=1
+2019-05-10 16:32:54,488:INFO: Skipping batch of size=1
+2019-05-10 16:33:22,894:INFO: Skipping batch of size=1
+2019-05-10 16:33:31,913:INFO: Train Loss: 289.944, Train Accuracy: 85.527% (179977/210432)
+2019-05-10 16:33:58,391:INFO: Val Loss : 321.700, Val Accuracy: 85.384%, Val F1: 14.960%
+2019-05-10 16:33:58,720:INFO: Saved model at saves\LASERNERBase.pt
+2019-05-10 16:37:20,859:INFO: GPU found.
+2019-05-10 16:37:22,992:INFO: Training Model
+2019-05-10 16:37:22,992:INFO: 
+Epoch: 0
+2019-05-10 16:38:33,430:INFO: GPU found.
+2019-05-10 16:38:35,572:INFO: Training Model
+2019-05-10 16:38:35,572:INFO: 
+Epoch: 0
+2019-05-10 16:39:39,145:INFO: GPU found.
+2019-05-10 16:39:41,290:INFO: Training Model
+2019-05-10 16:39:41,290:INFO: 
+Epoch: 0
+2019-05-10 16:40:48,330:INFO: GPU found.
+2019-05-10 16:40:50,487:INFO: Training Model
+2019-05-10 16:40:50,487:INFO: 
+Epoch: 0
+2019-05-10 16:41:06,853:INFO: Skipping batch of size=1
+2019-05-10 16:41:36,506:INFO: Skipping batch of size=1
+2019-05-10 16:42:03,237:INFO: Train Loss: 1130.158, Train Accuracy: 69.237% (147956/213696)
+2019-05-10 16:42:29,310:INFO: Val Loss : 681.950, Val Accuracy: 85.948%, Val F1: 12.927%
+2019-05-10 16:42:29,311:INFO: 
+Epoch: 1
+2019-05-10 16:43:05,510:INFO: Skipping batch of size=1
+2019-05-10 16:43:32,490:INFO: Skipping batch of size=1
+2019-05-10 16:43:41,882:INFO: Train Loss: 602.863, Train Accuracy: 85.596% (183518/214400)
+2019-05-10 16:44:07,781:INFO: Val Loss : 705.927, Val Accuracy: 86.583%, Val F1: 21.123%
+2019-05-10 16:44:07,782:INFO: 
+Epoch: 2
+2019-05-10 16:44:36,857:INFO: Skipping batch of size=1
+2019-05-10 16:44:47,438:INFO: Skipping batch of size=1
+2019-05-10 16:45:19,748:INFO: Train Loss: 585.082, Train Accuracy: 85.841% (183824/214144)
+2019-05-10 16:45:45,241:INFO: Val Loss : 696.652, Val Accuracy: 86.609%, Val F1: 21.745%
+2019-05-10 16:45:45,242:INFO: 
+Epoch: 3
+2019-05-10 16:47:24,247:INFO: GPU found.
+2019-05-10 16:47:26,386:INFO: Training Model
+2019-05-10 16:47:26,386:INFO: 
+Epoch: 0
+2019-05-10 16:51:30,975:INFO: GPU found.
+2019-05-10 16:51:33,162:INFO: Training Model
+2019-05-10 16:51:33,163:INFO: 
+Epoch: 0
+2019-05-10 16:53:12,452:INFO: GPU found.
+2019-05-10 16:53:14,579:INFO: Training Model
+2019-05-10 16:53:14,580:INFO: 
+Epoch: 0
+2019-05-10 16:54:08,446:INFO: Skipping batch of size=1
+2019-05-10 16:54:43,333:INFO: Skipping batch of size=1
+2019-05-10 16:55:01,312:INFO: Train Loss: 1111.578, Train Accuracy: 69.785% (149351/214016)
+2019-05-10 16:57:50,334:INFO: Val Loss : 711.129, Val Accuracy: 85.626%, Val F1: 11.876%
+2019-05-10 16:57:50,335:INFO: 
+Epoch: 1
+2019-05-10 16:58:00,051:INFO: Skipping batch of size=1
+2019-05-10 16:58:57,791:INFO: Skipping batch of size=1
+2019-05-10 16:59:12,337:INFO: Train Loss: 610.518, Train Accuracy: 85.218% (182763/214464)
+2019-05-10 16:59:41,722:INFO: Val Loss : 796.014, Val Accuracy: 85.817%, Val F1: 13.370%
+2019-05-10 16:59:41,724:INFO: 
+Epoch: 2
+2019-05-10 17:00:16,800:INFO: Skipping batch of size=1
+2019-05-10 17:00:24,915:INFO: Skipping batch of size=1
+2019-05-10 17:01:03,363:INFO: Train Loss: 597.986, Train Accuracy: 85.307% (182080/213440)
+2019-05-10 17:01:32,070:INFO: Val Loss : 722.318, Val Accuracy: 85.803%, Val F1: 12.958%
+2019-05-10 17:01:32,071:INFO: 
+Epoch: 3
+2019-05-10 17:01:46,187:INFO: Skipping batch of size=1
+2019-05-10 17:02:28,876:INFO: Skipping batch of size=1
+2019-05-10 17:02:53,268:INFO: Train Loss: 597.662, Train Accuracy: 85.304% (181746/213056)
+2019-05-10 17:03:21,995:INFO: Val Loss : 745.439, Val Accuracy: 85.734%, Val F1: 12.622%
+2019-05-10 17:03:21,997:INFO: 
+Epoch: 4
+2019-05-10 17:03:46,462:INFO: Skipping batch of size=1
+2019-05-10 17:04:27,410:INFO: Skipping batch of size=1
+2019-05-10 17:04:43,717:INFO: Train Loss: 596.524, Train Accuracy: 85.383% (182623/213888)
+2019-05-10 17:05:12,613:INFO: Val Loss : 778.764, Val Accuracy: 85.867%, Val F1: 13.767%
+2019-05-10 17:05:12,614:INFO: 
+Epoch: 5
+2019-05-10 17:05:33,398:INFO: Skipping batch of size=1
+2019-05-10 17:05:55,600:INFO: Skipping batch of size=1
+2019-05-10 17:06:32,646:INFO: Train Loss: 597.765, Train Accuracy: 85.402% (182828/214080)
+2019-05-10 17:07:00,782:INFO: Val Loss : 728.097, Val Accuracy: 85.737%, Val F1: 12.332%
+2019-05-10 17:07:00,784:INFO: 
+Epoch: 6
+2019-05-10 17:07:14,205:INFO: Skipping batch of size=1
+2019-05-10 17:07:57,077:INFO: Skipping batch of size=1
+2019-05-10 17:08:18,953:INFO: Train Loss: 597.465, Train Accuracy: 85.322% (182056/213376)
+2019-05-10 17:08:46,452:INFO: Val Loss : 773.352, Val Accuracy: 85.810%, Val F1: 13.473%
+2019-05-10 17:08:46,453:INFO: 
+Epoch: 7
+2019-05-10 17:08:58,973:INFO: Skipping batch of size=1
+2019-05-10 17:09:55,735:INFO: Skipping batch of size=1
+2019-05-10 17:10:05,034:INFO: Train Loss: 599.006, Train Accuracy: 85.404% (183379/214720)
+2019-05-10 17:10:32,707:INFO: Val Loss : 761.907, Val Accuracy: 85.780%, Val F1: 12.860%
+2019-05-10 17:10:32,708:INFO: 
+Epoch: 8
+2019-05-10 17:11:12,522:INFO: Skipping batch of size=1
+2019-05-10 17:11:40,945:INFO: Skipping batch of size=1
+2019-05-10 17:11:51,437:INFO: Train Loss: 597.168, Train Accuracy: 85.333% (182081/213376)
+2019-05-10 17:12:19,573:INFO: Val Loss : 759.393, Val Accuracy: 85.853%, Val F1: 13.337%
+2019-05-10 17:12:19,575:INFO: 
+Epoch: 9
+2019-05-10 17:12:33,232:INFO: Skipping batch of size=1
+2019-05-10 17:13:26,657:INFO: Skipping batch of size=1
+2019-05-10 17:13:37,775:INFO: Train Loss: 595.694, Train Accuracy: 85.304% (181582/212864)
+2019-05-10 17:14:05,381:INFO: Val Loss : 745.014, Val Accuracy: 85.766%, Val F1: 12.452%
+2019-05-10 17:14:05,383:INFO: 
+Epoch: 10
+2019-05-10 17:14:27,839:INFO: Skipping batch of size=1
+2019-05-10 17:15:04,882:INFO: Skipping batch of size=1
+2019-05-10 17:15:22,862:INFO: Train Loss: 595.728, Train Accuracy: 85.296% (181456/212736)
+2019-05-10 17:15:50,182:INFO: Val Loss : 732.821, Val Accuracy: 85.769%, Val F1: 12.833%
+2019-05-10 17:15:50,183:INFO: 
+Epoch: 11
+2019-05-10 17:16:15,561:INFO: Skipping batch of size=1
+2019-05-10 17:16:59,859:INFO: Skipping batch of size=1
+2019-05-10 17:17:08,014:INFO: Train Loss: 596.060, Train Accuracy: 85.346% (181890/213120)
+2019-05-10 17:17:35,415:INFO: Val Loss : 743.257, Val Accuracy: 85.750%, Val F1: 12.799%
+2019-05-10 17:17:35,416:INFO: 
+Epoch: 12
+2019-05-10 17:17:58,711:INFO: Skipping batch of size=1
+2019-05-10 17:18:28,263:INFO: Skipping batch of size=1
+2019-05-10 17:18:53,142:INFO: Train Loss: 596.970, Train Accuracy: 85.373% (182547/213824)
+2019-05-10 17:19:20,847:INFO: Val Loss : 739.654, Val Accuracy: 85.725%, Val F1: 12.297%
+2019-05-10 17:19:20,848:INFO: 
+Epoch: 13
+2019-05-10 17:19:38,676:INFO: Skipping batch of size=1
+2019-05-10 17:20:32,142:INFO: Skipping batch of size=1
+2019-05-10 17:20:38,532:INFO: Train Loss: 598.358, Train Accuracy: 85.375% (182881/214208)
+2019-05-10 17:21:06,033:INFO: Val Loss : 744.113, Val Accuracy: 85.739%, Val F1: 12.339%
+2019-05-10 17:21:06,034:INFO: 
+Epoch: 14
+2019-05-10 17:21:43,920:INFO: Skipping batch of size=1
+2019-05-10 17:22:07,142:INFO: Skipping batch of size=1
+2019-05-10 17:22:24,325:INFO: Train Loss: 596.730, Train Accuracy: 85.305% (181965/213312)
+2019-05-10 17:22:51,970:INFO: Val Loss : 739.966, Val Accuracy: 85.713%, Val F1: 12.343%
+2019-05-10 17:22:51,972:INFO: 
+Epoch: 15
+2019-05-10 17:23:22,169:INFO: Skipping batch of size=1
+2019-05-10 17:23:37,998:INFO: Skipping batch of size=1
+2019-05-10 17:24:09,480:INFO: Train Loss: 597.008, Train Accuracy: 85.259% (181376/212736)
+2019-05-10 17:24:36,816:INFO: Val Loss : 717.083, Val Accuracy: 85.695%, Val F1: 12.050%
+2019-05-10 17:24:36,817:INFO: 
+Epoch: 16
+2019-05-10 17:25:12,981:INFO: Skipping batch of size=1
+2019-05-10 17:25:23,410:INFO: Skipping batch of size=1
+2019-05-10 17:25:54,405:INFO: Train Loss: 596.015, Train Accuracy: 85.271% (181402/212736)
+2019-05-10 17:26:21,870:INFO: Val Loss : 741.808, Val Accuracy: 85.787%, Val F1: 12.896%
+2019-05-10 17:26:21,871:INFO: 
+Epoch: 17
+2019-05-10 17:26:57,926:INFO: Skipping batch of size=1
+2019-05-10 17:27:11,352:INFO: Skipping batch of size=1
+2019-05-10 17:27:39,304:INFO: Train Loss: 597.093, Train Accuracy: 85.326% (181846/213120)
+2019-05-10 17:28:06,849:INFO: Val Loss : 741.338, Val Accuracy: 85.798%, Val F1: 12.968%
+2019-05-10 17:28:06,850:INFO: 
+Epoch: 18
+2019-05-10 17:28:37,129:INFO: Skipping batch of size=1
+2019-05-10 17:29:19,077:INFO: Skipping batch of size=1
+2019-05-10 17:29:25,153:INFO: Train Loss: 596.745, Train Accuracy: 85.424% (182984/214208)
+2019-05-10 17:29:52,684:INFO: Val Loss : 756.889, Val Accuracy: 85.824%, Val F1: 13.244%
+2019-05-10 17:29:52,685:INFO: 
+Epoch: 19
+2019-05-10 17:30:30,313:INFO: Skipping batch of size=1
+2019-05-10 17:30:45,792:INFO: Skipping batch of size=1
+2019-05-10 17:31:10,584:INFO: Train Loss: 596.850, Train Accuracy: 85.388% (182798/214080)
+2019-05-10 17:31:38,034:INFO: Val Loss : 772.043, Val Accuracy: 85.762%, Val F1: 12.990%
+2019-05-10 17:31:38,036:INFO: 
+Epoch: 20
+2019-05-10 17:32:13,164:INFO: Skipping batch of size=1
+2019-05-10 17:32:48,984:INFO: Skipping batch of size=1
+2019-05-10 17:32:56,072:INFO: Train Loss: 597.809, Train Accuracy: 85.440% (183402/214656)
+2019-05-10 17:33:23,436:INFO: Val Loss : 755.025, Val Accuracy: 85.704%, Val F1: 12.554%
+2019-05-10 17:33:23,437:INFO: 
+Epoch: 21
+2019-05-10 17:33:40,816:INFO: Skipping batch of size=1
+2019-05-10 17:34:07,703:INFO: Skipping batch of size=1
+2019-05-10 17:34:41,138:INFO: Train Loss: 597.980, Train Accuracy: 85.317% (181992/213312)
+2019-05-10 17:35:08,750:INFO: Val Loss : 745.453, Val Accuracy: 85.844%, Val F1: 13.511%
+2019-05-10 17:35:08,752:INFO: 
+Epoch: 22
+2019-05-10 17:35:28,085:INFO: Skipping batch of size=1
+2019-05-10 17:35:52,495:INFO: Skipping batch of size=1
+2019-05-10 17:36:26,694:INFO: Train Loss: 597.043, Train Accuracy: 85.403% (183049/214336)
+2019-05-10 17:36:54,107:INFO: Val Loss : 721.361, Val Accuracy: 85.688%, Val F1: 12.026%
+2019-05-10 17:36:54,108:INFO: 
+Epoch: 23
+2019-05-10 17:37:13,299:INFO: Skipping batch of size=1
+2019-05-10 17:37:53,132:INFO: Skipping batch of size=1
+2019-05-10 17:38:11,841:INFO: Train Loss: 597.388, Train Accuracy: 85.393% (183192/214528)
+2019-05-10 17:38:39,171:INFO: Val Loss : 739.511, Val Accuracy: 85.748%, Val F1: 12.660%
+2019-05-10 17:38:39,172:INFO: 
+Epoch: 24
+2019-05-10 17:39:12,613:INFO: Skipping batch of size=1
+2019-05-10 17:39:51,208:INFO: Skipping batch of size=1
+2019-05-10 17:39:56,962:INFO: Train Loss: 597.084, Train Accuracy: 85.348% (182275/213568)
+2019-05-10 17:40:24,204:INFO: Val Loss : 748.051, Val Accuracy: 85.718%, Val F1: 12.632%
+2019-05-11 10:02:46,022:INFO: GPU found.
+2019-05-11 10:02:48,206:INFO: Training Model
+2019-05-11 10:02:48,206:INFO: 
+Epoch: 0
+2019-05-11 10:03:09,179:INFO: Skipping batch of size=1
+2019-05-11 10:03:24,668:INFO: Skipping batch of size=1
+2019-05-11 10:03:57,168:INFO: Train Loss: 1152.979, Train Accuracy: 69.131% (148262/214464)
+2019-05-11 10:04:23,526:INFO: Val Loss : 801.155, Val Accuracy: 85.303%, Val F1: 9.324%
+2019-05-11 10:04:23,527:INFO: 
+Epoch: 1
+2019-05-11 10:04:37,613:INFO: Skipping batch of size=1
+2019-05-11 10:05:24,226:INFO: Skipping batch of size=1
+2019-05-11 10:05:33,575:INFO: Train Loss: 638.185, Train Accuracy: 84.840% (182277/214848)
+2019-05-11 10:05:59,775:INFO: Val Loss : 767.233, Val Accuracy: 85.324%, Val F1: 9.266%
+2019-05-11 10:06:00,096:INFO: Saved model at saves\LASERNERBase.pt
+2019-05-11 10:08:04,490:INFO: GPU found.
+2019-05-11 10:08:06,597:INFO: Training Model
+2019-05-11 10:08:06,597:INFO: 
+Epoch: 0
+2019-05-11 10:08:25,178:INFO: Skipping batch of size=1
+2019-05-11 10:08:47,817:INFO: Skipping batch of size=1
+2019-05-11 10:09:14,826:INFO: Train Loss: 1094.313, Train Accuracy: 71.280% (152596/214080)
+2019-05-11 10:09:40,722:INFO: Val Loss : 793.395, Val Accuracy: 85.459%, Val F1: 10.145%
+2019-05-11 10:09:40,723:INFO: 
+Epoch: 1
+2019-05-11 10:09:47,956:INFO: Skipping batch of size=1
+2019-05-11 10:10:32,166:INFO: Skipping batch of size=1
+2019-05-11 10:10:49,757:INFO: Train Loss: 605.007, Train Accuracy: 85.197% (182389/214080)
+2019-05-11 10:11:15,505:INFO: Val Loss : 847.418, Val Accuracy: 85.482%, Val F1: 10.746%
+2019-05-11 10:11:15,505:INFO: 
+Epoch: 2
+2019-05-11 10:11:49,471:INFO: Skipping batch of size=1
+2019-05-11 10:12:10,570:INFO: Skipping batch of size=1
+2019-05-11 10:12:23,310:INFO: Train Loss: 597.226, Train Accuracy: 85.355% (183165/214592)
+2019-05-11 10:12:48,699:INFO: Val Loss : 732.317, Val Accuracy: 85.681%, Val F1: 11.844%
+2019-05-11 10:12:48,700:INFO: 
+Epoch: 3
+2019-05-11 10:13:14,594:INFO: Skipping batch of size=1
+2019-05-11 10:13:40,804:INFO: Skipping batch of size=1
+2019-05-11 10:13:56,225:INFO: Train Loss: 594.213, Train Accuracy: 85.303% (181798/213120)
+2019-05-11 10:14:21,924:INFO: Val Loss : 742.018, Val Accuracy: 85.752%, Val F1: 12.570%
+2019-05-11 10:14:21,925:INFO: 
+Epoch: 4
+2019-05-11 10:14:53,119:INFO: Skipping batch of size=1
+2019-05-11 10:15:15,337:INFO: Skipping batch of size=1
+2019-05-11 10:15:30,178:INFO: Train Loss: 593.738, Train Accuracy: 85.281% (181806/213184)
+2019-05-11 10:17:52,038:INFO: GPU found.
+2019-05-11 10:17:54,142:INFO: Training Model
+2019-05-11 10:17:54,142:INFO: 
+Epoch: 0
+2019-05-11 10:18:04,002:INFO: Skipping batch of size=1
+2019-05-11 10:18:35,692:INFO: Skipping batch of size=1
+2019-05-11 10:19:01,823:INFO: Train Loss: 1202.811, Train Accuracy: 68.298% (145514/213056)
+2019-05-11 10:19:26,911:INFO: Val Loss : 785.138, Val Accuracy: 84.752%, Val F1: 0.000%
+2019-05-11 10:19:26,911:INFO: 
+Epoch: 1
+2019-05-11 10:19:32,841:INFO: Skipping batch of size=1
+2019-05-11 10:20:15,435:INFO: Skipping batch of size=1
+2019-05-11 10:20:35,009:INFO: Train Loss: 719.354, Train Accuracy: 83.978% (179833/214144)
+2019-05-11 10:21:00,818:INFO: Val Loss : 778.719, Val Accuracy: 84.752%, Val F1: 0.000%
+2019-05-11 10:21:00,819:INFO: 
+Epoch: 2
+2019-05-11 10:21:11,079:INFO: Skipping batch of size=1
+2019-05-11 10:21:48,788:INFO: Skipping batch of size=1
+2019-05-11 10:22:09,625:INFO: Train Loss: 716.689, Train Accuracy: 83.845% (178958/213440)
+2019-05-11 10:22:35,175:INFO: Val Loss : 777.601, Val Accuracy: 84.752%, Val F1: 0.000%
+2019-05-11 10:22:35,176:INFO: 
+Epoch: 3
+2019-05-11 10:23:55,835:INFO: GPU found.
+2019-05-11 10:23:57,948:INFO: Training Model
+2019-05-11 10:23:57,948:INFO: 
+Epoch: 0
+2019-05-11 10:26:26,722:INFO: GPU found.
+2019-05-11 10:26:28,898:INFO: Training Model
+2019-05-11 10:26:28,899:INFO: 
+Epoch: 0
+2019-05-11 10:27:48,838:INFO: GPU found.
+2019-05-11 10:27:50,971:INFO: Training Model
+2019-05-11 10:27:50,971:INFO: 
+Epoch: 0
+2019-05-11 10:29:08,649:INFO: GPU found.
+2019-05-11 10:29:10,786:INFO: Training Model
+2019-05-11 10:29:10,786:INFO: 
+Epoch: 0
+2019-05-11 10:30:10,980:INFO: GPU found.
+2019-05-11 10:30:13,097:INFO: Training Model
+2019-05-11 10:30:13,097:INFO: 
+Epoch: 0
+2019-05-11 10:30:38,047:INFO: Skipping batch of size=1
+2019-05-11 10:30:47,720:INFO: Skipping batch of size=1
+2019-05-11 10:31:20,736:INFO: Train Loss: 906.831, Train Accuracy: 76.717% (164236/214080)
+2019-05-11 10:31:45,813:INFO: Val Loss : 252.428, Val Accuracy: 93.371%, Val F1: 58.584%
+2019-05-11 10:31:45,814:INFO: 
+Epoch: 1
+2019-05-11 10:32:00,738:INFO: Skipping batch of size=1
+2019-05-11 10:32:46,462:INFO: Skipping batch of size=1
+2019-05-11 10:32:53,370:INFO: Train Loss: 214.840, Train Accuracy: 93.729% (200834/214272)
+2019-05-11 10:33:19,305:INFO: Val Loss : 224.912, Val Accuracy: 94.197%, Val F1: 63.831%
+2019-05-11 10:33:19,306:INFO: 
+Epoch: 2
+2019-05-11 10:33:34,574:INFO: Skipping batch of size=1
+2019-05-11 10:34:09,639:INFO: Skipping batch of size=1
+2019-05-11 10:34:27,599:INFO: Train Loss: 199.697, Train Accuracy: 94.123% (200835/213376)
+2019-05-11 10:34:53,602:INFO: Val Loss : 220.876, Val Accuracy: 94.341%, Val F1: 64.656%
+2019-05-11 10:34:53,603:INFO: 
+Epoch: 3
+2019-05-11 10:35:12,082:INFO: Skipping batch of size=1
+2019-05-11 10:35:33,475:INFO: Skipping batch of size=1
+2019-05-11 10:36:02,021:INFO: Train Loss: 197.877, Train Accuracy: 94.147% (200647/213120)
+2019-05-11 10:36:27,239:INFO: Val Loss : 222.651, Val Accuracy: 94.383%, Val F1: 64.541%
+2019-05-11 10:36:27,239:INFO: 
+Epoch: 4
+2019-05-11 10:36:35,147:INFO: Skipping batch of size=1
+2019-05-11 10:37:13,016:INFO: Skipping batch of size=1
+2019-05-11 10:37:35,236:INFO: Train Loss: 197.775, Train Accuracy: 94.150% (201015/213504)
+2019-05-11 10:38:00,826:INFO: Val Loss : 218.542, Val Accuracy: 94.426%, Val F1: 64.977%
+2019-05-11 10:38:00,827:INFO: 
+Epoch: 5
+2019-05-11 10:39:11,803:INFO: GPU found.
+2019-05-11 10:39:13,922:INFO: Training Model
+2019-05-11 10:39:13,923:INFO: 
+Epoch: 0
+2019-05-11 10:43:03,305:INFO: GPU found.
+2019-05-11 10:43:05,423:INFO: Training Model
+2019-05-11 10:43:05,423:INFO: 
+Epoch: 0
+2019-05-11 10:45:15,783:INFO: GPU found.
+2019-05-11 10:45:17,895:INFO: Training Model
+2019-05-11 10:45:17,896:INFO: 
+Epoch: 0
+2019-05-11 10:48:09,054:INFO: GPU found.
+2019-05-11 10:48:11,160:INFO: Training Model
+2019-05-11 10:48:11,160:INFO: 
+Epoch: 0
+2019-05-11 10:48:59,755:INFO: GPU found.
+2019-05-11 10:49:01,861:INFO: Training Model
+2019-05-11 10:49:01,861:INFO: 
+Epoch: 0
+2019-05-11 10:49:34,434:INFO: Skipping batch of size=1
+2019-05-11 10:50:01,182:INFO: Skipping batch of size=1
+2019-05-11 10:50:13,794:INFO: Train Loss: 1188.437, Train Accuracy: 68.411% (145579/212800)
+2019-05-11 10:50:39,329:INFO: Val Loss : 773.990, Val Accuracy: 84.752%, Val F1: 0.000%
+2019-05-11 10:50:39,330:INFO: 
+Epoch: 1
+2019-05-11 10:51:08,518:INFO: GPU found.
+2019-05-11 10:51:10,646:INFO: Training Model
+2019-05-11 10:51:10,647:INFO: 
+Epoch: 0
+2019-05-11 11:06:27,892:INFO: GPU found.
+2019-05-11 11:06:30,011:INFO: Training Model
+2019-05-11 11:06:30,011:INFO: 
+Epoch: 0
+2019-05-11 11:07:00,497:INFO: GPU found.
+2019-05-11 11:07:02,614:INFO: Training Model
+2019-05-11 11:07:02,614:INFO: 
+Epoch: 0
+2019-05-11 11:08:02,331:INFO: Skipping batch of size=1
+2019-05-11 11:08:49,175:INFO: Skipping batch of size=1
+2019-05-11 11:09:07,753:INFO: Train Loss: 812.113, Train Accuracy: 77.583% (165493/213312)
+2019-05-11 11:09:35,518:INFO: Val Loss : 293.879, Val Accuracy: 91.274%, Val F1: 41.336%
+2019-05-11 11:09:35,519:INFO: 
+Epoch: 1
+2019-05-11 11:10:10,359:INFO: Skipping batch of size=1
+2019-05-11 11:10:38,398:INFO: Skipping batch of size=1
+2019-05-11 11:10:55,743:INFO: Train Loss: 269.502, Train Accuracy: 91.111% (194001/212928)
+2019-05-11 11:11:23,555:INFO: Val Loss : 272.280, Val Accuracy: 91.822%, Val F1: 45.451%
+2019-05-11 11:11:23,557:INFO: 
+Epoch: 2
+2019-05-11 11:11:54,594:INFO: Skipping batch of size=1
+2019-05-11 11:12:24,839:INFO: Skipping batch of size=1
+2019-05-11 11:12:42,963:INFO: Train Loss: 258.241, Train Accuracy: 91.424% (194901/213184)
+2019-05-11 11:13:11,338:INFO: Val Loss : 267.373, Val Accuracy: 92.047%, Val F1: 46.751%
+2019-05-11 11:13:11,339:INFO: 
+Epoch: 3
+2019-05-11 11:13:23,094:INFO: Skipping batch of size=1
+2019-05-11 11:14:04,650:INFO: Skipping batch of size=1
+2019-05-11 11:14:31,636:INFO: Train Loss: 256.647, Train Accuracy: 91.482% (195904/214144)
+2019-05-11 11:14:59,575:INFO: Val Loss : 267.438, Val Accuracy: 92.037%, Val F1: 46.719%
+2019-05-11 11:14:59,576:INFO: 
+Epoch: 4
+2019-05-11 11:15:39,136:INFO: Skipping batch of size=1
+2019-05-11 11:15:43,213:INFO: Skipping batch of size=1
+2019-05-11 11:19:19,854:INFO: Train Loss: 256.017, Train Accuracy: 91.586% (196418/214464)
+2019-05-11 11:20:11,626:INFO: GPU found.
+2019-05-11 11:20:13,746:INFO: Training Model
+2019-05-11 11:20:13,746:INFO: 
+Epoch: 0
+2019-05-11 11:20:29,024:INFO: Skipping batch of size=1
+2019-05-11 11:20:54,003:INFO: Skipping batch of size=1
+2019-05-11 11:21:27,723:INFO: Train Loss: 812.078, Train Accuracy: 77.499% (165215/213184)
+2019-05-11 11:21:53,713:INFO: Val Loss : 292.243, Val Accuracy: 91.700%, Val F1: 44.652%
+2019-05-11 11:21:53,714:INFO: 
+Epoch: 1
+2019-05-11 11:22:11,685:INFO: Skipping batch of size=1
+2019-05-11 11:22:31,815:INFO: Skipping batch of size=1
+2019-05-11 11:23:08,519:INFO: Train Loss: 258.775, Train Accuracy: 91.622% (195969/213888)
+2019-05-11 11:23:35,303:INFO: Val Loss : 258.256, Val Accuracy: 92.547%, Val F1: 51.265%
+2019-05-11 11:23:35,304:INFO: 
+Epoch: 2
+2019-05-11 11:24:06,655:INFO: Skipping batch of size=1
+2019-05-11 11:24:39,807:INFO: Skipping batch of size=1
+2019-05-11 11:24:49,639:INFO: Train Loss: 241.150, Train Accuracy: 92.156% (196697/213440)
+2019-05-11 11:25:15,401:INFO: Val Loss : 258.449, Val Accuracy: 92.480%, Val F1: 50.590%
+2019-05-11 11:25:15,402:INFO: 
+Epoch: 3
+2019-05-11 11:25:33,263:INFO: Skipping batch of size=1
+2019-05-11 11:28:47,101:INFO: GPU found.
+2019-05-11 11:28:49,235:INFO: Training Model
+2019-05-11 11:28:49,236:INFO: 
+Epoch: 0
+2019-05-11 11:29:01,735:INFO: Skipping batch of size=1
+2019-05-11 11:29:51,584:INFO: Skipping batch of size=1
+2019-05-11 11:30:00,751:INFO: Train Loss: 688.185, Train Accuracy: 83.280% (178232/214016)
+2019-05-11 11:30:26,768:INFO: Val Loss : 177.850, Val Accuracy: 95.447%, Val F1: 69.827%
+2019-05-11 11:30:26,769:INFO: 
+Epoch: 1
+2019-05-11 11:30:33,496:INFO: Skipping batch of size=1
+2019-05-11 11:31:32,293:INFO: Skipping batch of size=1
+2019-05-11 11:31:40,626:INFO: Train Loss: 144.942, Train Accuracy: 95.992% (205439/214016)
+2019-05-11 11:32:06,707:INFO: Val Loss : 147.255, Val Accuracy: 96.335%, Val F1: 76.186%
+2019-05-11 11:32:06,707:INFO: 
+Epoch: 2
+2019-05-11 11:32:40,097:INFO: Skipping batch of size=1
+2019-05-11 11:32:45,168:INFO: Skipping batch of size=1
+2019-05-11 11:33:18,742:INFO: Train Loss: 116.251, Train Accuracy: 96.781% (205951/212800)
+2019-05-11 11:33:45,203:INFO: Val Loss : 137.485, Val Accuracy: 96.540%, Val F1: 76.408%
+2019-05-11 11:33:45,204:INFO: 
+Epoch: 3
+2019-05-11 11:33:53,307:INFO: Skipping batch of size=1
+2019-05-11 11:34:47,117:INFO: Skipping batch of size=1
+2019-05-11 11:34:58,447:INFO: Train Loss: 110.926, Train Accuracy: 96.954% (207125/213632)
+2019-05-11 11:35:24,238:INFO: Val Loss : 136.688, Val Accuracy: 96.567%, Val F1: 76.625%
+2019-05-11 11:35:24,238:INFO: 
+Epoch: 4
+2019-05-11 11:35:42,572:INFO: Skipping batch of size=1
+2019-05-11 11:36:02,495:INFO: Skipping batch of size=1
+2019-05-11 11:36:37,227:INFO: Train Loss: 110.071, Train Accuracy: 96.946% (207543/214080)
+2019-05-11 11:37:03,480:INFO: Val Loss : 136.706, Val Accuracy: 96.604%, Val F1: 76.965%
+2019-05-11 11:37:03,480:INFO: 
+Epoch: 5
+2019-05-11 11:37:31,317:INFO: Skipping batch of size=1
+2019-05-11 11:37:50,118:INFO: Skipping batch of size=1
+2019-05-11 11:38:15,706:INFO: Train Loss: 109.371, Train Accuracy: 96.937% (207275/213824)
