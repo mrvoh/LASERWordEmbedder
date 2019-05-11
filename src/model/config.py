@@ -90,7 +90,7 @@ class Config():
     train_embeddings = False
     nepochs = 25
     dropout = 0.5
-    batch_size = 32
+    batch_size = 64
     lr_method = "adam"
     lr = 0.001
     lr_decay = 0.1

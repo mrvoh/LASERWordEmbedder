@@ -147,7 +147,7 @@ class NERLearner(object):
                 f1 = self.test(nbatches_dev, dev_generator, fine_tune=fine_tune)
 
             # Early stopping
-            if len(f1s) > 0:
+            if len(f1s) > self.config.nepoch_no_imprv:
                 if f1 < max(f1s[max(-self.config.nepoch_no_imprv, -len(f1s)):]): #if sum([f1 > f1s[max(-i, -len(f1s))] for i in range(1,self.config.nepoch_no_imprv+1)]) == 0:
                     print("No improvement in the last 3 epochs. Stopping training")
                     break

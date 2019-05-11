@@ -78,6 +78,74 @@ class LASERHiddenExtractor(Encoder):
 ###########################################################################
 # Classes to extract/learn embeddings from LASER encoder
 ###########################################################################
+class LASEREmbedderBase(nn.Module):
+
+    def __init__(self, encoder_path, bpe_pad_len = 43, encoder = LASERHiddenExtractor):
+        super().__init__()
+        self.ENCODER_SIZE = self.embedding_dim = 320  # LASER encoder encodes to 512 dims
+        self.NUM_LAYERS = 5
+        self.NUM_DIRECTIONS = 2
+        self.bpe_pad_len = bpe_pad_len
+        state_dict = torch.load(encoder_path)
+        encoder = encoder(take_diff=False, **state_dict['params'])
+        encoder.load_state_dict(state_dict['model'])
+
+        self.bpe_emb = encoder.embed_tokens
+        self.dictionary = state_dict['dictionary']
+        self.pad_index = self.dictionary['<pad>']
+        self.eos_index = self.dictionary['</s>']
+        self.unk_index = self.dictionary['<unk>']
+
+    def forward(self, tokens):
+
+        # Split token sequences into words
+        tok = torch.split(tokens, split_size_or_sections=self.bpe_pad_len, dim=0)
+        # Reconstruct tensor as [seq_len, B, bpe_pad_len]
+        tok = torch.stack(tok).permute(0,2,1)
+        bpe_embeddings = self.bpe_emb(tok)
+        # average to get embeddings to in order to aggregate over BPE sequence to word
+        embeddings = torch.mean(bpe_embeddings, dim=2)
+
+        return embeddings
+
+
+class LASEREmbedderBaseGRU(nn.Module):
+
+    def __init__(self, encoder_path, bpe_pad_len = 43, encoder = LASERHiddenExtractor):
+        super().__init__()
+        self.ENCODER_SIZE = self.embedding_dim = 320  # LASER encoder encodes to 512 dims
+        self.NUM_LAYERS = 5
+        self.NUM_DIRECTIONS = 2
+        self.bpe_pad_len = bpe_pad_len
+        state_dict = torch.load(encoder_path)
+        encoder = encoder(take_diff=False, **state_dict['params'])
+        encoder.load_state_dict(state_dict['model'])
+
+        self.bpe_emb = encoder.embed_tokens
+        gru = RNNEncoder(self.ENCODER_SIZE, int(self.embedding_dim/2))
+        att = Attention(self.embedding_dim)
+        self.token_embedder = TokenEncoder(gru, att, self.embedding_dim)
+        self.dictionary = state_dict['dictionary']
+        self.pad_index = self.dictionary['<pad>']
+        self.eos_index = self.dictionary['</s>']
+        self.unk_index = self.dictionary['<unk>']
+
+    def forward(self, tokens):
+
+        seq_len, B = tokens.size()
+        token_seq_len = int(seq_len /self.bpe_pad_len)
+        # Encode embeddings as emb_size x (B * seq_len)
+        bpe_embeddings = self.bpe_emb(tokens.view(self.bpe_pad_len, token_seq_len, B)) #.permute(2,1,0) #.view(self.ENCODER_SIZE,-1)
+        # reshape to in order to aggregate over BPE sequence to word
+        bpe_embeddings = bpe_embeddings.view(self.bpe_pad_len, token_seq_len*B, self.ENCODER_SIZE)
+
+        # max pool the forward and backward hidden states
+        embeddings = self.token_embedder(bpe_embeddings)
+
+        # resize to token-level embeddings
+        embeddings = embeddings.view(token_seq_len, B, self.embedding_dim)
+
+        return embeddings
 
 class LASEREmbedderI(nn.Module):
 
@@ -121,43 +189,7 @@ class LASEREmbedderI(nn.Module):
         return embeddings
 
 
-class LASEREmbedderBase(nn.Module):
 
-    def __init__(self, encoder_path, bpe_pad_len = 43, encoder = LASERHiddenExtractor):
-        super().__init__()
-        self.ENCODER_SIZE = self.embedding_dim = 320  # LASER encoder encodes to 512 dims
-        self.NUM_LAYERS = 5
-        self.NUM_DIRECTIONS = 2
-        self.bpe_pad_len = bpe_pad_len
-        state_dict = torch.load(encoder_path)
-        encoder = encoder(take_diff=False, **state_dict['params'])
-        encoder.load_state_dict(state_dict['model'])
-
-        self.bpe_emb = encoder.embed_tokens
-        gru = RNNEncoder(self.ENCODER_SIZE, int(self.embedding_dim/2))
-        att = Attention(self.embedding_dim)
-        self.token_embedder = TokenEncoder(gru, att, self.embedding_dim)
-        self.dictionary = state_dict['dictionary']
-        self.pad_index = self.dictionary['<pad>']
-        self.eos_index = self.dictionary['</s>']
-        self.unk_index = self.dictionary['<unk>']
-
-    def forward(self, tokens):
-
-        seq_len, B = tokens.size()
-        token_seq_len = int(seq_len /self.bpe_pad_len)
-        # Encode embeddings as emb_size x (B * seq_len)
-        bpe_embeddings = self.bpe_emb(tokens.view(self.bpe_pad_len, token_seq_len, B)) #.permute(2,1,0) #.view(self.ENCODER_SIZE,-1)
-        # reshape to in order to aggregate over BPE sequence to word
-        bpe_embeddings = bpe_embeddings.view(self.bpe_pad_len, token_seq_len*B, self.ENCODER_SIZE)
-
-        # max pool the forward and backward hidden states
-        embeddings = self.token_embedder(bpe_embeddings)
-
-        # resize to token-level embeddings
-        embeddings = embeddings.view(token_seq_len, B, self.embedding_dim)
-
-        return embeddings
 
 
 class LASEREmbedderIII(nn.Module):
