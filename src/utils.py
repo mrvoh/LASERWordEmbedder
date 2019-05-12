@@ -396,3 +396,52 @@ def generate_conll2002_datasets():
 
 
             f.close()
+
+
+def generate_conll2003_german_datasets():
+    sets = [
+        ("ger_test", "https://raw.githubusercontent.com/MaviccPRP/ger_ner_evals/master/corpora/conll2003/deuutf.testa"),
+        ("ger_valid", "https://raw.githubusercontent.com/MaviccPRP/ger_ner_evals/master/corpora/conll2003/deu.testb"),
+        ("ger_train", "https://raw.githubusercontent.com/MaviccPRP/ger_ner_evals/master/corpora/conll2003/deuutf.train")
+    ]
+
+
+    for set in sets:
+        path = set[0]
+        url = set[1]
+        sentences = []
+        sentence = []
+
+        with urlopen(url) as f:
+            f.readline()
+            f.readline()
+
+            for line in f:
+                line = line.decode("latin-1")
+
+                line = line.replace('\n', '')
+
+                if line in ['\n', '\r\n', '']:
+                    sentences.append(sentence)
+                    sentence = []
+
+                else:
+                    info = line.split()
+                    info.pop(1)
+
+                    sentence.append(info)
+
+        sentences = i2b(sentences)
+
+        with open("./data/" + path + ".txt", "w", encoding="latin-1") as f:
+            for s in sentences:
+                for w in s:
+                    f.write(' '.join(w) + '\n')
+
+                f.write('\n')
+
+
+            f.close()
+
+
+generate_conll2003_german_datasets()
