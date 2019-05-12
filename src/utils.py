@@ -340,4 +340,52 @@ def i2b(i_dataset):
     return b_format
 
 
+def generate_conll2002_datasets():
+    sets = [
+        ("esp_test", "https://www.clips.uantwerpen.be/conll2002/ner/data/esp.testa"),
+        ("esp_valid", "https://www.clips.uantwerpen.be/conll2002/ner/data/esp.testb"),
+        ("esp_train", "https://www.clips.uantwerpen.be/conll2002/ner/data/esp.train"),
+        ("ned_test", "https://www.clips.uantwerpen.be/conll2002/ner/data/ned.testa"),
+        ("ned_valid", "https://www.clips.uantwerpen.be/conll2002/ner/data/ned.testb"),
+        ("ned_train", "https://www.clips.uantwerpen.be/conll2002/ner/data/ned.train")
+    ]
 
+
+    for set in sets:
+        path = set[0]
+        url = set[1]
+        sentences = []
+        sentence = []
+        esp = True if path[:3] == 'esp' else False
+
+        with urlopen(url) as f:
+            if not esp:
+                f.readline()
+
+            for line in f:
+                line = line.decode("windows-1252")
+
+                line = line.replace('\n', '')
+
+                if line in ['\n', '\r\n', '']:
+                    sentences.append(sentence)
+                    sentence = []
+
+                else:
+                    info = line.split()
+
+                    if esp:
+                        sentence.append([info[0], 'DUM', 'MY', info[1]])
+
+                    else:
+                        sentence.append([info[0], info[1], 'DUMMY', info[2]])
+
+        with open("./data/" + path + ".txt", "w") as f:
+            for s in sentences:
+                for w in s:
+                    f.write(' '.join(w) + '\n')
+
+                f.write('\n')
+
+
+            f.close()
