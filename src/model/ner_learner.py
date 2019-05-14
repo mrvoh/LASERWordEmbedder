@@ -104,7 +104,10 @@ class NERLearner(object):
         """
         nbatches = (len(train) + batch_size - 1) // batch_size
 
-        dataloader = get_data_loader(train, batch_size, drop_last)
+        if self.config.use_laser:
+            dataloader = get_data_loader(train, batch_size, drop_last, collate_fn=collate_fn_eval_laser)
+        else:
+            dataloader = get_data_loader(train, batch_size, drop_last)
 
         return (nbatches, dataloader)
 
@@ -140,16 +143,22 @@ class NERLearner(object):
         for epoch in range(epochs):
             self.model.set_bpe_pad_len(self.tr_pad_len)
             scheduler.step()
-            self.train(epoch, nbatches_train, train_generator, fine_tune=fine_tune)
+            if self.config.use_laser:
+                self.train_laser(epoch, nbatches_train, train_generator, fine_tune=fine_tune)
+            else:
+                self.train_base(epoch, nbatches_train, train_generator, fine_tune=fine_tune)
 
             if dev:
                 self.model.set_bpe_pad_len(self.dev_pad_len)
-                f1 = self.test(nbatches_dev, dev_generator, fine_tune=fine_tune)
+                if self.config.use_laser:
+                    f1 = self.test_laser(nbatches_dev, dev_generator, fine_tune=fine_tune)
+                else:
+                    f1 = self.test_base(nbatches_dev, dev_generator, fine_tune=fine_tune)
 
             # Early stopping
             if len(f1s) > self.config.nepoch_no_imprv:
-                if f1 < max(f1s[max(-self.config.nepoch_no_imprv, -len(f1s)):]): #if sum([f1 > f1s[max(-i, -len(f1s))] for i in range(1,self.config.nepoch_no_imprv+1)]) == 0:
-                    print("No improvement in the last 3 epochs. Stopping training")
+                if sum([f1 > f1s[max(-i, -len(f1s))] for i in range(1,self.config.nepoch_no_imprv+1)]) == 0:
+                    print("No improvement in the last {} epochs. Stopping training".format(self.config.nepoch_no_imprv))
                     break
             else:
                 f1s.append(f1)
@@ -159,8 +168,51 @@ class NERLearner(object):
         else:
             self.save(self.config.ner_model_path)
 
+    def train_laser(self, epoch, nbatches_train, train_generator, fine_tune=False):
+        self.logger.info('\nEpoch: %d' % epoch)
+        self.model.train()
 
-    def train(self, epoch, nbatches_train, train_generator, fine_tune=False):
+        train_loss = 0
+        correct = 0
+        total = 0
+        total_step = None
+
+        prog = Progbar(target=nbatches_train)
+
+        for batch_idx, (inputs, word_lens, sequence_lengths, targets) in enumerate(train_generator):
+
+            if batch_idx == nbatches_train: break
+            if inputs.shape[0] == self.model.embedder.bpe_pad_len:
+                self.logger.info('Skipping batch of size=1')
+                continue
+
+            total_step = batch_idx
+            self.optimizer.zero_grad()
+            outputs = self.model((inputs, word_lens))
+
+            # Create mask
+            mask = create_mask(sequence_lengths, targets, cuda=self.use_cuda)
+
+            # Get CRF Loss
+            loss = -1 * self.criterion(outputs, targets, mask=mask)
+            loss.backward()
+            self.optimizer.step()
+
+            # Callbacks
+            train_loss += loss.item()
+            predictions = self.criterion.decode(outputs, mask=mask)
+            masked_targets = mask_targets(targets, sequence_lengths)
+
+            t_ = mask.type(torch.LongTensor).sum().item()
+            total += t_
+            c_ = sum([1 if p[i] == mt[i] else 0 for p, mt in zip(predictions, masked_targets) for i in range(len(p))])
+            correct += c_
+
+            prog.update(batch_idx + 1, values=[("train loss", loss.item())], exact=[("Accuracy", 100 * c_ / t_)])
+
+        self.logger.info("Train Loss: %.3f, Train Accuracy: %.3f%% (%d/%d)" % (
+        train_loss / (total_step + 1), 100. * correct / total, correct, total))
+    def train_base(self, epoch, nbatches_train, train_generator, fine_tune=False):
         self.logger.info('\nEpoch: %d' % epoch)
         self.model.train()
 
@@ -213,8 +265,62 @@ class NERLearner(object):
 
         self.logger.info("Train Loss: %.3f, Train Accuracy: %.3f%% (%d/%d)" %(train_loss/(total_step+1), 100.*correct/total, correct, total) )
 
+    def test_laser(self, nbatches_val, val_generator, fine_tune=False):
+        self.model.eval()
+        accs = []
+        test_loss = 0
+        correct_preds = 0
+        total_correct = 0
+        total_preds = 0
+        total_step = None
 
-    def test(self, nbatches_val, val_generator, fine_tune=False):
+        for batch_idx, (inputs, word_lens, sequence_lengths, targets ) in enumerate(val_generator):
+            if batch_idx == nbatches_val: break
+            if inputs.shape[0] == self.model.embedder.bpe_pad_len:
+                self.logger.info('Skipping batch of size=1')
+                continue
+
+            total_step = batch_idx
+            #targets = T(targets, cuda=self.use_cuda).transpose(0,1).contiguous()
+
+
+            # inputs = T(inputs, cuda=self.use_cuda)
+            # inputs, targets = Variable(inputs, requires_grad=False), \
+            #                                   Variable(targets)
+            # seq_len = inputs.size(0)
+            outputs = self.model((inputs,word_lens)) #.view(seq_len,-1,9)
+
+            # Create mask
+            mask = create_mask(sequence_lengths, targets, cuda=self.use_cuda)
+
+            # Get CRF Loss
+            loss = -1*self.criterion(outputs, targets, mask=mask)
+
+            # Callbacks
+            test_loss += loss.item()
+            predictions = self.criterion.decode(outputs, mask=mask)
+            masked_targets = mask_targets(targets, sequence_lengths)
+
+            for lab, lab_pred in zip(masked_targets, predictions):
+
+                accs += [1 if a==b else 0 for (a, b) in zip(lab, lab_pred)]
+
+                lab_chunks = set(get_chunks(lab, self.config.label_to_idx))
+                lab_pred_chunks = set(get_chunks(lab_pred,
+                                                 self.config.label_to_idx))
+
+                correct_preds += len(lab_chunks & lab_pred_chunks)
+                total_preds   += len(lab_pred_chunks)
+                total_correct += len(lab_chunks)
+
+        p   = correct_preds / total_preds if correct_preds > 0 else 0
+        r   = correct_preds / total_correct if correct_preds > 0 else 0
+        f1  = 2 * p * r / (p + r) if correct_preds > 0 else 0
+        acc = np.mean(accs)
+
+        self.logger.info("Val Loss : %.3f, Val Accuracy: %.3f%%, Val F1: %.3f%%" %(test_loss/(total_step+1), 100*acc, 100*f1))
+        return 100*f1
+    def test_base(self, nbatches_val, val_generator, fine_tune=False):
         self.model.eval()
         accs = []
         test_loss = 0

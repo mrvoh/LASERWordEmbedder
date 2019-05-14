@@ -89,14 +89,14 @@ class Config():
     # training
     train_embeddings = False
     nepochs = 25
-    dropout = 0.3
+    dropout = 0.5
     batch_size = 64
     lr_method = "adam"
-    lr = 0.0001
+    lr = 0.001
     lr_decay = 0.2
     epoch_drop = 2  # Step Decay: per # epochs to apply lr_decay
     clip = 5  # if negative, no clipping
-    nepoch_no_imprv = 3
+    nepoch_no_imprv = 5
 
     # model hyperparameters
     hidden_size_char = 100  # lstm on chars
@@ -114,11 +114,10 @@ class Config():
     # NOTE: if both chars and crf, only 1.6x slower on GPU
     use_crf = True  # if crf, training is 1.7x slower on CPU
 
-    if use_laser:
-        model_path = os.path.join('..','LASER','models', 'bilstm.93langs.2018-12-26.pt')
-        word_to_idx = torch.load(model_path)['dictionary']
-    else:
-        None
+    # if use_laser:
+    model_path = os.path.join('..','LASER','models', 'bilstm.93langs.2018-12-26.pt')
+    word_to_idx = torch.load(model_path)['dictionary']
+
         #TODO: load MUSE word_to_idx
 
 

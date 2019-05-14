@@ -190,6 +190,39 @@ def get_conll_muse_vectors(case_insensitive=True):
 
     return conll_muse_vectors, conll_words_not_in_muse_vectors
 
+def parse_dataset_laser(path, label_to_idx, word_to_idx):
+    sentences = []
+    UNK = 3
+    PAD = 1
+
+    with open(path) as f:
+
+        sample = {'word_ids': [], 'labels': [], 'word_len': []}
+        max_len_token = 0
+        for line in f.read().splitlines():
+            if line in ['\n', '\r\n', '']:  # end of sequence
+                if len(sample['labels']) > 0:
+                    sample['labels'] = torch.LongTensor(sample['labels'])
+                    sample['word_ids'] = torch.LongTensor(sample['word_ids'])
+                    sample['word_len'] = torch.LongTensor(sample['word_len'])
+                    sentences.append(sample)
+                sample = {'word_ids': [], 'labels': [], 'word_len': []}
+                continue
+            else:
+                ls = line.split()
+                max_len_token = max(max_len_token, len(ls[4:]))
+                word = ls[4:]
+                label = ls[3]
+                if len(word) > 0:
+                    word_ids = [word_to_idx[w.lower()] if w.lower() in word_to_idx.keys() else UNK for w in word]
+                    sample['word_ids'].extend(
+                        word_ids
+                    )  # 3 -> <unk>
+                    sample['word_len'].append(len(word_ids))
+                    sample['labels'].append(label_to_idx[label])
+                    if len(word_ids) > 20:
+                        print(line)
+    return Dataset(sentences), max_len_token
 
 def parse_dataset(path, label_to_idx, word_to_idx, pad_len=None):
     sentences = []
@@ -247,8 +280,25 @@ def collate_fn_infer(batch):
 
     return transpose(batch)
 
+def collate_fn_eval_laser(batch):
+    word_ids_batch, _ = stack_and_pad_tensors([seq['word_ids'] for seq in batch])
+    label_batch, _ = stack_and_pad_tensors([seq['labels'] for seq in batch])
+    seq_len_batch = torch.LongTensor([len(seq['word_ids']) for seq in batch])
+    word_len_batch, _ = stack_and_pad_tensors([seq['word_len'] for seq in batch])
 
-def collate_fn_eval(batch):
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    word_ids_batch = word_ids_batch.to(device)
+    word_len_batch = word_len_batch.to(device)
+    seq_len_batch = seq_len_batch.to(device)
+    label_batch = label_batch.to(device)
+
+    # PyTorch RNN requires batches to be transposed for speed and integration with CUDA
+    transpose = (lambda b: b.t_().squeeze(0).contiguous())
+
+    # return (word_ids_batch, seq_len_batch, label_batch)
+    return (transpose(word_ids_batch), transpose(word_len_batch), seq_len_batch, transpose(label_batch))
+
+def collate_fn_eval_base(batch):
     """ list of tensors to a batch tensors """
 
     word_ids_batch, _ = stack_and_pad_tensors([seq['word_ids'] for seq in batch])
@@ -267,7 +317,7 @@ def collate_fn_eval(batch):
     return (transpose(word_ids_batch), seq_len_batch, transpose(label_batch))
 
 
-def get_data_loader(data, batch_size, drop_last, collate_fn=collate_fn_eval):
+def get_data_loader(data, batch_size, drop_last, collate_fn=collate_fn_eval_base):
     sampler = BucketBatchSampler(data,
                                  batch_size,
                                  drop_last=drop_last,
