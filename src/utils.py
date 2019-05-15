@@ -407,6 +407,9 @@ def generate_conll2002_datasets():
         ("ned_train", "https://www.clips.uantwerpen.be/conll2002/ner/data/ned.train")
     ]
 
+    esp_pos_tags = get_esp_pos_tags()
+    not_tags_for = []
+    counter = 0
 
     for set in sets:
         path = set[0]
@@ -430,10 +433,18 @@ def generate_conll2002_datasets():
 
                 else:
                     info = line.split()
+                    counter += 1
 
                     if esp:
-                        sentence.append([info[0], 'DUM', 'MY', info[1]])
+                        if info[0] not in esp_pos_tags:
+                            if info[0] not in not_tags_for:
+                                not_tags_for.append(info[0])
 
+                            sentence.append([info[0], 'DUM', 'MY', info[1]])
+
+                        else:
+
+                            sentence.append([info[0], esp_pos_tags[info[0]], 'DUMMY', info[1]])
                     else:
                         sentence.append([info[0], info[1], 'DUMMY', info[2]])
 
@@ -443,6 +454,7 @@ def generate_conll2002_datasets():
                     f.write(' '.join(w) + '\n')
 
                 f.write('\n')
+        
 
 
             f.close()
@@ -494,4 +506,25 @@ def generate_conll2003_german_datasets():
             f.close()
 
 
-generate_conll2003_german_datasets()
+
+def get_esp_pos_tags():
+    pos_tags = {}
+
+    paths = ("test", "train", "valid")
+
+    for p in paths:
+        with open ("./data/esp_" + p + "_words.tag") as f:
+            for line in f:
+                if line != "\n":
+                    line = line.split("\t")
+                    word = line[0]
+                    tag = line[1].replace("\n", "")
+
+                    if word not in pos_tags:
+                        pos_tags[word] = tag
+
+
+    return pos_tags
+
+
+generate_conll2002_datasets()
