@@ -5,6 +5,7 @@ from torchnlp.encoders.text import stack_and_pad_tensors, pad_tensor
 from torch.utils.data import DataLoader
 import torch
 import os
+import nltk
 
 if os.name == 'posix': import fastBPE
 LASER = os.environ['LASER']
@@ -398,6 +399,8 @@ def i2b(i_dataset):
 
 
 def generate_conll2002_datasets():
+    nltk.download('conll2002')
+
     sets = [
         ("esp_test", "https://www.clips.uantwerpen.be/conll2002/ner/data/esp.testa"),
         ("esp_valid", "https://www.clips.uantwerpen.be/conll2002/ner/data/esp.testb"),
@@ -407,9 +410,12 @@ def generate_conll2002_datasets():
         ("ned_train", "https://www.clips.uantwerpen.be/conll2002/ner/data/ned.train")
     ]
 
-    esp_pos_tags = get_esp_pos_tags()
-    not_tags_for = []
+    #esp_pos_tags = get_esp_pos_tags()
     counter = 0
+
+    #trying nltk instead
+    tags = nltk.corpus.conll2002.tagged_words()
+
 
     for set in sets:
         path = set[0]
@@ -433,20 +439,26 @@ def generate_conll2002_datasets():
 
                 else:
                     info = line.split()
-                    counter += 1
+
+                    if esp and info[0] != tags[counter][0]:
+                        print(info[0])
+                        print(tags[counter])
+                        return
 
                     if esp:
-                        if info[0] not in esp_pos_tags:
-                            if info[0] not in not_tags_for:
-                                not_tags_for.append(info[0])
+                        t = tags[counter]
 
-                            sentence.append([info[0], 'DUM', 'MY', info[1]])
+                        if t[0] != info[0]:
+                            print("error with tags")
+                            return
 
                         else:
+                            sentence.append([info[0], tags[counter][1], 'DUMMY', info[1]])
+                            counter += 1
 
-                            sentence.append([info[0], esp_pos_tags[info[0]], 'DUMMY', info[1]])
                     else:
                         sentence.append([info[0], info[1], 'DUMMY', info[2]])
+
 
         with open("./data/" + path + ".txt", "w") as f:
             for s in sentences:
