@@ -563,4 +563,46 @@ def load_unknown_muse_vector():
         return json.load(f)
 
 
+def load_muse_subset(dataset):
+    with open("./data/muse_encoded_subset_" + dataset + ".json") as f:
+        return json.load(f)
+
+
+def get_muse_encoded_sentences(dataset):
+    TRAIN_FILE_PATH = "./data/train_bio.txt"
+    TEST_FILE_PATH = "./data/test_bio.txt"
+    VALID_FILE_PATH = "./data/valid_bio.txt"
+
+    conll_muse_vectors = get_conll_muse_vectors()
+
+    if dataset == "train":
+        path = TRAIN_FILE_PATH
+        name = "train"
+
+    elif dataset == "test":
+        path = TEST_FILE_PATH
+        name = "test"
+
+    else:
+        path = VALID_FILE_PATH
+        name = "valid"
+
+
+    data = load_data(path)
+
+    encoded_sentences = []
+
+    for ts in data:
+        encoded_sentence = []
+
+        for w in ts:
+            word = str(w[0]).lower()
+
+            encoded_word = conll_muse_vectors[word]
+            encoded_sentence.append(encoded_word)
+
+        encoded_sentences.append(encoded_sentence)
+
+    return encoded_sentences
+
 
