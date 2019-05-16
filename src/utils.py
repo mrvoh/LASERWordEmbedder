@@ -6,6 +6,8 @@ from torch.utils.data import DataLoader
 import torch
 import os
 import nltk
+import numpy as np
+import json
 
 if os.name == 'posix': import fastBPE
 LASER = os.environ['LASER']
@@ -176,7 +178,8 @@ def get_muse_vectors(case_insensitive=False):
 
 def get_conll_muse_vectors(case_insensitive=True):
     conll_muse_vectors = {}
-    conll_words_not_in_muse_vectors = []
+    unknown_word_vector = load_unknown_muse_vector()
+
 
     conll_vocab = get_conll_vocab(case_insensitive)
     muse_vectors = get_muse_vectors(case_insensitive)
@@ -186,9 +189,9 @@ def get_conll_muse_vectors(case_insensitive=True):
             conll_muse_vectors[word] = muse_vectors[word]
 
         else:
-            conll_words_not_in_muse_vectors.append(word)
+            conll_muse_vectors[word] = unknown_word_vector
 
-    return conll_muse_vectors, conll_words_not_in_muse_vectors
+    return conll_muse_vectors
 
 def parse_dataset_laser(path, label_to_idx, word_to_idx):
     sentences = []
@@ -539,4 +542,25 @@ def get_esp_pos_tags():
     return pos_tags
 
 
-generate_conll2002_datasets()
+'''
+def generate_unknown_muse_vector():
+    a = np.random.uniform(low=-0.15, high=0.15, size=(300,))
+    a = list(a)
+
+    with open("./data/muse_unknown_vector.json", "w") as f:
+        json.dump(a, f)
+        f.close()
+'''
+
+
+'''a, b = get_conll_muse_vectors()
+
+print(len(a))
+print(len(b))'''
+
+def load_unknown_muse_vector():
+    with open("./data/muse_unknown_vector.json") as f:
+        return json.load(f)
+
+
+
