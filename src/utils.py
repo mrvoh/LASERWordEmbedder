@@ -245,7 +245,7 @@ def parse_dataset(path, label_to_idx, word_to_idx, pad_len=None):
                 word = ls[4:]
                 label = ls[3]
                 if len(word) > 0:
-                    word_ids = [word_to_idx[w.lower()] if w.lower() in word_to_idx.keys() else UNK for w in word]
+                    word_ids = [word_to_idx[w] if w in word_to_idx.keys() else UNK for w in word]
                     sample['word_ids'].append(
                         torch.LongTensor(word_ids)
                     )  # 3 -> <unk>

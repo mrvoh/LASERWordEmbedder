@@ -33,7 +33,8 @@ class NERLearner(object):
                            self.config.label_to_idx.items()}
 
         self.criterion = CRF(self.config.ntags)
-        self.optimizer = optim.Adam(self.model.parameters())
+        self.optimizer = optim.Adam(self.model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
+        print(self.optimizer)
 
 
         if USE_GPU:
@@ -134,7 +135,7 @@ class NERLearner(object):
         if dev:
             nbatches_dev, dev_generator = self.batch_iter(dev, batch_size, drop_last=False)
 
-        scheduler = StepLR(self.optimizer, step_size=1, gamma=self.config.lr_decay)
+        scheduler = StepLR(self.optimizer, step_size=self.config.epoch_drop, gamma=self.config.lr_decay)
 
         if not fine_tune: self.logger.info("Training Model")
 
