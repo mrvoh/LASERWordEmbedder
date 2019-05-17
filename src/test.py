@@ -13,41 +13,73 @@ from model.config import Config
 from model.ner_model import NERModel
 from model.ner_learner import NERLearner
 import sys
+from utils import parse_dataset, parse_dataset_laser
+from models import *
+import os
+
+def eval_model_dataset(config, embedder, data, pad_len, model_path, use_laser):
+
+
+    #build model
+    model = NERModel(config, embedder, pad_len)
+
+    learn = NERLearner(config, model, pad_len, pad_len)
+    learn.load(model_path)
+    n_batches, dataloader = learn.batch_iter(data, config.batch_size, use_laser= use_laser)
+    if use_laser:
+        learn.test_laser(n_batches, dataloader)
+    else:
+        learn.test_base(n_batches, dataloader)
 
 
 def main():
+    data_filepath = os.path.join('parsed_data', 'ned_test_bio_bpe')
     # create instance of config
     config = Config()
-    if config.use_elmo: config.processing_word = None
+    # get dataset
 
-    #build model
-    model = NERModel(config)
+    data_laser, pad_len = parse_dataset_laser(config.filename_train, config.label_to_idx, config.word_to_idx)
+    data, pad_len = parse_dataset(config.filename_train, config.label_to_idx, config.word_to_idx)
 
-    learn = NERLearner(config, model)
-    learn.load()
+    #####################################################################
+    # SETUP
+    #####################################################################
 
-    if len(sys.argv) == 1:
-        print("No arguments given. Running full test")
-        sys.argv.append("eval")
-        sys.argv.append("pred")
+    base_path = os.path.join('saves', 'LASERNERBase.pt')
+    base_gru_path = os.path.join('saves', 'LASERNERBaseGRUNoPadding.pt')
+    i_path = os.path.join('saves', 'LASEREmbedderIStaticLSTM.pt')
+    # iii_path = os.path.join('saves', 'LASEREmbedderIIINonStatic.pt')
 
-    if sys.argv[1] == "eval":
-        # create datasets
-        test = CoNLLDataset(config.filename_test, config.processing_word,
-                             config.processing_tag, config.max_iter)
-        learn.evaluate(test)
-
-    if sys.argv[1] == "pred" or sys.argv[2] == "pred":
-        try:
-            sent = (sys.argv[2] if sys.argv[1] == "pred" else sys.argv[3])
-        except IndexError:
-            sent = ["Peter", "Johnson", "lives", "in", "Los", "Angeles"]
-
-        print("Predicting sentence: ", sent)
-        pred = learn.predict(sent)
-        print(pred)
+    paths = [
+        base_path,
+        base_gru_path,
+        i_path,
+        # iii_path
+    ]
 
 
+    embedder_base = LASEREmbedderBase(config.model_path, pad_len)
+    embedder_base_gru = LASEREmbedderBaseGRU(config.model_path, pad_len)
+    embedderI = LASEREmbedderI(config.model_path)
+    # embedderIII = LASEREmbedderIII(config.model_path)
+
+    embedders = [
+        embedder_base,
+        embedder_base_gru,
+        embedderI,
+        # embedderIII,
+    ]
+
+    use_laser = [
+        False,
+        False,
+        True,
+        # True
+    ]
+
+    for embedder, path, d in zip(embedders, paths, use_laser):
+        dset = data_laser if d else data
+        eval_model_dataset(config, embedder, dset, pad_len, path, d)
 
 if __name__ == "__main__":
     main()

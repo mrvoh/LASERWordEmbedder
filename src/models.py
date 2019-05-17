@@ -66,14 +66,14 @@ class LASERHiddenExtractor(Encoder):
 ###########################################################################
 class LASEREmbedderBase(nn.Module):
 
-    def __init__(self, encoder_path, bpe_pad_len = 43, encoder = LASERHiddenExtractor):
+    def __init__(self, encoder_path, bpe_pad_len = 20, encoder = LASERHiddenExtractor):
         super().__init__()
         self.ENCODER_SIZE = self.embedding_dim = 320  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
         self.NUM_DIRECTIONS = 2
         self.bpe_pad_len = bpe_pad_len
         state_dict = torch.load(encoder_path)
-        encoder = encoder(take_diff=False, **state_dict['params'])
+        encoder = encoder(**state_dict['params'])
         encoder.load_state_dict(state_dict['model'])
 
         self.bpe_emb = encoder.embed_tokens
@@ -104,15 +104,14 @@ class LASEREmbedderBaseGRU(nn.Module):
         self.NUM_DIRECTIONS = 2
         self.bpe_pad_len = bpe_pad_len
         state_dict = torch.load(encoder_path)
-        encoder = encoder(take_diff=False, **state_dict['params'])
+        encoder = encoder(**state_dict['params'])
         encoder.load_state_dict(state_dict['model'])
 
         self.bpe_emb = encoder.embed_tokens
         for param in self.bpe_emb.parameters():
             param.requires_grad = False
         gru = RNNEncoder(self.ENCODER_SIZE, int(self.embedding_dim/2))
-        att = Attention(self.embedding_dim)
-        self.token_embedder = TokenEncoder(gru, att, self.embedding_dim)
+        self.token_embedder = TokenEncoder(gru)
         self.dictionary = state_dict['dictionary']
         self.pad_index = self.dictionary['<pad>']
         self.eos_index = self.dictionary['</s>']
@@ -151,7 +150,7 @@ class LASEREmbedderI(nn.Module):
         self.embedding_dim = embedding_dim
         gru = RNNEncoder(self.ENCODER_SIZE, int(self.embedding_dim / 2))
         # att = Attention(self.embedding_dim)
-        self.token_embedder = TokenEncoder(gru, None, self.embedding_dim)
+        self.token_embedder = TokenEncoder(gru)
 
         state_dict = torch.load(encoder_path)
         self.encoder = encoder(store_hidden=False,**state_dict['params'])
@@ -161,7 +160,9 @@ class LASEREmbedderI(nn.Module):
             param.requires_grad = False
 
         self.scaling_param = nn.Parameter(torch.ones(1))
-        self.bn = nn.BatchNorm1d(self.ENCODER_SIZE)
+        self.bn1 = nn.BatchNorm1d(self.ENCODER_SIZE)
+        self.bn2 = nn.BatchNorm1d(self.embedding_dim)
+
 
         self.dictionary = state_dict['dictionary']
         self.pad_index = self.dictionary['<pad>']
@@ -203,7 +204,8 @@ class LASEREmbedderI(nn.Module):
         embeddings = self.token_embedder(h1.permute(1,0,2))
         embeddings = embeddings.split(split_size=s, dim=0)
         embeddings, _ = stack_and_pad_tensors(embeddings)
-        embeddings = embeddings.permute(1,0,2)
+        embeddings = self.bn2(embeddings.permute(1, 2, 0)).permute(0, 2, 1)
+        # embeddings = embeddings.permute(1,0,2)
 
         return embeddings
 
@@ -228,7 +230,7 @@ class LASEREmbedderIII(nn.Module):
         self.encoder = encoder(**state_dict['params'], store_hidden=True)
         self.encoder.load_state_dict(state_dict['model'])
         # freeze params of LASER encoder:
-        for param in self.encoder.embed_tokens.params():
+        for param in self.encoder.embed_tokens.parameters():
             param.requires_grad = False
 
         self.dictionary = state_dict['dictionary']
@@ -237,7 +239,8 @@ class LASEREmbedderIII(nn.Module):
         self.unk_index = self.dictionary['<unk>']
         self.embedding_dim = embedding_dim
 
-        self.bn = nn.BatchNorm1d(self.ENCODER_SIZE)
+        self.bn1 = nn.BatchNorm1d(self.ENCODER_SIZE)
+        self.bn2 = nn.BatchNorm1d(self.embedding_dim)
         self.scaling_param = nn.Parameter(torch.ones(1))
         self.layer_weights = nn.Parameter(torch.ones(self.NUM_LAYERS))
 
@@ -267,7 +270,7 @@ class LASEREmbedderIII(nn.Module):
         embeddings = torch.sum(weighted, dim=1)
 
         # split over all words
-        embeddings = self.bn(embeddings.permute(0, 2, 1)).permute(0, 2, 1)
+        embeddings = self.bn1(embeddings.permute(0, 2, 1)).permute(0, 2, 1)
         embeddings = torch.split(embeddings.permute(1, 0, 2).contiguous().view(-1, self.ENCODER_SIZE),
                                     split_size_or_sections=token_lens, dim=0)
         s = sequence_lengths_token
@@ -280,10 +283,13 @@ class LASEREmbedderIII(nn.Module):
         h1 = self.scaling_param * h1  # inspired by ELMO
 
         # encode the embeddings
+
         embeddings = self.token_embedder(h1.permute(1, 0, 2))
         embeddings = embeddings.split(split_size=s, dim=0)
         embeddings, _ = stack_and_pad_tensors(embeddings)
-        embeddings = embeddings.permute(1, 0, 2)
+        # apply batchnorm
+        embeddings = self.bn2(embeddings.permute(1,2,0)).permute(0,2,1)
+        # embeddings = embeddings.permute(1, 0, 2)
         return embeddings
 
         # Get embeddings

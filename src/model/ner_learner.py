@@ -49,7 +49,7 @@ class NERLearner(object):
             self.logger.info("No GPU found.")
 
     def get_model_path(self, name):
-        return os.path.join(self.model_path,name)+'.h5'
+        return os.path.join(self.model_path,name)
 
     def get_layer_groups(self, do_fc=False):
         return children(self.model)
@@ -75,11 +75,14 @@ class NERLearner(object):
 
     def load(self, fn=None):
         if not fn: fn = self.config.ner_model_path
-        fn = self.get_model_path(fn)
-        load_ner_model(self.model, fn, strict=True)
-        self.logger.info(f"Loaded model from {fn}")
+        # fn = self.get_model_path(fn)
+        self.model = torch.load(fn)
+        # state_dict = torch.load(fn)
+        # self.model.load_state_dict(state_dict)
+        # # load_ner_model(self.model, fn, strict=True)
+        # self.logger.info(f"Loaded model from {fn}")
 
-    def batch_iter(self, train, batch_size, return_lengths=False, shuffle=False, sorter=False, drop_last =True):
+    def batch_iter(self, train, batch_size, return_lengths=False, shuffle=False, sorter=False, drop_last =True, use_laser=None):
         """
         Builds a generator from the given dataloader to be fed into the model
 
@@ -103,9 +106,10 @@ class NERLearner(object):
                                 sequence_lengths: list([len(sent1), len(sent2), ...])
 
         """
+        if use_laser is None: use_laser = self.config.use_laser
         nbatches = (len(train) + batch_size - 1) // batch_size
 
-        if self.config.use_laser:
+        if use_laser:
             dataloader = get_data_loader(train, batch_size, drop_last, collate_fn=collate_fn_eval_laser)
         else:
             dataloader = get_data_loader(train, batch_size, drop_last)
@@ -275,7 +279,7 @@ class NERLearner(object):
         total_preds = 0
         total_step = None
 
-        for batch_idx, (inputs, word_lens, sequence_lengths, targets ) in enumerate(val_generator):
+        for batch_idx, (inputs, word_lens, sequence_lengths, targets) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
             if inputs.shape[0] == self.model.embedder.bpe_pad_len:
                 self.logger.info('Skipping batch of size=1')
@@ -330,7 +334,7 @@ class NERLearner(object):
         total_preds = 0
         total_step = None
 
-        for batch_idx, (inputs, sequence_lengths, targets ) in enumerate(val_generator):
+        for batch_idx, (inputs, sequence_lengths, targets) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
             if inputs.shape[0] == self.model.embedder.bpe_pad_len:
                 self.logger.info('Skipping batch of size=1')

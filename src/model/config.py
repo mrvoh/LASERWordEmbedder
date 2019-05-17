@@ -37,11 +37,11 @@ class Config():
     # training
     train_embeddings = False
     nepochs = 20
-    dropout = 0.5
+    dropout = 0.68
     batch_size = 64
     lr_method = "adam"
     lr = 0.001
-    weight_decay = 0
+    weight_decay = 0.01
     lr_decay = 0.5
     epoch_drop = 1  # Step Decay: per # epochs to apply lr_decay
     clip = 5  # if negative, no clipping
