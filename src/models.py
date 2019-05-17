@@ -77,6 +77,8 @@ class LASEREmbedderBase(nn.Module):
         encoder.load_state_dict(state_dict['model'])
 
         self.bpe_emb = encoder.embed_tokens
+        for param in self.bpe_emb.parameters():
+            param.requires_grad = False
         self.dictionary = state_dict['dictionary']
         self.pad_index = self.dictionary['<pad>']
         self.eos_index = self.dictionary['</s>']
@@ -189,7 +191,7 @@ class LASEREmbedderI(nn.Module):
             # max pool the forward and backward hidden states
         # hidden_states, _ = hidden_states.max(dim=1)
         # split over all words
-        hidden_states = self.bn(hidden_states.permute(0,2,1)).permute(0,2,1)
+        hidden_states = self.bn1(hidden_states.permute(0,2,1)).permute(0,2,1)
         hidden_states = torch.split(hidden_states.permute(1,0,2).contiguous().view(-1,self.ENCODER_SIZE), split_size_or_sections=token_lens, dim=0)
         s = sequence_lengths_token
         token_pad = max(s)

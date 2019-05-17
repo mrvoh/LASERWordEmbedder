@@ -25,6 +25,7 @@ def eval_model_dataset(config, embedder, data, pad_len, model_path, use_laser):
 
     learn = NERLearner(config, model, pad_len, pad_len)
     learn.load(model_path)
+    learn.model.set_bpe_pad_len(pad_len)
     n_batches, dataloader = learn.batch_iter(data, config.batch_size, use_laser= use_laser)
     if use_laser:
         learn.test_laser(n_batches, dataloader)
@@ -33,7 +34,7 @@ def eval_model_dataset(config, embedder, data, pad_len, model_path, use_laser):
 
 
 def main():
-    data_filepath = os.path.join('parsed_data', 'ned_test_bio_bpe')
+    data_filepath = os.path.join('parsed_data', 'eng_test_bio_bpe')
     # create instance of config
     config = Config()
     # get dataset

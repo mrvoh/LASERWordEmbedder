@@ -34,8 +34,6 @@ class NERLearner(object):
 
         self.criterion = CRF(self.config.ntags)
         self.optimizer = optim.Adam(self.model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
-        print(self.optimizer)
-
 
         if USE_GPU:
             self.use_cuda = True
@@ -68,7 +66,7 @@ class NERLearner(object):
         if not name:
             name = self.config.ner_model_path
 
-        torch.save(self.model, name)
+        torch.save(self.model.state_dict(), name)
         # save_model(self.model, name)
         self.logger.info(f"Saved model at {name}")
 
@@ -76,7 +74,7 @@ class NERLearner(object):
     def load(self, fn=None):
         if not fn: fn = self.config.ner_model_path
         # fn = self.get_model_path(fn)
-        self.model = torch.load(fn)
+        self.model.load_state_dict(torch.load(fn))
         # state_dict = torch.load(fn)
         # self.model.load_state_dict(state_dict)
         # # load_ner_model(self.model, fn, strict=True)
@@ -131,6 +129,8 @@ class NERLearner(object):
         Fits the model to the training dataset and evaluates on the validation set.
         Saves the model to disk
         """
+        n_epoch_no_improv = 0
+        prev_best = 0
         if not epochs:
             epochs = self.config.nepochs
         batch_size = self.config.batch_size
@@ -142,8 +142,6 @@ class NERLearner(object):
         scheduler = StepLR(self.optimizer, step_size=self.config.epoch_drop, gamma=self.config.lr_decay)
 
         if not fine_tune: self.logger.info("Training Model")
-
-        f1s = []
 
         for epoch in range(epochs):
             self.model.set_bpe_pad_len(self.tr_pad_len)
@@ -161,12 +159,14 @@ class NERLearner(object):
                     f1 = self.test_base(nbatches_dev, dev_generator, fine_tune=fine_tune)
 
             # Early stopping
-            if len(f1s) > self.config.nepoch_no_imprv:
-                if sum([f1 > f1s[max(-i, -len(f1s))] for i in range(1,self.config.nepoch_no_imprv+1)]) == 0:
+            if f1 > prev_best:
+                n_epoch_no_improv = 0
+                prev_best = f1
+            else:
+                n_epoch_no_improv += 1
+                if n_epoch_no_improv >= self.config.nepoch_no_imprv:
                     print("No improvement in the last {} epochs. Stopping training".format(self.config.nepoch_no_imprv))
                     break
-            else:
-                f1s.append(f1)
 
         if fine_tune:
             self.save(self.config.ner_ft_path)
