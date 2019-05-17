@@ -5,6 +5,9 @@ from torchnlp.encoders.text import stack_and_pad_tensors, pad_tensor
 from torch.utils.data import DataLoader
 import torch
 import os
+import nltk
+import numpy as np
+import json
 
 if os.name == 'posix': import fastBPE
 LASER = os.environ['LASER']
@@ -175,7 +178,8 @@ def get_muse_vectors(case_insensitive=False):
 
 def get_conll_muse_vectors(case_insensitive=True):
     conll_muse_vectors = {}
-    conll_words_not_in_muse_vectors = []
+    unknown_word_vector = load_unknown_muse_vector()
+
 
     conll_vocab = get_conll_vocab(case_insensitive)
     muse_vectors = get_muse_vectors(case_insensitive)
@@ -185,9 +189,9 @@ def get_conll_muse_vectors(case_insensitive=True):
             conll_muse_vectors[word] = muse_vectors[word]
 
         else:
-            conll_words_not_in_muse_vectors.append(word)
+            conll_muse_vectors[word] = unknown_word_vector
 
-    return conll_muse_vectors, conll_words_not_in_muse_vectors
+    return conll_muse_vectors
 
 def parse_dataset_laser(path, label_to_idx, word_to_idx):
     sentences = []
@@ -398,6 +402,8 @@ def i2b(i_dataset):
 
 
 def generate_conll2002_datasets():
+    nltk.download('conll2002')
+
     sets = [
         ("esp_test", "https://www.clips.uantwerpen.be/conll2002/ner/data/esp.testa"),
         ("esp_valid", "https://www.clips.uantwerpen.be/conll2002/ner/data/esp.testb"),
@@ -406,6 +412,12 @@ def generate_conll2002_datasets():
         ("ned_valid", "https://www.clips.uantwerpen.be/conll2002/ner/data/ned.testb"),
         ("ned_train", "https://www.clips.uantwerpen.be/conll2002/ner/data/ned.train")
     ]
+
+    #esp_pos_tags = get_esp_pos_tags()
+    counter = 0
+
+    #trying nltk instead
+    tags = nltk.corpus.conll2002.tagged_words()
 
 
     for set in sets:
@@ -431,11 +443,25 @@ def generate_conll2002_datasets():
                 else:
                     info = line.split()
 
+                    if esp and info[0] != tags[counter][0]:
+                        print(info[0])
+                        print(tags[counter])
+                        return
+
                     if esp:
-                        sentence.append([info[0], 'DUM', 'MY', info[1]])
+                        t = tags[counter]
+
+                        if t[0] != info[0]:
+                            print("error with tags")
+                            return
+
+                        else:
+                            sentence.append([info[0], tags[counter][1], 'DUMMY', info[1]])
+                            counter += 1
 
                     else:
                         sentence.append([info[0], info[1], 'DUMMY', info[2]])
+
 
         with open("./data/" + path + ".txt", "w") as f:
             for s in sentences:
@@ -443,6 +469,7 @@ def generate_conll2002_datasets():
                     f.write(' '.join(w) + '\n')
 
                 f.write('\n')
+        
 
 
             f.close()
@@ -494,4 +521,88 @@ def generate_conll2003_german_datasets():
             f.close()
 
 
-generate_conll2003_german_datasets()
+
+def get_esp_pos_tags():
+    pos_tags = {}
+
+    paths = ("test", "train", "valid")
+
+    for p in paths:
+        with open ("./data/esp_" + p + "_words.tag") as f:
+            for line in f:
+                if line != "\n":
+                    line = line.split("\t")
+                    word = line[0]
+                    tag = line[1].replace("\n", "")
+
+                    if word not in pos_tags:
+                        pos_tags[word] = tag
+
+
+    return pos_tags
+
+
+'''
+def generate_unknown_muse_vector():
+    a = np.random.uniform(low=-0.15, high=0.15, size=(300,))
+    a = list(a)
+
+    with open("./data/muse_unknown_vector.json", "w") as f:
+        json.dump(a, f)
+        f.close()
+'''
+
+
+'''a, b = get_conll_muse_vectors()
+
+print(len(a))
+print(len(b))'''
+
+def load_unknown_muse_vector():
+    with open("./data/muse_unknown_vector.json") as f:
+        return json.load(f)
+
+
+def load_muse_subset(dataset):
+    with open("./data/muse_encoded_subset_" + dataset + ".json") as f:
+        return json.load(f)
+
+
+def get_muse_encoded_sentences(dataset):
+    TRAIN_FILE_PATH = "./data/train_bio.txt"
+    TEST_FILE_PATH = "./data/test_bio.txt"
+    VALID_FILE_PATH = "./data/valid_bio.txt"
+
+    conll_muse_vectors = get_conll_muse_vectors()
+
+    if dataset == "train":
+        path = TRAIN_FILE_PATH
+        name = "train"
+
+    elif dataset == "test":
+        path = TEST_FILE_PATH
+        name = "test"
+
+    else:
+        path = VALID_FILE_PATH
+        name = "valid"
+
+
+    data = load_data(path)
+
+    encoded_sentences = []
+
+    for ts in data:
+        encoded_sentence = []
+
+        for w in ts:
+            word = str(w[0]).lower()
+
+            encoded_word = conll_muse_vectors[word]
+            encoded_sentence.append(encoded_word)
+
+        encoded_sentences.append(encoded_sentence)
+
+    return encoded_sentences
+
+
