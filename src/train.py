@@ -1,4 +1,3 @@
-from model.data_utils import CoNLLDataset
 from model.config import Config
 from model.ner_model import NERModel
 from model.ner_learner import NERLearner
@@ -28,20 +27,20 @@ def main():
     #
     embedder_base = LASEREmbedderBase(config.model_path, tr_pad_len)
     embedder_base_gru = LASEREmbedderBaseGRU(config.model_path, tr_pad_len)
-    embedderI = LASEREmbedderI(config.model_path)
-    embedderIII = LASEREmbedderIII(config.model_path)
+    embedderI = LASEREmbedderI(config.model_path, static_lstm = False)
+    embedderIII = LASEREmbedderIII(config.model_path, static_lstm = False)
 
     embedders = [
-        embedder_base,
-        embedder_base_gru,
-        embedderI,
+        # embedder_base,
+        # embedder_base_gru,
+        # embedderI,
         embedderIII,
     ]
 
     use_laser = [
-        False,
-        False,
-        True,
+        # False,
+        # False,
+        # True,
         True
     ]
 

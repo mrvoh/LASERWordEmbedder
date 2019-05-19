@@ -24,7 +24,7 @@ class LASERHiddenExtractor(Encoder):
     """
     def __init__(
             self, num_embeddings, padding_idx, embed_dim=320, hidden_size=512, num_layers=1, bidirectional=False,
-            left_pad=True, padding_value=0., store_hidden=False
+            left_pad=True, padding_value=0., store_hidden=False, keep_static = True
     ):
         super().__init__(num_embeddings, padding_idx, embed_dim, hidden_size, num_layers, bidirectional,
                          left_pad, padding_value)  # initializes original encoder
@@ -32,6 +32,9 @@ class LASERHiddenExtractor(Encoder):
 
         # self.embed_tokens.requires_grad = False
         # self.lstm.requires_grad = False
+        if not keep_static:
+            self.lstm.dropout = 0.3
+            print(self.lstm)
 
         # static variables
         self.num_layers = 5
@@ -142,12 +145,12 @@ class LASEREmbedderBaseGRU(nn.Module):
 
 class LASEREmbedderI(nn.Module):
 
-    def __init__(self, encoder_path, bpe_pad_len=43, embedding_dim=320, encoder = LASERHiddenExtractor):
+    def __init__(self, encoder_path, bpe_pad_len=43, embedding_dim=320, encoder = LASERHiddenExtractor, static_lstm = True):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
         self.NUM_DIRECTIONS = 2
-
+        self.static_lstm = static_lstm
         self.bpe_pad_len = bpe_pad_len
         self.embedding_dim = embedding_dim
         gru = RNNEncoder(self.ENCODER_SIZE, int(self.embedding_dim / 2))
@@ -155,11 +158,15 @@ class LASEREmbedderI(nn.Module):
         self.token_embedder = TokenEncoder(gru)
 
         state_dict = torch.load(encoder_path)
-        self.encoder = encoder(store_hidden=False,**state_dict['params'])
+        self.encoder = encoder(store_hidden=False, keep_static = static_lstm, **state_dict['params'])
         self.encoder.load_state_dict(state_dict['model'])
-        #TODO: change back
-        for param in self.encoder.embed_tokens.parameters():
-            param.requires_grad = False
+        # Freeze parts of LASER encoder
+        if self.static_lstm:
+            for param in self.encoder.parameters():
+                param.requires_grad = False
+        else:
+            for param in self.encoder.embed_tokens.parameters():
+                param.requires_grad = False
 
         self.scaling_param = nn.Parameter(torch.ones(1))
         self.bn1 = nn.BatchNorm1d(self.ENCODER_SIZE)
@@ -217,11 +224,12 @@ class LASEREmbedderI(nn.Module):
 
 class LASEREmbedderIII(nn.Module):
     #TODO: use ELMO LSTM
-    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor):
+    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor, static_lstm = True):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
         self.NUM_DIRECTIONS = 2
+        self.static_lstm = static_lstm
 
         self.bpe_pad_len = bpe_pad_len
         self.embedding_dim = embedding_dim
@@ -229,11 +237,15 @@ class LASEREmbedderIII(nn.Module):
         self.token_embedder = TokenEncoder(gru)
 
         state_dict = torch.load(encoder_path)
-        self.encoder = encoder(**state_dict['params'], store_hidden=True)
+        self.encoder = encoder(**state_dict['params'], store_hidden=True, keep_static= static_lstm)
         self.encoder.load_state_dict(state_dict['model'])
         # freeze params of LASER encoder:
-        for param in self.encoder.embed_tokens.parameters():
-            param.requires_grad = False
+        if self.static_lstm:
+            for param in self.encoder.parameters():
+                param.requires_grad = False
+        else:
+            for param in self.encoder.embed_tokens.parameters():
+                param.requires_grad = False
 
         self.dictionary = state_dict['dictionary']
         self.pad_index = self.dictionary['<pad>']
@@ -404,15 +416,26 @@ class TokenEncoder(nn.Module):
 
     max_pool, _ = outputs.max(dim=0)
     return max_pool
-    # if isinstance(hidden, tuple): # LSTM
-    #   hidden = hidden[1] # take the cell state
-    #
-    # if self.encoder.bidirectional: # need to concat the last 2 hidden layers
-    #   hidden = torch.cat([hidden[-1], hidden[-2]], dim=1)
-    # else:
-    #   hidden = hidden[-1]
-    #
-    # energy, linear_combination = self.attention(hidden, outputs, outputs)
-    # return linear_combination
+
+class MUSEEmbedder(nn.Module):
+    """A simple bag-of-words encoder"""
+
+    def __init__(self, word_to_idx, embedding):
+        super(MUSEEmbedder, self).__init__()
+        self.word_to_idx = word_to_idx
+        num_emb, emb_size = embedding.shape
+
+        self.embedding_dim = emb_size
+        self.embed = nn.Embedding(num_emb, emb_size)
+        self.embed.load_state_dict({'weight': torch.tensor(embedding)})
+
+        for param in self.embed.parameters():
+            param.requires_grad = False
+
+
+    def forward(self, inputs):
+        embeds = self.embed(inputs)
+
+        return embeds
 
 

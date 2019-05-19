@@ -66,7 +66,7 @@ class NERLearner(object):
         if not name:
             name = self.config.ner_model_path
 
-        torch.save(self.model.state_dict(), name)
+        torch.save(self.model.state_dict(), name+'.pt')
         # save_model(self.model, name)
         self.logger.info(f"Saved model at {name}")
 
@@ -75,10 +75,16 @@ class NERLearner(object):
         if not fn: fn = self.config.ner_model_path
         # fn = self.get_model_path(fn)
         self.model.load_state_dict(torch.load(fn))
-        # state_dict = torch.load(fn)
-        # self.model.load_state_dict(state_dict)
-        # # load_ner_model(self.model, fn, strict=True)
-        # self.logger.info(f"Loaded model from {fn}")
+
+    def load_muse(self, fn=None):
+        if not fn: fn = self.config.ner_model_path
+        state_dict  = torch.load(fn)
+        state_dict = {k: v for k, v in state_dict.items() if k != 'embedder.embed.weight'}
+
+        # s = self.model.state_dict()
+        # s = {k: v for k, v in s.items() if k != 'embedder.embed.weight'}
+
+        self.model.load_state_dict(state_dict, strict = False)
 
     def batch_iter(self, train, batch_size, return_lengths=False, shuffle=False, sorter=False, drop_last =True, use_laser=None):
         """
@@ -160,6 +166,7 @@ class NERLearner(object):
 
             # Early stopping
             if f1 > prev_best:
+                self.save(self.config.ner_model_path)
                 n_epoch_no_improv = 0
                 prev_best = f1
             else:
@@ -168,10 +175,10 @@ class NERLearner(object):
                     print("No improvement in the last {} epochs. Stopping training".format(self.config.nepoch_no_imprv))
                     break
 
-        if fine_tune:
-            self.save(self.config.ner_ft_path)
-        else:
-            self.save(self.config.ner_model_path)
+        # if fine_tune:
+        #     self.save(self.config.ner_ft_path)
+        # else:
+        #     self.save(self.config.ner_model_path)
 
     def train_laser(self, epoch, nbatches_train, train_generator, fine_tune=False):
         self.logger.info('\nEpoch: %d' % epoch)
@@ -231,7 +238,7 @@ class NERLearner(object):
         for batch_idx, (inputs, sequence_lengths, targets) in enumerate(train_generator):
 
             if batch_idx == nbatches_train: break
-            if inputs.shape[0] == self.model.embedder.bpe_pad_len:
+            if targets.shape[0] == self.config.batch_size:
                 self.logger.info('Skipping batch of size=1')
                 continue
 
@@ -281,7 +288,7 @@ class NERLearner(object):
 
         for batch_idx, (inputs, word_lens, sequence_lengths, targets) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
-            if inputs.shape[0] == self.model.embedder.bpe_pad_len:
+            if targets.shape[0] == self.config.batch_size:
                 self.logger.info('Skipping batch of size=1')
                 continue
 
@@ -336,18 +343,11 @@ class NERLearner(object):
 
         for batch_idx, (inputs, sequence_lengths, targets) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
-            if inputs.shape[0] == self.model.embedder.bpe_pad_len:
+            if targets.shape[0] == self.config.batch_size:
                 self.logger.info('Skipping batch of size=1')
                 continue
 
             total_step = batch_idx
-            #targets = T(targets, cuda=self.use_cuda).transpose(0,1).contiguous()
-
-
-            # inputs = T(inputs, cuda=self.use_cuda)
-            # inputs, targets = Variable(inputs, requires_grad=False), \
-            #                                   Variable(targets)
-            # seq_len = inputs.size(0)
             outputs = self.model(inputs) #.view(seq_len,-1,9)
 
             # Create mask

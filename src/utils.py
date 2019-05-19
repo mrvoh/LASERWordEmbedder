@@ -8,6 +8,7 @@ import os
 import nltk
 import numpy as np
 import json
+from collections import OrderedDict
 
 if os.name == 'posix': import fastBPE
 LASER = os.environ['LASER']
@@ -557,52 +558,88 @@ def generate_unknown_muse_vector():
 
 print(len(a))
 print(len(b))'''
+#
+# def load_unknown_muse_vector():
+#     with open("./data/muse_unknown_vector.json") as f:
+#         return json.load(f)
+#
+#
+# def load_muse_subset(dataset):
+#     with open("./data/muse_encoded_subset_" + dataset + ".json") as f:
+#         return json.load(f)
+#
+#
+# def get_muse_encoded_sentences(dataset):
+#     TRAIN_FILE_PATH = "./data/train_bio.txt"
+#     TEST_FILE_PATH = "./data/test_bio.txt"
+#     VALID_FILE_PATH = "./data/valid_bio.txt"
+#
+#     conll_muse_vectors = get_conll_muse_vectors()
+#
+#     if dataset == "train":
+#         path = TRAIN_FILE_PATH
+#         name = "train"
+#
+#     elif dataset == "test":
+#         path = TEST_FILE_PATH
+#         name = "test"
+#
+#     else:
+#         path = VALID_FILE_PATH
+#         name = "valid"
+#
+#
+#     data = load_data(path)
+#
+#     encoded_sentences = []
+#
+#     for ts in data:
+#         encoded_sentence = []
+#
+#         for w in ts:
+#             word = str(w[0]).lower()
+#
+#             encoded_word = conll_muse_vectors[word]
+#             encoded_sentence.append(encoded_word)
+#
+#         encoded_sentences.append(encoded_sentence)
+#
+#     return encoded_sentences
 
-def load_unknown_muse_vector():
-    with open("./data/muse_unknown_vector.json") as f:
-        return json.load(f)
-
-
-def load_muse_subset(dataset):
-    with open("./data/muse_encoded_subset_" + dataset + ".json") as f:
-        return json.load(f)
-
-
-def get_muse_encoded_sentences(dataset):
-    TRAIN_FILE_PATH = "./data/train_bio.txt"
-    TEST_FILE_PATH = "./data/test_bio.txt"
-    VALID_FILE_PATH = "./data/valid_bio.txt"
-
-    conll_muse_vectors = get_conll_muse_vectors()
-
-    if dataset == "train":
-        path = TRAIN_FILE_PATH
-        name = "train"
-
-    elif dataset == "test":
-        path = TEST_FILE_PATH
-        name = "test"
-
+def parse_dataset_muse(path, label_to_idx, word_to_idx = None):
+    sentences = []
+    if word_to_idx is None:
+        word_to_idx = OrderedDict()
+        word_num = 0
     else:
-        path = VALID_FILE_PATH
-        name = "valid"
+        word_num = len(word_to_idx)
+    with open(path) as f:
+
+        sample = {'word_ids': [], 'labels': []}
+        for line in f.read().splitlines():
+
+            if line in ['\n', '\r\n', '']:  # end of sequence
+                if len(sample['labels']) > 0:
+                    sample['word_ids'] = torch.LongTensor(sample['word_ids'])
+                    sample['labels'] = torch.LongTensor(sample['labels'])
+                    sentences.append(sample)
+                sample = {'word_ids': [], 'labels': []}
+                continue
+            else:
+                ls = line.split()
+                word = ls[0].lower()
+                label = ls[3]
+
+                if word not in word_to_idx.keys():
+                    word_to_idx[word] = word_num
+                    word_num += 1
+                sample['word_ids'].append(word_to_idx[word])
+                sample['labels'].append(label_to_idx[label])
+
+    return Dataset(sentences), word_to_idx
 
 
-    data = load_data(path)
-
-    encoded_sentences = []
-
-    for ts in data:
-        encoded_sentence = []
-
-        for w in ts:
-            word = str(w[0]).lower()
-
-            encoded_word = conll_muse_vectors[word]
-            encoded_sentence.append(encoded_word)
-
-        encoded_sentences.append(encoded_sentence)
-
-    return encoded_sentences
-
-
+def get_embedding(vecs, word_to_idx):
+    embed_table = [vecs[key].numpy() for key in word_to_idx.keys()]
+    embed_table = np.array(embed_table, dtype=float)
+    return embed_table
