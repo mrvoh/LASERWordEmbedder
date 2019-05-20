@@ -10,11 +10,12 @@ from utils import parse_dataset_muse, get_embedding
 from models import *
 
 
-def main():
+def main(config = None):
     # create instance of config
-    config = Config()
-    train, word_to_idx = parse_dataset_muse(config.filename_train, config.label_to_idx)
-    dev, word_to_idx = parse_dataset_muse(config.filename_dev, config.label_to_idx, word_to_idx)
+    if config is None:
+        config = Config()
+    train, word_to_idx = parse_dataset_muse(config.filename_train, config.label_to_idx, pos_target = config.pos_target)
+    dev, word_to_idx = parse_dataset_muse(config.filename_dev, config.label_to_idx, word_to_idx, pos_target = config.pos_target)
 
     vectors = FastText(aligned = True, cache='.word_vectors_cache')
 

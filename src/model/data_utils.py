@@ -8,6 +8,8 @@ import os
 # shared global variables to be imported from model also
 UNK = "$UNK$"
 NUM = "$NUM$"
+
+
 NONE = "O"
 
 
@@ -409,7 +411,10 @@ def get_chunks(seq, tags):
         result = [("PER", 0, 2), ("LOC", 3, 4)]
 
     """
-    default = tags[NONE]
+    if NONE in tags.keys():
+        default = tags[NONE]
+    else:
+        default = tags['X']
     idx_to_tag = {idx: tag for tag, idx in tags.items()}
     chunks = []
     chunk_type, chunk_start = None, None

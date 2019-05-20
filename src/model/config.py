@@ -24,25 +24,53 @@ class Config():
 
     def set_model_name(self, name):
         self.model_name = name
-        self.ner_model_path = os.path.join('saves', self.model_name)
+        subfolder = 'POS' if self.pos_target else 'NER'
+        self.ner_model_path = os.path.join('saves', self.langfolder, subfolder, self.model_name)
+
+    def set_pos_target(self, task):
+        self.pos_target = True if task == 'POS' else False
+        if self.pos_target:
+            self.label_to_idx = {
+                'ADJ': 0,
+                'ADP': 1,
+                'ADV': 2,
+                'AUX': 3,  # no difference between aux and verb
+                'CONJ': 4,
+                'DET': 5,
+                'INTJ': 6,
+                'NOUN': 7,
+                'NUM': 8,
+                'PART': 9,
+                'PRON': 10,
+                'PROPN': 11,
+                'PUNCT': 12,
+                'SCONJ': 13,
+                'VERB': 3,  # no difference between aux and verb
+                'X': 15,
+                'SYM': 15,
+            }
+        else:
+            self.label_to_idx = {'O': 0, 'I-PER': 1, 'I-ORG': 2, 'I-LOC': 3, 'I-MISC': 4,
+                            'B-PER': 5, 'B-ORG': 6, 'B-LOC': 7, 'B-MISC': 8}
 
 
     # general config
     dir_output = "results/test/"
     dir_model = dir_output
     path_log = dir_output + "log.txt"
+    pos_target = True # flag to indicate whether to perform NER or POS tagging
 
 
     # FILES TO TRAIN AND EVALUATE ON
-    filename_dev = "data/valid_bio_bpe.txt"
+    filename_dev = "parsed_data/eng_valid_bio_bpe1.txt"
     filename_test = "data/test_bio_bpe.txt"
-    filename_train = "data/train_bio_bpe.txt"
+    filename_train = "parsed_data/eng_train_bio_bpe1.txt"
 
     # training
     train_embeddings = False
     nepochs = 25
     dropout = 0.5
-    batch_size = 64
+    batch_size = 32
     lr_method = "adam"
     lr = 0.001
     weight_decay = 0.01
@@ -55,12 +83,37 @@ class Config():
     hidden_size_lstm = 300  # lstm on word embeddings
 
     model_name = 'LASEREmbedderIII.pt'
-    ner_model_path = os.path.join('saves', model_name) #'"saves/ner_{}e_glove".format(nepochs)
+    model_folder = 'saves'
+    subfolder = 'POS' if pos_target else 'NER'
+    langfolder = 'eng'
+    ner_model_path = os.path.join(model_folder,langfolder ,subfolder, model_name) #'"saves/ner_{}e_glove".format(nepochs)
+    results_folder = 'results'
 
     use_laser = True
     # use_muse = not use_laser -> not in use yet
-    label_to_idx = {'O':0,'I-PER': 1, 'I-ORG': 2, 'I-LOC': 3, 'I-MISC': 4,
-     'B-PER': 5, 'B-ORG': 6, 'B-LOC': 7, 'B-MISC': 8}
+    if pos_target:
+        label_to_idx = {
+                 'ADJ':0,
+                 'ADP':1,
+                 'ADV':2,
+                 'AUX':3, # no difference between aux and verb
+                 'CONJ':4,
+                 'DET':5,
+                 'INTJ':6,
+                 'NOUN':7,
+                 'NUM':8,
+                 'PART':9,
+                 'PRON':10,
+                 'PROPN':11,
+                 'PUNCT':12,
+                 'SCONJ':13,
+                 'VERB':3,  # no difference between aux and verb
+                 'X':15,
+                'SYM':15,
+        }
+    else:
+        label_to_idx = {'O':0,'I-PER': 1, 'I-ORG': 2, 'I-LOC': 3, 'I-MISC': 4,
+                        'B-PER': 5, 'B-ORG': 6, 'B-LOC': 7, 'B-MISC': 8}
     ntags = len(label_to_idx)
 
     # NOTE: if both chars and crf, only 1.6x slower on GPU

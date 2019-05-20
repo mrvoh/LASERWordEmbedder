@@ -194,12 +194,13 @@ def get_conll_muse_vectors(case_insensitive=True):
 
     return conll_muse_vectors
 
-def parse_dataset_laser(path, label_to_idx, word_to_idx):
+def parse_dataset_laser(path, label_to_idx, word_to_idx, pos_target= False):
     sentences = []
     UNK = 3
     PAD = 1
+    target_index = 1 if pos_target else 3
 
-    with open(path) as f:
+    with open(path, encoding='utf-8') as f:
 
         sample = {'word_ids': [], 'labels': [], 'word_len': []}
         max_len_token = 0
@@ -216,7 +217,7 @@ def parse_dataset_laser(path, label_to_idx, word_to_idx):
                 ls = line.split()
                 max_len_token = max(max_len_token, len(ls[4:]))
                 word = ls[4:]
-                label = ls[3]
+                label = ls[target_index]
                 if len(word) > 0:
                     word_ids = [word_to_idx[w.lower()] if w.lower() in word_to_idx.keys() else UNK for w in word]
                     sample['word_ids'].extend(
@@ -228,12 +229,13 @@ def parse_dataset_laser(path, label_to_idx, word_to_idx):
                         print(line)
     return Dataset(sentences), max_len_token
 
-def parse_dataset(path, label_to_idx, word_to_idx, pad_len=None):
+def parse_dataset(path, label_to_idx, word_to_idx, pos_target=False, pad_len=None):
     sentences = []
     UNK = 3
     PAD = 1
+    target_index = 1 if pos_target else 3
 
-    with open(path) as f:
+    with open(path, encoding='utf-8') as f:
 
         sample = {'word_ids': [], 'labels': []}
         max_len_token = 0
@@ -248,7 +250,7 @@ def parse_dataset(path, label_to_idx, word_to_idx, pad_len=None):
                 ls = line.split()
                 max_len_token = max(max_len_token, len(ls[4:]))
                 word = ls[4:]
-                label = ls[3]
+                label = ls[target_index]
                 if len(word) > 0:
                     word_ids = [word_to_idx[w] if w in word_to_idx.keys() else UNK for w in word]
                     sample['word_ids'].append(
@@ -543,77 +545,16 @@ def get_esp_pos_tags():
     return pos_tags
 
 
-'''
-def generate_unknown_muse_vector():
-    a = np.random.uniform(low=-0.15, high=0.15, size=(300,))
-    a = list(a)
+def parse_dataset_muse(path, label_to_idx, word_to_idx = None, pos_target=False):
 
-    with open("./data/muse_unknown_vector.json", "w") as f:
-        json.dump(a, f)
-        f.close()
-'''
-
-
-'''a, b = get_conll_muse_vectors()
-
-print(len(a))
-print(len(b))'''
-#
-# def load_unknown_muse_vector():
-#     with open("./data/muse_unknown_vector.json") as f:
-#         return json.load(f)
-#
-#
-# def load_muse_subset(dataset):
-#     with open("./data/muse_encoded_subset_" + dataset + ".json") as f:
-#         return json.load(f)
-#
-#
-# def get_muse_encoded_sentences(dataset):
-#     TRAIN_FILE_PATH = "./data/train_bio.txt"
-#     TEST_FILE_PATH = "./data/test_bio.txt"
-#     VALID_FILE_PATH = "./data/valid_bio.txt"
-#
-#     conll_muse_vectors = get_conll_muse_vectors()
-#
-#     if dataset == "train":
-#         path = TRAIN_FILE_PATH
-#         name = "train"
-#
-#     elif dataset == "test":
-#         path = TEST_FILE_PATH
-#         name = "test"
-#
-#     else:
-#         path = VALID_FILE_PATH
-#         name = "valid"
-#
-#
-#     data = load_data(path)
-#
-#     encoded_sentences = []
-#
-#     for ts in data:
-#         encoded_sentence = []
-#
-#         for w in ts:
-#             word = str(w[0]).lower()
-#
-#             encoded_word = conll_muse_vectors[word]
-#             encoded_sentence.append(encoded_word)
-#
-#         encoded_sentences.append(encoded_sentence)
-#
-#     return encoded_sentences
-
-def parse_dataset_muse(path, label_to_idx, word_to_idx = None):
+    target_index = 1 if pos_target else 3
     sentences = []
     if word_to_idx is None:
         word_to_idx = OrderedDict()
         word_num = 0
     else:
         word_num = len(word_to_idx)
-    with open(path) as f:
+    with open(path, encoding='utf-8') as f:
 
         sample = {'word_ids': [], 'labels': []}
         for line in f.read().splitlines():
@@ -628,7 +569,7 @@ def parse_dataset_muse(path, label_to_idx, word_to_idx = None):
             else:
                 ls = line.split()
                 word = ls[0].lower()
-                label = ls[3]
+                label = ls[target_index]
 
                 if word not in word_to_idx.keys():
                     word_to_idx[word] = word_num

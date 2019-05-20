@@ -343,7 +343,7 @@ class NERLearner(object):
 
         for batch_idx, (inputs, sequence_lengths, targets) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
-            if targets.shape[0] == self.config.batch_size:
+            if targets.shape[0] <= self.config.batch_size:
                 self.logger.info('Skipping batch of size=1')
                 continue
 

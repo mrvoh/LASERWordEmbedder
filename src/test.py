@@ -34,14 +34,16 @@ def eval_model_dataset(config, embedder, data, pad_len, model_path, use_laser):
         return learn.test_base(n_batches, dataloader)
 
 
-def main():
+def main(config=None):
 
     results = {}
-
-    eng_path = os.path.join('parsed_data', 'eng_test_bio_bpe.txt')
-    ger_path = os.path.join('parsed_data', 'ger_test_bio_bpe.txt')
-    ned_path = os.path.join('parsed_data', 'ned_test_bio_bpe.txt')
-    spa_path = os.path.join('parsed_data', 'esp_test_bio_bpe.txt')
+    if config is None:
+        # create instance of config
+        config = Config()
+    eng_path = os.path.join('parsed_data', 'eng_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
+    ger_path = os.path.join('parsed_data', 'ger_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
+    ned_path = os.path.join('parsed_data', 'ned_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
+    spa_path = os.path.join('parsed_data', 'esp_pos_test_bio_bpe.txt') if config.pos_target else os.path.join('parsed_data', 'esp_test_bio_bpe.txt')
     data_filepaths = [
         eng_path,
         ned_path,
@@ -49,47 +51,52 @@ def main():
         ger_path,
     ]
     for data_filepath in data_filepaths:
-        # create instance of config
-        config = Config()
+
         # get dataset
 
-        data_laser, pad_len = parse_dataset_laser(data_filepath, config.label_to_idx, config.word_to_idx)
-        data, pad_len = parse_dataset(data_filepath, config.label_to_idx, config.word_to_idx)
+        data_laser, pad_len = parse_dataset_laser(data_filepath, config.label_to_idx, config.word_to_idx,  pos_target = config.pos_target)
+        data, pad_len = parse_dataset(data_filepath, config.label_to_idx, config.word_to_idx,  pos_target = config.pos_target)
 
         #####################################################################
         # SETUP
         #####################################################################
-
-        base_path = os.path.join('saves', 'LASEREmbedderBase.pt')
-        base_gru_path = os.path.join('saves', 'LASEREmbedderBaseGRU.pt')
-        i_path = os.path.join('saves', 'LASEREmbedderI.pt')
-        iii_path = os.path.join('saves', 'LASEREmbedderIII.pt')
+        subfolder = 'POS' if config.pos_target else 'NER'
+        langfolder = config.langfolder
+        base_path = os.path.join('saves',langfolder, subfolder, 'LASEREmbedderBase.pt')
+        base_gru_path = os.path.join('saves',langfolder,subfolder, 'LASEREmbedderBaseGRU.pt')
+        i_path = os.path.join('saves',langfolder,subfolder, 'LASEREmbedderI.pt')
+        iii_path = os.path.join('saves',langfolder,subfolder, 'LASEREmbedderIII.pt')
+        elmo_path = os.path.join('saves',langfolder,subfolder, 'LASEREmbedderIIIELMo.pt')
 
         paths = [
-            # base_path,
-            # base_gru_path,
-            # i_path,
-            iii_path
+            base_path,
+            base_gru_path,
+            i_path,
+            iii_path,
+            # elmo_path
         ]
 
 
-        # embedder_base = LASEREmbedderBase(config.model_path, pad_len)
-        # embedder_base_gru = LASEREmbedderBaseGRU(config.model_path, pad_len)
-        # embedderI = LASEREmbedderI(config.model_path)
+        embedder_base = LASEREmbedderBase(config.model_path, pad_len)
+        embedder_base_gru = LASEREmbedderBaseGRU(config.model_path, pad_len)
+        embedderI = LASEREmbedderI(config.model_path)
         embedderIII = LASEREmbedderIII(config.model_path)
+        # elmo_embedderIII = LASEREmbedderIIIELMo(config.model_path)
 
         embedders = [
-            # embedder_base,
-            # embedder_base_gru,
-            # embedderI,
+            embedder_base,
+            embedder_base_gru,
+            embedderI,
             embedderIII,
+            # elmo_embedderIII
         ]
 
         use_laser = [
-            # False,
-            # False,
-            # True,
-            True
+            False,
+            False,
+            True,
+            True,
+            # True
         ]
         lang_results = {}
 
@@ -100,10 +107,10 @@ def main():
 
         results[data_filepath] = lang_results
     print(results)
-    return results
+    return results, config
 
 if __name__ == "__main__":
-    res = main()
-
-    with open('results_iii.json', 'w') as f:
+    res, config = main()
+    out_path = os.path.join(config.results_folder, config.langfolder, config.subfolder, 'results_laser.json')
+    with open(out_path, 'w') as f:
         json.dump(res, f)

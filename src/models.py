@@ -64,12 +64,69 @@ class LASERHiddenExtractor(Encoder):
 
             hidden_states = torch.stack(hidden_states)
             return hidden_states
+
+
+
+class LASERHiddenExtractorELMo(nn.Module):
+    """
+        Class to extract hidden states per time step from pretrained LASER LSTM encoder.
+        Parameters as in LASER/source/embed.py -> Encoder except for take_diff.
+        take_diff takes temporal difference of hidden states if set to True.
+    """
+    def __init__(
+            self, embed_tokens, embed_dim=320, hidden_size=512, num_layers=2, bidirectional=True
+            , store_hidden=True, dropout=0.5):
+        super().__init__()
+        self.device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+
+        # self.embed_tokens.requires_grad = False
+        # self.lstm.requires_grad = False
+
+        self.embed_tokens = embed_tokens
+
+        # static variables
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        self.num_directions = 2
+        self.store_hidden = store_hidden
+
+        self.lstm = nn.LSTM(
+            embed_dim,
+            hidden_size,
+            self.num_layers,
+            bidirectional=bidirectional,
+            dropout = dropout
+        )
+
+    def forward(self, src_tokens):
+        # Adjusted version of original LASER forward pass to store cell states
+
+        # B, seq_len = src_tokens.size()
+        seq_len, B = src_tokens.size()
+
+        # embed tokens
+        token_embeddings = self.embed_tokens(src_tokens)
+
+        if not self.store_hidden:
+            output, _ = self.lstm(token_embeddings)
+            return output
+        else:
+            hidden_states = []
+
+            prev_h = torch.zeros(self.num_layers*self.num_directions, B, self.hidden_size).to(self.device)  # 10 = 2*5 = num_layers * directions
+            prev_c = torch.zeros(self.num_layers*self.num_directions, B, self.hidden_size).to(self.device)
+            for i in range(seq_len):
+                s, (prev_h, prev_c) = self.lstm(token_embeddings[i, :, :].unsqueeze(0), (prev_h, prev_c))
+                hidden_states.append(prev_c.view(self.num_layers, self.num_directions, B, self.hidden_size)) #TODO: change back4
+
+            hidden_states = torch.stack(hidden_states)
+            return hidden_states
 ###########################################################################
 # Classes to extract/learn embeddings from LASER encoder
 ###########################################################################
 class LASEREmbedderBase(nn.Module):
 
-    def __init__(self, encoder_path, bpe_pad_len = 20, encoder = LASERHiddenExtractor):
+    def __init__(self, encoder_path, bpe_pad_len = 20, encoder = LASERHiddenExtractor, **kwargs):
         super().__init__()
         self.ENCODER_SIZE = self.embedding_dim = 320  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
@@ -102,7 +159,7 @@ class LASEREmbedderBase(nn.Module):
 
 class LASEREmbedderBaseGRU(nn.Module):
 
-    def __init__(self, encoder_path, bpe_pad_len = 43, encoder = LASERHiddenExtractor):
+    def __init__(self, encoder_path, bpe_pad_len = 43, encoder = LASERHiddenExtractor,  **kwargs):
         super().__init__()
         self.ENCODER_SIZE = self.embedding_dim = 320  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
@@ -145,7 +202,7 @@ class LASEREmbedderBaseGRU(nn.Module):
 
 class LASEREmbedderI(nn.Module):
 
-    def __init__(self, encoder_path, bpe_pad_len=43, embedding_dim=320, encoder = LASERHiddenExtractor, static_lstm = True):
+    def __init__(self, encoder_path, bpe_pad_len=43, embedding_dim=320, encoder = LASERHiddenExtractor, static_lstm = True,  **kwargs):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
@@ -223,8 +280,7 @@ class LASEREmbedderI(nn.Module):
 
 
 class LASEREmbedderIII(nn.Module):
-    #TODO: use ELMO LSTM
-    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor, static_lstm = True):
+    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor, static_lstm = True, **kwargs):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
@@ -257,8 +313,6 @@ class LASEREmbedderIII(nn.Module):
         self.bn2 = nn.BatchNorm1d(self.embedding_dim)
         self.scaling_param = nn.Parameter(torch.ones(1))
         self.layer_weights = nn.Parameter(torch.ones(self.NUM_LAYERS))
-
-        self.hidden_decoder = nn.Linear(self.NUM_LAYERS * self.ENCODER_SIZE, embedding_dim)
 
     def forward(self, inp):
         (tokens, token_lens) = inp
@@ -303,63 +357,83 @@ class LASEREmbedderIII(nn.Module):
         embeddings, _ = stack_and_pad_tensors(embeddings)
         # apply batchnorm
         embeddings = self.bn2(embeddings.permute(1,2,0)).permute(0,2,1)
-        # embeddings = embeddings.permute(1, 0, 2)
         return embeddings
 
-        # Get embeddings
-        # embeddings = []
-        # for b in range(B):
-        #     # apply fc per sequence
-        #     m = max_pooled[:, :, b, :].contiguous().view(seq_len, -1)
-        #
-        #     et = self.hidden_decoder(m)
-        #     embeddings.append(et)
-
-        # # stack embeddings back together
-        # bpe_embeddings = torch.stack(embeddings).permute(1,0,2)
-        # # reshape to in order to aggregate over BPE sequence to word
-        # bpe_embeddings = bpe_embeddings.contiguous().view(self.bpe_pad_len, token_seq_len * B, self.embedding_dim)
-        #
-        # # max pool the forward and backward hidden states
-        # embeddings = self.token_embedder(bpe_embeddings)
-        # # resize to token-level embeddings
-        # embeddings = embeddings.view(token_seq_len, B, self.embedding_dim)
-        #
-        # return embeddings
-
-
-class LASEREmbedderIV(nn.Module):
-
-    def __init__(self, encoder_path,  embedding_dim, encoder = LASERHiddenExtractor):
+class LASEREmbedderIIIELMo(nn.Module):
+    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
-        self.NUM_LAYERS = 5
+        self.NUM_LAYERS = 2
         self.NUM_DIRECTIONS = 2
+
+        self.bpe_pad_len = bpe_pad_len
+        self.embedding_dim = embedding_dim
+        gru = RNNEncoder(self.ENCODER_SIZE, int(self.embedding_dim / 2))
+        self.token_embedder = TokenEncoder(gru)
+
         state_dict = torch.load(encoder_path)
-        self.encoder = encoder(take_diff=True, **state_dict['params'])
-        self.encoder.load_state_dict(state_dict['model'])
+        laser_encoder = encoder(**state_dict['params'], store_hidden=True)
+        laser_encoder.load_state_dict(state_dict['model'])
+        # Initialize ELMo style BPE encoder
+        self.encoder = LASERHiddenExtractorELMo(laser_encoder.embed_tokens, num_layers=self.NUM_LAYERS)
+
+        for param in self.encoder.embed_tokens.parameters():
+            param.requires_grad = False
+
         self.dictionary = state_dict['dictionary']
         self.pad_index = self.dictionary['<pad>']
         self.eos_index = self.dictionary['</s>']
         self.unk_index = self.dictionary['<unk>']
         self.embedding_dim = embedding_dim
 
-        self.hidden_decoder = nn.Linear(self.NUM_LAYERS * self.ENCODER_SIZE, embedding_dim)
+        self.bn1 = nn.BatchNorm1d(self.ENCODER_SIZE)
+        self.bn2 = nn.BatchNorm1d(self.embedding_dim)
+        self.scaling_param = nn.Parameter(torch.ones(1))
+        self.layer_weights = nn.Parameter(torch.ones(self.NUM_LAYERS))
 
-    def forward(self, tokens):
-        B = tokens.size(0)
-        seq_len = tokens.size(1)
+    def forward(self, inp):
+        (tokens, token_lens) = inp
+        seq_len, B = tokens.size()
+
+        # get metrics of input for splitting
+        token_lens = list(token_lens.permute(1, 0).cpu().numpy())
+        token_lens = [list(l) for l in token_lens]
+        sequence_lengths_token = [count_nonzero(token_len) for token_len in token_lens]
+        for token_len in token_lens:
+            token_len.append(seq_len - sum(token_len))
+
+        token_lens = [l for token_len in token_lens for l in token_len]
+        # token_seq_len = int(seq_len / self.bpe_pad_len)
         # assume encoder to return token embeddings
         hidden_states = self.encoder(tokens)
         max_pooled, _ = hidden_states.max(dim=2)
-        # Get embeddings
-        embeddings = []
-        for b in range(B):
-            # apply fc per sequence
-            embeddings.append(self.hidden_decoder(max_pooled[:, :, b, :].contiguous().view(seq_len, -1)))
 
-        embeddings = torch.stack(embeddings)
+        # Take softmax-normalized weighted average of embedding
+        pooled_per_layer = max_pooled.split(dim=1, split_size=1)
+        layer_weights = nn.Softmax()(self.layer_weights)
+        weighted = torch.cat([pooled_per_layer[i]*layer_weights[i] for i in range(len(pooled_per_layer))],dim=1)
+        embeddings = torch.sum(weighted, dim=1)
 
+        # split over all words
+        embeddings = self.bn1(embeddings.permute(0, 2, 1)).permute(0, 2, 1)
+        embeddings = torch.split(embeddings.permute(1, 0, 2).contiguous().view(-1, self.ENCODER_SIZE),
+                                    split_size_or_sections=token_lens, dim=0)
+        s = sequence_lengths_token
+        token_pad = max(s)
+        # chunk the hidden states per word (bpe fragments per word)
+        h0 = [embeddings[i + i * token_pad:i + i * token_pad + s[i]] for i in range(len(s))]
+        h0 = [l for sublist in h0 for l in sublist]
+        # pad for token encoding
+        h1, _ = stack_and_pad_tensors(h0)
+        h1 = self.scaling_param * h1  # inspired by ELMO
+
+        # encode the embeddings
+
+        embeddings = self.token_embedder(h1.permute(1, 0, 2))
+        embeddings = embeddings.split(split_size=s, dim=0)
+        embeddings, _ = stack_and_pad_tensors(embeddings)
+        # apply batchnorm
+        embeddings = self.bn2(embeddings.permute(1,2,0)).permute(0,2,1)
         return embeddings
 
 

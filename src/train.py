@@ -8,47 +8,48 @@ from utils import parse_dataset, parse_dataset_laser
 from models import *
 from subprocess import run
 
-def main():
+def main(config = None):
     # create instance of config
-    config = Config()
+    if config is None:
+        config = Config()
 
 
 
-    # if config.use_laser:
-    train_laser, tr_pad_len = parse_dataset_laser(config.filename_train, config.label_to_idx,  config.word_to_idx)
-    dev_laser, dev_pad_len = parse_dataset_laser(config.filename_dev, config.label_to_idx, config.word_to_idx)
+    # parse datasets
+    train_laser, tr_pad_len = parse_dataset_laser(config.filename_train, config.label_to_idx,  config.word_to_idx, pos_target = config.pos_target)
+    dev_laser, dev_pad_len = parse_dataset_laser(config.filename_dev, config.label_to_idx, config.word_to_idx, pos_target = config.pos_target)
     # else:
-    train_base, tr_pad_len = parse_dataset(config.filename_train, config.label_to_idx, config.word_to_idx)
-    dev_base, dev_pad_len = parse_dataset(config.filename_dev, config.label_to_idx, config.word_to_idx) #TODO: try without pad len of train
+    train_base, tr_pad_len = parse_dataset(config.filename_train, config.label_to_idx, config.word_to_idx, pos_target = config.pos_target)
+    dev_base, dev_pad_len = parse_dataset(config.filename_dev, config.label_to_idx, config.word_to_idx, pos_target = config.pos_target)
     # # build model
-    # model = NERModel(config, LASEREmbedderIII(config.model_path, bpe_pad_len=tr_pad_len), tr_pad_len) #TODO: check longest pad len test, train, dev
-    # learn = NERLearner(config, model, tr_pad_len, dev_pad_len)
-    # learn.fit(train, dev)
-    #
-    embedder_base = LASEREmbedderBase(config.model_path, tr_pad_len)
-    embedder_base_gru = LASEREmbedderBaseGRU(config.model_path, tr_pad_len)
-    embedderI = LASEREmbedderI(config.model_path, static_lstm = False)
-    embedderIII = LASEREmbedderIII(config.model_path, static_lstm = False)
+    embedder_base = LASEREmbedderBase #(config.model_path, tr_pad_len)
+    embedder_base_gru = LASEREmbedderBaseGRU#(config.model_path, tr_pad_len)
+    embedderI = LASEREmbedderI#(config.model_path, static_lstm = False)
+    embedderIII = LASEREmbedderIII#(config.model_path, static_lstm = False)
+    # embedderIIIElmo = LASEREmbedderIIIELMo(config.model_path)
 
     embedders = [
-        # embedder_base,
-        # embedder_base_gru,
-        # embedderI,
+        embedder_base,
+        embedder_base_gru,
+        embedderI,
         embedderIII,
+        # embedderIIIElmo
     ]
 
     use_laser = [
-        # False,
-        # False,
-        # True,
-        True
+        False,
+        False,
+        True,
+        True,
+        # True
     ]
 
     for embedder, laser in zip(embedders, use_laser):
         train = train_laser if laser else train_base
         dev = dev_laser if laser else dev_base
+        model = embedder(config.model_path, bpe_pad_len=tr_pad_len, static_lstm = False)
 
-        fit(config, embedder, tr_pad_len, dev_pad_len, train, dev, laser)
+        fit(config, model, tr_pad_len, dev_pad_len, train, dev, laser)
 
 
 def fit(config, embedder, tr_pad_len, dev_pad_len, train, dev, laser):
