@@ -24,7 +24,7 @@ class LASERHiddenExtractor(Encoder):
     """
     def __init__(
             self, num_embeddings, padding_idx, embed_dim=320, hidden_size=512, num_layers=1, bidirectional=False,
-            left_pad=True, padding_value=0., store_hidden=False, keep_static = True
+            left_pad=True, padding_value=0., store_hidden=False, keep_static = True, drop_prob = 0.1
     ):
         super().__init__(num_embeddings, padding_idx, embed_dim, hidden_size, num_layers, bidirectional,
                          left_pad, padding_value)  # initializes original encoder
@@ -33,13 +33,14 @@ class LASERHiddenExtractor(Encoder):
         # self.embed_tokens.requires_grad = False
         # self.lstm.requires_grad = False
         if not keep_static:
-            self.lstm.dropout = 0.3
-            print(self.lstm)
+            self.lstm.dropout = 0.25
 
         # static variables
         self.num_layers = 5
         self.num_directions = 2
         self.store_hidden = store_hidden
+
+        self.drop = nn.Dropout(p=drop_prob)
 
     def forward(self, src_tokens):
         # Adjusted version of original LASER forward pass to store cell states
@@ -50,6 +51,7 @@ class LASERHiddenExtractor(Encoder):
         # embed tokens
         token_embeddings = self.embed_tokens(src_tokens)
 
+        token_embeddings = self.drop(token_embeddings)
         if not self.store_hidden:
             output, _ = self.lstm(token_embeddings)
             return output
@@ -202,7 +204,7 @@ class LASEREmbedderBaseGRU(nn.Module):
 
 class LASEREmbedderI(nn.Module):
 
-    def __init__(self, encoder_path, bpe_pad_len=43, embedding_dim=320, encoder = LASERHiddenExtractor, static_lstm = True,  **kwargs):
+    def __init__(self, encoder_path, bpe_pad_len=43, embedding_dim=320, encoder = LASERHiddenExtractor, static_lstm = True, drop_before = 0.1, drop_after = 0.3,  **kwargs):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
@@ -215,7 +217,7 @@ class LASEREmbedderI(nn.Module):
         self.token_embedder = TokenEncoder(gru)
 
         state_dict = torch.load(encoder_path)
-        self.encoder = encoder(store_hidden=False, keep_static = static_lstm, **state_dict['params'])
+        self.encoder = encoder(store_hidden=False, keep_static = static_lstm, drop_prob = drop_before, **state_dict['params'])
         self.encoder.load_state_dict(state_dict['model'])
         # Freeze parts of LASER encoder
         if self.static_lstm:
@@ -229,6 +231,8 @@ class LASEREmbedderI(nn.Module):
         self.bn1 = nn.BatchNorm1d(self.ENCODER_SIZE)
         self.bn2 = nn.BatchNorm1d(self.embedding_dim)
 
+        self.drop = nn.Dropout(p=drop_after)
+
 
         self.dictionary = state_dict['dictionary']
         self.pad_index = self.dictionary['<pad>']
@@ -237,6 +241,8 @@ class LASEREmbedderI(nn.Module):
 
     def forward(self, input):
         tokens, token_lens = input
+        if tokens.dim() == 1:
+            tokens = tokens.unsqueeze(1)
         seq_len, B = tokens.size()
 
        # get metrics of input for splitting
@@ -252,10 +258,8 @@ class LASEREmbedderI(nn.Module):
         # hidden_states = self.encoder(tokens)[:, -1, :, :, :] #tok
         encoding = self.encoder(tokens).view(seq_len, B, 2, self.ENCODER_SIZE)
         hidden_states, _ = encoding.max(dim=2)
-            # max pool the forward and backward hidden states
-        # hidden_states, _ = hidden_states.max(dim=1)
         # split over all words
-        hidden_states = self.bn1(hidden_states.permute(0,2,1)).permute(0,2,1)
+        hidden_states = self.drop(self.bn1(hidden_states.permute(0,2,1))).permute(0,2,1)
         hidden_states = torch.split(hidden_states.permute(1,0,2).contiguous().view(-1,self.ENCODER_SIZE), split_size_or_sections=token_lens, dim=0)
         s = sequence_lengths_token
         token_pad = max(s)
@@ -280,7 +284,7 @@ class LASEREmbedderI(nn.Module):
 
 
 class LASEREmbedderIII(nn.Module):
-    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor, static_lstm = True, **kwargs):
+    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor, static_lstm = True, drop_before = 0.1, drop_after = 0.3, **kwargs):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
@@ -293,7 +297,7 @@ class LASEREmbedderIII(nn.Module):
         self.token_embedder = TokenEncoder(gru)
 
         state_dict = torch.load(encoder_path)
-        self.encoder = encoder(**state_dict['params'], store_hidden=True, keep_static= static_lstm)
+        self.encoder = encoder(**state_dict['params'], store_hidden=True, keep_static= static_lstm, drop_prob=drop_before)
         self.encoder.load_state_dict(state_dict['model'])
         # freeze params of LASER encoder:
         if self.static_lstm:
@@ -308,6 +312,9 @@ class LASEREmbedderIII(nn.Module):
         self.eos_index = self.dictionary['</s>']
         self.unk_index = self.dictionary['<unk>']
         self.embedding_dim = embedding_dim
+
+        # TODO: experiment with extra dropout
+        self.drop = nn.Dropout(p=drop_after)
 
         self.bn1 = nn.BatchNorm1d(self.ENCODER_SIZE)
         self.bn2 = nn.BatchNorm1d(self.embedding_dim)
@@ -338,7 +345,7 @@ class LASEREmbedderIII(nn.Module):
         embeddings = torch.sum(weighted, dim=1)
 
         # split over all words
-        embeddings = self.bn1(embeddings.permute(0, 2, 1)).permute(0, 2, 1)
+        embeddings = self.drop(self.bn1(embeddings.permute(0, 2, 1))).permute(0, 2, 1)
         embeddings = torch.split(embeddings.permute(1, 0, 2).contiguous().view(-1, self.ENCODER_SIZE),
                                     split_size_or_sections=token_lens, dim=0)
         s = sequence_lengths_token

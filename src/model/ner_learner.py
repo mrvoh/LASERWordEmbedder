@@ -143,7 +143,7 @@ class NERLearner(object):
 
         nbatches_train, train_generator = self.batch_iter(train, batch_size, drop_last=True)
         if dev:
-            nbatches_dev, dev_generator = self.batch_iter(dev, batch_size, drop_last=False)
+            nbatches_dev, dev_generator = self.batch_iter(dev, batch_size, drop_last=True)
 
         scheduler = StepLR(self.optimizer, step_size=self.config.epoch_drop, gamma=self.config.lr_decay)
 
@@ -194,8 +194,8 @@ class NERLearner(object):
         for batch_idx, (inputs, word_lens, sequence_lengths, targets) in enumerate(train_generator):
 
             if batch_idx == nbatches_train: break
-            if inputs.shape[0] == self.model.embedder.bpe_pad_len:
-                self.logger.info('Skipping batch of size=1')
+            if targets.shape[0] == self.config.batch_size:
+                # self.logger.info('Skipping batch of size=1')
                 continue
 
             total_step = batch_idx
@@ -239,7 +239,7 @@ class NERLearner(object):
 
             if batch_idx == nbatches_train: break
             if targets.shape[0] == self.config.batch_size:
-                self.logger.info('Skipping batch of size=1')
+                # self.logger.info('Skipping batch of size=1')
                 continue
 
             total_step = batch_idx
@@ -289,7 +289,7 @@ class NERLearner(object):
         for batch_idx, (inputs, word_lens, sequence_lengths, targets) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
             if targets.shape[0] == self.config.batch_size:
-                self.logger.info('Skipping batch of size=1')
+                # self.logger.info('Skipping batch of size=1')
                 continue
 
             total_step = batch_idx
@@ -344,7 +344,7 @@ class NERLearner(object):
         for batch_idx, (inputs, sequence_lengths, targets) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
             if targets.shape[0] <= self.config.batch_size:
-                self.logger.info('Skipping batch of size=1')
+                # self.logger.info('Skipping batch of size=1')
                 continue
 
             total_step = batch_idx
@@ -397,22 +397,22 @@ class NERLearner(object):
 
 
 
-        word_ids, sequence_lengths = pad_sequences(words, 1)
+        # word_ids, sequence_lengths = pad_sequences(words, 1)
+        #
+        # word_ids = np.asarray(word_ids)
+        #
+        # if len(words) == 1:
+        #     word_ids = mult*word_ids
 
-        word_ids = np.asarray(word_ids)
+        # word_input = T(word_ids, cuda=self.use_cuda)
+        #
+        # inputs = Variable(word_input, requires_grad=False)
 
-        if len(words) == 1:
-            word_ids = mult*word_ids
-
-        word_input = T(word_ids, cuda=self.use_cuda)
-
-        inputs = Variable(word_input, requires_grad=False)
-
-        outputs = self.model(inputs)
+        outputs = self.model(words)
 
         predictions = self.criterion.decode(outputs)
 
-        predictions = [p[:i] for p, i in zip(predictions, sequence_lengths)]
+        # predictions = [p[:i] for p, i in zip(predictions, sequence_lengths)]
 
         return predictions
 

@@ -10,14 +10,22 @@ from utils import parse_dataset_muse, get_embedding
 from models import *
 
 
-def main(config = None):
+def main(config = None, lang = 'eng'):
     # create instance of config
     if config is None:
         config = Config()
     train, word_to_idx = parse_dataset_muse(config.filename_train, config.label_to_idx, pos_target = config.pos_target)
     dev, word_to_idx = parse_dataset_muse(config.filename_dev, config.label_to_idx, word_to_idx, pos_target = config.pos_target)
 
-    vectors = FastText(aligned = True, cache='.word_vectors_cache')
+    lang_map = {
+        'eng': 'en',
+        'ger': 'de',
+        'esp': 'es',
+        'ned': 'nl'
+    }
+
+    vectors = FastText(aligned=True, cache='.word_vectors_cache', language=lang_map[lang])
+    # vectors = FastText(aligned = True, cache='.word_vectors_cache')
 
     embed_table = get_embedding(vectors, word_to_idx)
 

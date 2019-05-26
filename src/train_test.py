@@ -10,16 +10,18 @@ if __name__ == "__main__":
 	config = Config()
 	for task in [
 		'NER',
-		'POS'
+		# 'POS'
 				]:
 		config.set_pos_target(task)
 
 		for lang in [
 			# 'eng',
-			'ned',
+			# 'ned',
 			'ger',
-			'esp',
+			# 'esp',
+			# 'mixed'
 					]:
+			results = None
 			config.langfolder = lang
 
 			config.filename_train = os.path.join('parsed_data',
@@ -28,11 +30,14 @@ if __name__ == "__main__":
 												 '{}_valid_bio_bpe{}.txt'.format(lang, '1' if config.pos_target else ''))
 			# for memory/speed
 			config.batch_size = 32 if config.pos_target else 64
+			# if lang == 'esp' or lang =='ned': # these languages have longer sequences
+			# 	config.batch_size = int(config.batch_size / 2)
+			# 	print(config.batch_size)
 
 			m_train(config=config)
 			results, _ = m_test(config=config)
-			muse_train(config=config)
-			results = muse_test(results= results, config=config)
+			# muse_train(config=config, lang=lang)
+			# results, _ = muse_test(results= results, config=config)
 			out_path = os.path.join(config.results_folder, config.langfolder, config.subfolder, 'results.json')
 			with open(out_path, 'w') as f:
 				json.dump(results, f)

@@ -53,9 +53,10 @@ def main(config=None):
     for data_filepath in data_filepaths:
 
         # get dataset
+        encoding = 'latin-1' if data_filepath == ger_path else 'utf-8'
 
-        data_laser, pad_len = parse_dataset_laser(data_filepath, config.label_to_idx, config.word_to_idx,  pos_target = config.pos_target)
-        data, pad_len = parse_dataset(data_filepath, config.label_to_idx, config.word_to_idx,  pos_target = config.pos_target)
+        data_laser, pad_len = parse_dataset_laser(data_filepath, config.label_to_idx, config.word_to_idx,  pos_target = config.pos_target, encoding = encoding)
+        data, pad_len = parse_dataset(data_filepath, config.label_to_idx, config.word_to_idx,  pos_target = config.pos_target, encoding = encoding)
 
         #####################################################################
         # SETUP
@@ -101,6 +102,7 @@ def main(config=None):
         lang_results = {}
 
         for embedder, path, d in zip(embedders, paths, use_laser):
+            print(path)
             dset = data_laser if d else data
             f1 = eval_model_dataset(config, embedder, dset, pad_len, path, d)
             lang_results[embedder.__class__.__name__] = f1

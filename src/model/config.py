@@ -53,6 +53,8 @@ class Config():
             self.label_to_idx = {'O': 0, 'I-PER': 1, 'I-ORG': 2, 'I-LOC': 3, 'I-MISC': 4,
                             'B-PER': 5, 'B-ORG': 6, 'B-LOC': 7, 'B-MISC': 8}
 
+        self.ntags = len(self.label_to_idx)
+
 
     # general config
     dir_output = "results/test/"
@@ -62,22 +64,22 @@ class Config():
 
 
     # FILES TO TRAIN AND EVALUATE ON
-    filename_dev = "parsed_data/eng_valid_bio_bpe1.txt"
+    filename_dev = "parsed_data/eng_valid_bio_bpe.txt"
     filename_test = "data/test_bio_bpe.txt"
-    filename_train = "parsed_data/eng_train_bio_bpe1.txt"
+    filename_train = "parsed_data/eng_train_bio_bpe.txt"
 
     # training
     train_embeddings = False
     nepochs = 25
     dropout = 0.5
-    batch_size = 32
+    batch_size = 64
     lr_method = "adam"
     lr = 0.001
     weight_decay = 0.01
     lr_decay = 0.5
-    epoch_drop = 2  # Step Decay: per # epochs to apply lr_decay
+    epoch_drop = 3  # Step Decay: per # epochs to apply lr_decay
     clip = 5  # if negative, no clipping
-    nepoch_no_imprv = 5
+    nepoch_no_imprv = 4
 
     # model hyperparameters
     hidden_size_lstm = 300  # lstm on word embeddings
@@ -85,7 +87,7 @@ class Config():
     model_name = 'LASEREmbedderIII.pt'
     model_folder = 'saves'
     subfolder = 'POS' if pos_target else 'NER'
-    langfolder = 'eng'
+    langfolder = 'test'
     ner_model_path = os.path.join(model_folder,langfolder ,subfolder, model_name) #'"saves/ner_{}e_glove".format(nepochs)
     results_folder = 'results'
 

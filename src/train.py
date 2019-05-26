@@ -2,6 +2,7 @@ from model.config import Config
 from model.ner_model import NERModel
 from model.ner_learner import NERLearner
 from utils import parse_dataset, parse_dataset_laser
+import time
 
 #from model.ent_model import EntModel
 #from model.ent_learner import EntLearner
@@ -29,27 +30,36 @@ def main(config = None):
     # embedderIIIElmo = LASEREmbedderIIIELMo(config.model_path)
 
     embedders = [
-        embedder_base,
-        embedder_base_gru,
-        embedderI,
+        # embedder_base,
+        # embedder_base_gru,
+        # embedderI,
         embedderIII,
         # embedderIIIElmo
     ]
 
     use_laser = [
-        False,
-        False,
+        # False,
+        # False,
         True,
         True,
         # True
     ]
 
+    if config.pos_target:
+        drop_before = drop_after = 0
+    else:
+        drop_before = 0.1
+        drop_after = 0.3
+
     for embedder, laser in zip(embedders, use_laser):
         train = train_laser if laser else train_base
         dev = dev_laser if laser else dev_base
-        model = embedder(config.model_path, bpe_pad_len=tr_pad_len, static_lstm = False)
+        model = embedder(config.model_path, bpe_pad_len=tr_pad_len, static_lstm = False,
+                         drop_before = drop_before, drop_after = drop_after)
 
         fit(config, model, tr_pad_len, dev_pad_len, train, dev, laser)
+        del model
+        time.sleep(60) # free up CUDA memory
 
 
 def fit(config, embedder, tr_pad_len, dev_pad_len, train, dev, laser):
