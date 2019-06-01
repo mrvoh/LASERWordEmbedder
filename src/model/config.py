@@ -25,7 +25,7 @@ class Config():
     def set_model_name(self, name):
         self.model_name = name
         subfolder = 'POS' if self.pos_target else 'NER'
-        self.ner_model_path = os.path.join('saves', self.langfolder, subfolder, self.model_name)
+        self.ner_model_path = os.path.join('saves_lc', self.langfolder, subfolder, self.model_name)
 
     def set_pos_target(self, task):
         self.pos_target = True if task == 'POS' else False
@@ -57,39 +57,40 @@ class Config():
 
 
     # general config
-    dir_output = "results/test/"
+    dir_output = "results_lc/test/"
     dir_model = dir_output
     path_log = dir_output + "log.txt"
-    pos_target = True # flag to indicate whether to perform NER or POS tagging
+    pos_target = False # flag to indicate whether to perform NER or POS tagging
 
 
     # FILES TO TRAIN AND EVALUATE ON
-    filename_dev = "parsed_data/eng_valid_bio_bpe.txt"
+    filename_dev = "parsed_data_lowercased/ger_valid_bio_bpe.txt"
     filename_test = "data/test_bio_bpe.txt"
-    filename_train = "parsed_data/eng_train_bio_bpe.txt"
+    filename_train = "parsed_data_lowercased/ger_train_bio_bpe.txt"
 
     # training
     train_embeddings = False
     nepochs = 25
     dropout = 0.5
-    batch_size = 64
-    lr_method = "adam"
-    lr = 0.001
+    batch_size = 128
+    lr_method = "rmsprop"
+    lr = 0.002
     weight_decay = 0.01
     lr_decay = 0.5
     epoch_drop = 3  # Step Decay: per # epochs to apply lr_decay
     clip = 5  # if negative, no clipping
-    nepoch_no_imprv = 4
-
+    nepoch_no_imprv = 2
+    use_transformer = True
+    learning_rate_warmup_steps = 1
     # model hyperparameters
     hidden_size_lstm = 300  # lstm on word embeddings
 
     model_name = 'LASEREmbedderIII.pt'
-    model_folder = 'saves'
+    model_folder = 'saves_lc'
     subfolder = 'POS' if pos_target else 'NER'
-    langfolder = 'test'
+    langfolder = 'ger'
     ner_model_path = os.path.join(model_folder,langfolder ,subfolder, model_name) #'"saves/ner_{}e_glove".format(nepochs)
-    results_folder = 'results'
+    results_folder = 'results_lc'
 
     use_laser = True
     # use_muse = not use_laser -> not in use yet

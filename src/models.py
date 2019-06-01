@@ -32,6 +32,7 @@ class LASERHiddenExtractor(Encoder):
 
         # self.embed_tokens.requires_grad = False
         # self.lstm.requires_grad = False
+        self.keep_static = keep_static
         if not keep_static:
             self.lstm.dropout = 0.25
 
@@ -54,6 +55,7 @@ class LASERHiddenExtractor(Encoder):
         token_embeddings = self.drop(token_embeddings)
         if not self.store_hidden:
             output, _ = self.lstm(token_embeddings)
+
             return output
         else:
             hidden_states = []
@@ -65,6 +67,9 @@ class LASERHiddenExtractor(Encoder):
                 hidden_states.append(prev_c.view(5, 2, B, self.hidden_size)) #TODO: change back4
 
             hidden_states = torch.stack(hidden_states)
+            # if not self.keep_static:
+            #     hidden_states += token_embeddings
+
             return hidden_states
 
 
@@ -256,7 +261,8 @@ class LASEREmbedderI(nn.Module):
         token_lens = [l for token_len in token_lens for l in token_len]
         # get final hidden states from LASER encoder
         # hidden_states = self.encoder(tokens)[:, -1, :, :, :] #tok
-        encoding = self.encoder(tokens).view(seq_len, B, 2, self.ENCODER_SIZE)
+        encoding = self.encoder(tokens)
+        encoding = encoding.view(seq_len, B, 2, self.ENCODER_SIZE)
         hidden_states, _ = encoding.max(dim=2)
         # split over all words
         hidden_states = self.drop(self.bn1(hidden_states.permute(0,2,1))).permute(0,2,1)
@@ -275,6 +281,7 @@ class LASEREmbedderI(nn.Module):
         embeddings = embeddings.split(split_size=s, dim=0)
         embeddings, _ = stack_and_pad_tensors(embeddings)
         embeddings = self.bn2(embeddings.permute(1, 2, 0)).permute(0, 2, 1)
+        # embeddings += bpe_emb
         # embeddings = embeddings.permute(1,0,2)
 
         return embeddings

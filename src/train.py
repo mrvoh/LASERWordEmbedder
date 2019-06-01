@@ -14,14 +14,15 @@ def main(config = None):
     if config is None:
         config = Config()
 
-
+    encoding = 'utf-8'
+    static_lstm = False
 
     # parse datasets
-    train_laser, tr_pad_len = parse_dataset_laser(config.filename_train, config.label_to_idx,  config.word_to_idx, pos_target = config.pos_target)
-    dev_laser, dev_pad_len = parse_dataset_laser(config.filename_dev, config.label_to_idx, config.word_to_idx, pos_target = config.pos_target)
+    train_laser, tr_pad_len = parse_dataset_laser(config.filename_train, config.label_to_idx,  config.word_to_idx, pos_target = config.pos_target, encoding=encoding)
+    dev_laser, dev_pad_len = parse_dataset_laser(config.filename_dev, config.label_to_idx, config.word_to_idx, pos_target = config.pos_target, encoding=encoding)
     # else:
-    train_base, tr_pad_len = parse_dataset(config.filename_train, config.label_to_idx, config.word_to_idx, pos_target = config.pos_target)
-    dev_base, dev_pad_len = parse_dataset(config.filename_dev, config.label_to_idx, config.word_to_idx, pos_target = config.pos_target)
+    train_base, tr_pad_len = parse_dataset(config.filename_train, config.label_to_idx, config.word_to_idx, pos_target = config.pos_target, encoding=encoding)
+    dev_base, dev_pad_len = parse_dataset(config.filename_dev, config.label_to_idx, config.word_to_idx, pos_target = config.pos_target, encoding=encoding)
     # # build model
     embedder_base = LASEREmbedderBase #(config.model_path, tr_pad_len)
     embedder_base_gru = LASEREmbedderBaseGRU#(config.model_path, tr_pad_len)
@@ -34,28 +35,33 @@ def main(config = None):
         # embedder_base_gru,
         # embedderI,
         embedderIII,
-        # embedderIIIElmo
+        # embedder9 IIIElmo
     ]
 
     use_laser = [
         # False,
         # False,
-        True,
+        # True,
         True,
         # True
     ]
 
-    if config.pos_target:
-        drop_before = drop_after = 0
-    else:
-        drop_before = 0.1
-        drop_after = 0.3
+
 
     for embedder, laser in zip(embedders, use_laser):
+        if config.pos_target:
+            drop_before = drop_after = 0
+        elif static_lstm:
+            drop_before = 0
+            drop_after = 0.35
+        else:
+            drop_before = 0.4 if isinstance(embedder,embedderIII) else 0.1
+            drop_after = 0.3
         train = train_laser if laser else train_base
         dev = dev_laser if laser else dev_base
-        model = embedder(config.model_path, bpe_pad_len=tr_pad_len, static_lstm = False,
+        model = embedder(config.model_path, bpe_pad_len=tr_pad_len, static_lstm = static_lstm,
                          drop_before = drop_before, drop_after = drop_after)
+
 
         fit(config, model, tr_pad_len, dev_pad_len, train, dev, laser)
         del model
@@ -69,6 +75,7 @@ def fit(config, embedder, tr_pad_len, dev_pad_len, train, dev, laser):
     # Initiate model
     model = NERModel(config, embedder,
                      tr_pad_len)
+    # print(model)
     # train
     learn = NERLearner(config, model, tr_pad_len, dev_pad_len)
     learn.fit(train, dev)

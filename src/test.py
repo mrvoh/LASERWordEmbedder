@@ -40,10 +40,10 @@ def main(config=None):
     if config is None:
         # create instance of config
         config = Config()
-    eng_path = os.path.join('parsed_data', 'eng_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
-    ger_path = os.path.join('parsed_data', 'ger_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
-    ned_path = os.path.join('parsed_data', 'ned_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
-    spa_path = os.path.join('parsed_data', 'esp_pos_test_bio_bpe.txt') if config.pos_target else os.path.join('parsed_data', 'esp_test_bio_bpe.txt')
+    eng_path = os.path.join('parsed_data_lowercased', 'eng_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
+    ger_path = os.path.join('parsed_data_lowercased', 'ger_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
+    ned_path = os.path.join('parsed_data_lowercased', 'ned_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
+    spa_path = os.path.join('parsed_data_lowercased', 'esp_pos_test_bio_bpe.txt') if config.pos_target else os.path.join('parsed_data_lowercased', 'esp_test_bio_bpe.txt')
     data_filepaths = [
         eng_path,
         ned_path,
@@ -53,8 +53,8 @@ def main(config=None):
     for data_filepath in data_filepaths:
 
         # get dataset
-        encoding = 'latin-1' if data_filepath == ger_path else 'utf-8'
-
+        encoding = 'latin-1' if (data_filepath == ger_path) else 'utf-8'
+        print(encoding)
         data_laser, pad_len = parse_dataset_laser(data_filepath, config.label_to_idx, config.word_to_idx,  pos_target = config.pos_target, encoding = encoding)
         data, pad_len = parse_dataset(data_filepath, config.label_to_idx, config.word_to_idx,  pos_target = config.pos_target, encoding = encoding)
 
@@ -63,10 +63,10 @@ def main(config=None):
         #####################################################################
         subfolder = 'POS' if config.pos_target else 'NER'
         langfolder = config.langfolder
-        base_path = os.path.join('saves',langfolder, subfolder, 'LASEREmbedderBase.pt')
-        base_gru_path = os.path.join('saves',langfolder,subfolder, 'LASEREmbedderBaseGRU.pt')
-        i_path = os.path.join('saves',langfolder,subfolder, 'LASEREmbedderI.pt')
-        iii_path = os.path.join('saves',langfolder,subfolder, 'LASEREmbedderIII.pt')
+        base_path = os.path.join('saves_lc',langfolder, subfolder, 'LASEREmbedderBase.pt')
+        base_gru_path = os.path.join('saves_lc',langfolder,subfolder, 'LASEREmbedderBaseGRU.pt')
+        i_path = os.path.join('saves_lc',langfolder,subfolder, 'LASEREmbedderI.pt')
+        iii_path = os.path.join('saves_lc',langfolder,subfolder, 'LASEREmbedderIII.pt')
         elmo_path = os.path.join('saves',langfolder,subfolder, 'LASEREmbedderIIIELMo.pt')
 
         paths = [

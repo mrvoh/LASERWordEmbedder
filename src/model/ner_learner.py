@@ -33,7 +33,10 @@ class NERLearner(object):
                            self.config.label_to_idx.items()}
 
         self.criterion = CRF(self.config.ntags)
-        self.optimizer = optim.Adam(self.model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
+        if config.use_transformer:
+            self.optimizer = optim.Adam(self.model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
+        else:
+            self.optimizer = optim.RMSprop(self.model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
 
         if USE_GPU:
             self.use_cuda = True
@@ -45,6 +48,11 @@ class NERLearner(object):
             self.model = model.cpu()
             self.use_cuda = False
             self.logger.info("No GPU found.")
+
+    def lr_decay_noam(self, config):
+        return lambda t: (
+                10.0 * config.hidden_size_lstm ** -0.5 * min(
+            (t + 1) * config.learning_rate_warmup_steps ** -1.5, (t + 1) ** -0.5))
 
     def get_model_path(self, name):
         return os.path.join(self.model_path,name)
@@ -145,13 +153,20 @@ class NERLearner(object):
         if dev:
             nbatches_dev, dev_generator = self.batch_iter(dev, batch_size, drop_last=True)
 
-        scheduler = StepLR(self.optimizer, step_size=self.config.epoch_drop, gamma=self.config.lr_decay)
+        if self.config.use_transformer:
+            self.scheduler = optim.lr_scheduler.LambdaLR(
+                self.optimizer,
+                self.lr_decay_noam(self.config)
+            )
+        else:
+            self.scheduler = StepLR(self.optimizer, step_size=self.config.epoch_drop, gamma=self.config.lr_decay)
 
         if not fine_tune: self.logger.info("Training Model")
 
         for epoch in range(epochs):
             self.model.set_bpe_pad_len(self.tr_pad_len)
-            scheduler.step()
+            # if not self.config.use_transformer:
+            self.scheduler.step()
             if self.config.use_laser:
                 self.train_laser(epoch, nbatches_train, train_generator, fine_tune=fine_tune)
             else:
@@ -209,6 +224,8 @@ class NERLearner(object):
             loss = -1 * self.criterion(outputs, targets, mask=mask)
             loss.backward()
             self.optimizer.step()
+            # if self.config.use_transformer:
+            #     self.scheduler.step()
 
             # Callbacks
             train_loss += loss.item()
@@ -262,6 +279,8 @@ class NERLearner(object):
             loss = -1*self.criterion(outputs, targets, mask=mask)
             loss.backward()
             self.optimizer.step()
+            # if self.config.use_transformer:
+            #     self.scheduler.step()
 
             # Callbacks
             train_loss += loss.item()
@@ -284,7 +303,7 @@ class NERLearner(object):
         correct_preds = 0
         total_correct = 0
         total_preds = 0
-        total_step = None
+        # total_step = None
 
         for batch_idx, (inputs, word_lens, sequence_lengths, targets) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
@@ -343,7 +362,7 @@ class NERLearner(object):
 
         for batch_idx, (inputs, sequence_lengths, targets) in enumerate(val_generator):
             if batch_idx == nbatches_val: break
-            if targets.shape[0] <= self.config.batch_size:
+            if targets.shape[0] == self.config.batch_size:
                 # self.logger.info('Skipping batch of size=1')
                 continue
 
