@@ -17,6 +17,7 @@ from utils import parse_dataset, parse_dataset_laser
 from models import *
 import os
 import json
+import time
 
 def eval_model_dataset(config, embedder, data, pad_len, model_path, use_laser):
 
@@ -116,3 +117,4 @@ if __name__ == "__main__":
     out_path = os.path.join(config.results_folder, config.langfolder, config.subfolder, 'results_laser.json')
     with open(out_path, 'w') as f:
         json.dump(res, f)
+        time.sleep(60)

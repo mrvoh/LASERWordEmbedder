@@ -45,7 +45,7 @@ def load_data(path):
 
         f.close()
 
-    return sentences
+    return i2b(sentences)
 
 
 def dataset2sentences(dataset):
@@ -194,7 +194,7 @@ def get_conll_muse_vectors(case_insensitive=True):
 
     return conll_muse_vectors
 
-def parse_dataset_laser(path, label_to_idx, word_to_idx, pos_target= False, encoding= 'latin-1'):
+def parse_dataset_laser(path, label_to_idx, word_to_idx, pos_target= False, encoding= 'latin-1', max_len = 100):
     sentences = []
     UNK = 3
     PAD = 1
@@ -206,7 +206,7 @@ def parse_dataset_laser(path, label_to_idx, word_to_idx, pos_target= False, enco
         max_len_token = 0
         for line in f.read().splitlines():
             if line in ['\n', '\r\n', '']:  # end of sequence
-                if (len(sample['labels']) > 0) and (len(sample['word_ids']) < 150):
+                if (len(sample['labels']) > 0) and (len(sample['word_ids']) < max_len):
                     sample['labels'] = torch.LongTensor(sample['labels'])
                     sample['word_ids'] = torch.LongTensor(sample['word_ids'])
                     sample['word_len'] = torch.LongTensor(sample['word_len'])
@@ -231,7 +231,7 @@ def parse_dataset_laser(path, label_to_idx, word_to_idx, pos_target= False, enco
                         print(line)
     return Dataset(sentences), max_len_token
 
-def parse_dataset(path, label_to_idx, word_to_idx, pos_target=False, pad_len=None, encoding= 'latin-1'):
+def parse_dataset(path, label_to_idx, word_to_idx, pos_target=False, pad_len=None, encoding= 'latin-1',  max_len = 100):
     sentences = []
     UNK = 3
     PAD = 1
@@ -246,7 +246,7 @@ def parse_dataset(path, label_to_idx, word_to_idx, pos_target=False, pad_len=Non
             if line in ['\n', '\r\n', '']:  # end of sequence
                 if len(sample['labels']) > 100:
                     nr_long += 1
-                if (len(sample['labels']) > 0) and (len(sample['word_ids']) < 100):
+                if (len(sample['labels']) > 0) and (len(sample['word_ids']) < max_len):
                     max_sus = max(max_sus, len(sample['word_ids']))
                     sample['labels'] = torch.LongTensor(sample['labels'])
                     sentences.append(sample)

@@ -34,7 +34,7 @@ class NERLearner(object):
 
         self.criterion = CRF(self.config.ntags)
         if config.use_transformer:
-            self.optimizer = optim.Adam(self.model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
+            self.optimizer = optim.Adam(self.model.parameters(), lr=config.lr, weight_decay=config.weight_decay, amsgrad=True)
         else:
             self.optimizer = optim.RMSprop(self.model.parameters(), lr=config.lr, weight_decay=config.weight_decay)
 
@@ -350,6 +350,7 @@ class NERLearner(object):
         acc = np.mean(accs)
 
         self.logger.info("Val Loss : %.3f, Val Accuracy: %.3f%%, Val F1: %.3f%%" %(test_loss/(total_step+1), 100*acc, 100*f1))
+        print('Precision: {}, Recall: {}'.format(p, r))
         return 100*f1
     def test_base(self, nbatches_val, val_generator, fine_tune=False):
         self.model.eval()

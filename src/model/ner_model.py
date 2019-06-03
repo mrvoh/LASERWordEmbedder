@@ -4,7 +4,7 @@ from .transformer import Encoder as TransformerEncoder
 
 class NERModel(nn.Module):
 
-    def __init__(self, config, embedder, bpe_pad_len, use_transformer=True):
+    def __init__(self, config, embedder, bpe_pad_len, use_transformer=True, dropout=0.1):
         super().__init__()
         self.config = config
         self.bpe_pad_len = bpe_pad_len
@@ -22,10 +22,10 @@ class NERModel(nn.Module):
                 total_value_depth = 4, #check as well
                 filter_size = 200,
                 max_length = 150,
-                attention_dropout=0.25,
-                input_dropout=0.25,
-                relu_dropout=0.25,
-                layer_dropout=0.25
+                attention_dropout=dropout,
+                input_dropout=dropout,
+                relu_dropout=dropout,
+                layer_dropout=dropout
             )
             self.linear = LinearClassifier(self.config, layers=[self.config.hidden_size_lstm, self.config.ntags],
                                            drops=[config.dropout], use_transformer=use_transformer)

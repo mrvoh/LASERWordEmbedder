@@ -18,10 +18,12 @@ if __name__ == "__main__":
 
 		for lang in [
 			'eng',
+			# 'mixed',
+			# 'mixed_eng',
+			# 'mixed_full',
 			# 'ned',
-			'esp',
-			'ger',
-			# 'mixed'
+			# 'esp',
+			# 'ger'
 					]:
 			results = None
 			config.langfolder = lang
@@ -33,8 +35,8 @@ if __name__ == "__main__":
 			# for memory/speed
 			config.batch_size = 32 if config.pos_target else 64
 
-			# m_train(config=config)
-			# time.sleep(60)
+			m_train(config=config)
+			time.sleep(60)
 			results, _ = m_test(config=config)
 			# muse_train(config=config, lang=lang)
 			# results, _ = muse_test(results= results, config=config)

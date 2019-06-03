@@ -3,6 +3,7 @@ from model.ner_model import NERModel
 from model.ner_learner import NERLearner
 from utils import parse_dataset, parse_dataset_laser
 import time
+from torch.cuda import empty_cache
 
 #from model.ent_model import EntModel
 #from model.ent_learner import EntLearner
@@ -37,6 +38,12 @@ def main(config = None):
         embedderIII,
         # embedder9 IIIElmo
     ]
+    model_name = {
+        embedder_base:'LASEREmbedderBase',
+        embedder_base_gru:'LASEREmbedderBaseGRU',
+        embedderI:'LASEREmbedderI',
+        embedderIII:'LASEREmbedderIII',
+    }
 
     use_laser = [
         # False,
@@ -46,32 +53,29 @@ def main(config = None):
         # True
     ]
 
-
-
     for embedder, laser in zip(embedders, use_laser):
-        if config.pos_target:
-            drop_before = drop_after = 0
-        elif static_lstm:
-            drop_before = 0
-            drop_after = 0.35
-        else:
-            drop_before = 0.4 if isinstance(embedder,embedderIII) else 0.1
-            drop_after = 0.3
+
+        # set output filename
+        config.set_model_name(model_name[embedder])
+        config.use_laser = laser
+        config.set_params(laser)
+        print(config.transformer_drop)
+        print(config.drop_after_laser)
+        print(config.drop_before_laser)
         train = train_laser if laser else train_base
         dev = dev_laser if laser else dev_base
         model = embedder(config.model_path, bpe_pad_len=tr_pad_len, static_lstm = static_lstm,
-                         drop_before = drop_before, drop_after = drop_after)
+                         drop_before = config.drop_before_laser, drop_after = config.drop_after_laser)
 
 
         fit(config, model, tr_pad_len, dev_pad_len, train, dev, laser)
         del model
+        empty_cache()
         time.sleep(60) # free up CUDA memory
 
 
 def fit(config, embedder, tr_pad_len, dev_pad_len, train, dev, laser):
-    #set output filename
-    config.set_model_name(embedder.__class__.__name__)
-    config.use_laser = laser
+
     # Initiate model
     model = NERModel(config, embedder,
                      tr_pad_len)

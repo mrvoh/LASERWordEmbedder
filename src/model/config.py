@@ -55,6 +55,36 @@ class Config():
 
         self.ntags = len(self.label_to_idx)
 
+    def set_n_epoch_no_imprv(self, n_epoch):
+        self.nepoch_no_imprv = n_epoch
+
+    def set_params(self, use_laser):
+        if use_laser:
+            self.nepoch_no_imprv = 1
+            self.weight_decay = 0.01
+            self.transformer_drop = 0.3
+            self.drop_before_laser = 0.1
+            self.drop_after_laser = 0.25 if 'III' in self.model_name else 0.1
+        else:
+            self.nepoch_no_imprv = 2
+            self.weight_decay = 0.01
+            self.transformer_drop = 0.1
+            self.drop_before_laser = 0.0
+            self.drop_after_laser = 0.1
+        # less regularization when doing code-switching
+        if 'mixed' in self.filename_train:
+            self.transformer_drop = 0.1
+            self.nepoch_no_imprv = 2
+            self.drop_before_laser = 0.1
+            self.drop_after_laser = 0.0
+
+        if self.pos_target:
+            self.drop_before_laser = self.drop_after_laser = 0.1
+        elif self.static_lstm:
+            self.drop_before_laser = 0
+            self.drop_after_laser = 0.3
+
+
 
     # general config
     dir_output = "results_lc/test/"
@@ -69,9 +99,10 @@ class Config():
     filename_train = "parsed_data_lowercased/ger_train_bio_bpe.txt"
 
     # training
-    train_embeddings = False
+    static_lstm = False
     nepochs = 25
     dropout = 0.5
+    transformer_drop = 0.1
     batch_size = 128
     lr_method = "rmsprop"
     lr = 0.002
@@ -81,9 +112,11 @@ class Config():
     clip = 5  # if negative, no clipping
     nepoch_no_imprv = 2
     use_transformer = True
-    learning_rate_warmup_steps = 1
+    learning_rate_warmup_steps = 2
     # model hyperparameters
     hidden_size_lstm = 300  # lstm on word embeddings
+    drop_before_laser = 0.1
+    drop_after_laser = 0.3
 
     model_name = 'LASEREmbedderIII.pt'
     model_folder = 'saves_lc'
