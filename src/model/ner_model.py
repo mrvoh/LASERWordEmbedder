@@ -4,7 +4,8 @@ from .transformer import Encoder as TransformerEncoder
 
 class NERModel(nn.Module):
 
-    def __init__(self, config, embedder, bpe_pad_len, use_transformer=True, dropout=0.1):
+    def __init__(self, config, embedder, bpe_pad_len, use_transformer=True, dropout=0.3, embedding_size = 320,
+                 num_layers = 1, num_heads = 2, filter_size = 4):
         super().__init__()
         self.config = config
         self.bpe_pad_len = bpe_pad_len
@@ -14,13 +15,13 @@ class NERModel(nn.Module):
         self.use_transformer = use_transformer
         if use_transformer:
             self.word_transformer = TransformerEncoder(
-                embedding_size= 320,
+                embedding_size= embedding_size,
                 hidden_size = self.config.hidden_size_lstm,
-                num_layers= 2,
-                num_heads = 2,
-                total_key_depth = 300, #todo: check
-                total_value_depth = 4, #check as well
-                filter_size = 200,
+                num_layers= num_layers,
+                num_heads = num_heads,
+                total_key_depth = self.config.hidden_size_lstm, #todo: check
+                total_value_depth = self.config.hidden_size_lstm, #check as well
+                filter_size = filter_size,
                 max_length = 150,
                 attention_dropout=dropout,
                 input_dropout=dropout,

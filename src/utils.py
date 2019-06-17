@@ -38,7 +38,13 @@ def load_data(path):
             else:
                 newline = False
                 l= line.split()
+
+
                 word = l[0].replace('--', '')
+                if 'http:' in word or 'www.' in word:
+                    word = 'website'
+
+                #TODO: test removal of duplicate chars with https://stackoverflow.com/questions/5738901/removing-elements-that-have-consecutive-duplicates-in-python
                 if len(word) == 0: word = '-'
                 l[0] = word
                 sentence.append(l)
@@ -553,7 +559,7 @@ def get_esp_pos_tags():
     return pos_tags
 
 
-def parse_dataset_muse(path, label_to_idx, word_to_idx = None, pos_target=False,  encoding= 'latin-1'):
+def parse_dataset_muse(path, label_to_idx, word_to_idx = None, pos_target=False,  encoding= 'utf-8', max_len = 150):
 
     target_index = 1 if pos_target else 3
     sentences = []
@@ -568,7 +574,7 @@ def parse_dataset_muse(path, label_to_idx, word_to_idx = None, pos_target=False,
         for line in f.read().splitlines():
 
             if line in ['\n', '\r\n', '']:  # end of sequence
-                if len(sample['labels']) > 0:
+                if len(sample['labels']) > 0 and (len(sample['word_ids']) < max_len):
                     sample['word_ids'] = torch.LongTensor(sample['word_ids'])
                     sample['labels'] = torch.LongTensor(sample['labels'])
                     sentences.append(sample)

@@ -10,10 +10,19 @@ from torch.cuda import empty_cache
 from models import *
 from subprocess import run
 
-def main(config = None):
+def main(config = None, embedders_to_train=None):
     # create instance of config
     if config is None:
         config = Config()
+    if embedders_to_train is None:
+        embedders_to_train = [
+            'LASEREmbedderBase',
+            'LASEREmbedderBaseGRU',
+            'LASEREmbedderI',
+            'LASEREmbedderIII',
+         # 'LASEREmbedderIIIELMo',
+        ]
+
 
     encoding = 'utf-8'
     static_lstm = False
@@ -29,57 +38,61 @@ def main(config = None):
     embedder_base_gru = LASEREmbedderBaseGRU#(config.model_path, tr_pad_len)
     embedderI = LASEREmbedderI#(config.model_path, static_lstm = False)
     embedderIII = LASEREmbedderIII#(config.model_path, static_lstm = False)
-    # embedderIIIElmo = LASEREmbedderIIIELMo(config.model_path)
+    embedderIIIElmo = LASEREmbedderIIIELMo
 
-    embedders = [
-        # embedder_base,
-        # embedder_base_gru,
-        # embedderI,
-        embedderIII,
-        # embedder9 IIIElmo
-    ]
-    model_name = {
-        embedder_base:'LASEREmbedderBase',
-        embedder_base_gru:'LASEREmbedderBaseGRU',
-        embedderI:'LASEREmbedderI',
-        embedderIII:'LASEREmbedderIII',
+    embedders = {
+        'LASEREmbedderBase':embedder_base,
+        'LASEREmbedderBaseGRU':embedder_base_gru,
+        'LASEREmbedderI':embedderI,
+        'LASEREmbedderIII':embedderIII,
+        'LASEREmbedderIIIELMo':embedderIIIElmo
+    }
+    # model_name = {
+    #     embedder_base:'LASEREmbedderBase',
+    #     embedder_base_gru:'LASEREmbedderBaseGRU',
+    #     embedderI:'LASEREmbedderI',
+    #     embedderIII:'LASEREmbedderIII',
+    #     embedderIIIElmo:'LASEREmbedderIIIELMo',
+    # }
+
+    use_laser = {
+        'LASEREmbedderBase': False,
+        'LASEREmbedderBaseGRU': False,
+        'LASEREmbedderI': True,
+        'LASEREmbedderIII': True,
+        'LASEREmbedderIIIELMo': True
     }
 
-    use_laser = [
-        # False,
-        # False,
-        # True,
-        True,
-        # True
-    ]
-
-    for embedder, laser in zip(embedders, use_laser):
+    for embedder in embedders_to_train:
 
         # set output filename
-        config.set_model_name(model_name[embedder])
+        laser = use_laser[embedder]
+        config.set_model_name(embedder)
         config.use_laser = laser
-        config.set_params(laser)
-        print(config.transformer_drop)
-        print(config.drop_after_laser)
-        print(config.drop_before_laser)
+        # config.set_params(laser)
         train = train_laser if laser else train_base
         dev = dev_laser if laser else dev_base
-        model = embedder(config.model_path, bpe_pad_len=tr_pad_len, static_lstm = static_lstm,
-                         drop_before = config.drop_before_laser, drop_after = config.drop_after_laser)
+        model = embedders[embedder](config.model_path, bpe_pad_len=tr_pad_len, static_lstm = static_lstm,
+                         drop_before = config.drop_before_laser, drop_after = config.drop_after_laser, drop_within=config.drop_within_lstm)
 
-
-        fit(config, model, tr_pad_len, dev_pad_len, train, dev, laser)
+        # try:
+        fit(config, model, tr_pad_len, dev_pad_len, train, dev)
         del model
         empty_cache()
         time.sleep(60) # free up CUDA memory
+        # except:
+        #     time.sleep(60)
+        #     with open('log.txt', 'a') as f:
+        #         f.write(str(embedder)+config.filename_train)
 
 
-def fit(config, embedder, tr_pad_len, dev_pad_len, train, dev, laser):
+def fit(config, embedder, tr_pad_len, dev_pad_len, train, dev):
 
     # Initiate model
     model = NERModel(config, embedder,
-                     tr_pad_len)
-    # print(model)
+                     tr_pad_len, dropout = config.transformer_drop,
+                     num_heads=config.num_heads, num_layers = config.num_layers,
+                     filter_size = config.filter_size)
     # train
     learn = NERLearner(config, model, tr_pad_len, dev_pad_len)
     learn.fit(train, dev)

@@ -18,12 +18,16 @@ from models import *
 import os
 import json
 import time
+from torch.cuda import empty_cache
 
 def eval_model_dataset(config, embedder, data, pad_len, model_path, use_laser):
 
 
     #build model
-    model = NERModel(config, embedder, pad_len)
+    model = NERModel(config, embedder,
+                     pad_len, dropout = config.transformer_drop,
+                     num_heads=config.num_heads, num_layers = config.num_layers,
+                     filter_size = config.filter_size)
 
     learn = NERLearner(config, model, pad_len, pad_len)
     learn.load(model_path)
@@ -44,18 +48,16 @@ def main(config=None):
     eng_path = os.path.join('parsed_data_lowercased', 'eng_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
     ger_path = os.path.join('parsed_data_lowercased', 'ger_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
     ned_path = os.path.join('parsed_data_lowercased', 'ned_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
-    spa_path = os.path.join('parsed_data_lowercased', 'esp_pos_test_bio_bpe.txt') if config.pos_target else os.path.join('parsed_data_lowercased', 'esp_test_bio_bpe.txt')
+    spa_path = os.path.join('parsed_data_lowercased', 'esp_test_bio_bpe{}.txt'.format('1' if config.pos_target else ''))
     data_filepaths = [
         eng_path,
         ned_path,
-        spa_path,
+        # spa_path,
         ger_path,
     ]
     for data_filepath in data_filepaths:
-
         # get dataset
-        encoding = 'latin-1' if (data_filepath == ger_path) else 'utf-8'
-        print(encoding)
+        encoding = 'utf-8'
         data_laser, pad_len = parse_dataset_laser(data_filepath, config.label_to_idx, config.word_to_idx,  pos_target = config.pos_target, encoding = encoding)
         data, pad_len = parse_dataset(data_filepath, config.label_to_idx, config.word_to_idx,  pos_target = config.pos_target, encoding = encoding)
 
@@ -68,45 +70,42 @@ def main(config=None):
         base_gru_path = os.path.join('saves_lc',langfolder,subfolder, 'LASEREmbedderBaseGRU.pt')
         i_path = os.path.join('saves_lc',langfolder,subfolder, 'LASEREmbedderI.pt')
         iii_path = os.path.join('saves_lc',langfolder,subfolder, 'LASEREmbedderIII.pt')
-        elmo_path = os.path.join('saves',langfolder,subfolder, 'LASEREmbedderIIIELMo.pt')
+        elmo_path = os.path.join('saves_lc',langfolder,subfolder, 'LASEREmbedderIIIELMo.pt')
 
         paths = [
-            base_path,
-            base_gru_path,
+            # base_path,
+            # base_gru_path,
             i_path,
-            iii_path,
+            # iii_path,
             # elmo_path
         ]
 
-
-        embedder_base = LASEREmbedderBase(config.model_path, pad_len)
-        embedder_base_gru = LASEREmbedderBaseGRU(config.model_path, pad_len)
-        embedderI = LASEREmbedderI(config.model_path)
-        embedderIII = LASEREmbedderIII(config.model_path)
-        # elmo_embedderIII = LASEREmbedderIIIELMo(config.model_path)
-
         embedders = [
-            embedder_base,
-            embedder_base_gru,
-            embedderI,
-            embedderIII,
-            # elmo_embedderIII
+            # LASEREmbedderBase, #(config.model_path, pad_len),
+            # LASEREmbedderBaseGRU, #(config.model_path, pad_len),
+            LASEREmbedderI, #(config.model_path),
+            # LASEREmbedderIII, #(config.model_path),
+            # LASEREmbedderIIIELMo, #(config.model_path)
         ]
 
         use_laser = [
-            False,
-            False,
+            # False,
+            # False,
             True,
-            True,
+            # True,
             # True
         ]
         lang_results = {}
 
         for embedder, path, d in zip(embedders, paths, use_laser):
+            emb = embedder(config.model_path, bpe_pad_len= pad_len, static_lstm = config.static_lstm,
+                         drop_before = config.drop_before_laser, drop_after = config.drop_after_laser, drop_within=config.drop_within_lstm)
             print(path)
             dset = data_laser if d else data
-            f1 = eval_model_dataset(config, embedder, dset, pad_len, path, d)
-            lang_results[embedder.__class__.__name__] = f1
+            f1 = eval_model_dataset(config, emb, dset, pad_len, path, d)
+            lang_results[emb.__class__.__name__] = f1
+            del emb
+            empty_cache()
 
         results[data_filepath] = lang_results
     print(results)

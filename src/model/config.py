@@ -55,6 +55,17 @@ class Config():
 
         self.ntags = len(self.label_to_idx)
 
+    def set_manual_params(self, dropout_before_laser, dropout_in_laser, transformer_drop, dropout, hidden_size_lstm, weight_decay, learning_rate_warmup_steps, num_heads, filter_size):
+        self.dropout_before_laser   = dropout_before_laser
+        self.dropout_in_laser   = dropout_in_laser
+        self.transformer_drop   = transformer_drop
+        self.dropout    = dropout
+        self.hidden_size_lstm   = hidden_size_lstm
+        self.weight_decay   = weight_decay
+        self.learning_rate_warmup_steps = learning_rate_warmup_steps
+        self.filter_size    = filter_size
+        self.num_heads = num_heads
+
     def set_n_epoch_no_imprv(self, n_epoch):
         self.nepoch_no_imprv = n_epoch
 
@@ -62,9 +73,9 @@ class Config():
         if use_laser:
             self.nepoch_no_imprv = 1
             self.weight_decay = 0.01
-            self.transformer_drop = 0.3
+            self.transformer_drop = 0.4
             self.drop_before_laser = 0.1
-            self.drop_after_laser = 0.25 if 'III' in self.model_name else 0.1
+            self.drop_after_laser = 0.0
         else:
             self.nepoch_no_imprv = 2
             self.weight_decay = 0.01
@@ -73,13 +84,19 @@ class Config():
             self.drop_after_laser = 0.1
         # less regularization when doing code-switching
         if 'mixed' in self.filename_train:
-            self.transformer_drop = 0.1
+            if self.use_laser:
+                self.transformer_drop = 0.3
+            else:
+                self.transformer_drop = 0.15
             self.nepoch_no_imprv = 2
             self.drop_before_laser = 0.1
             self.drop_after_laser = 0.0
 
         if self.pos_target:
-            self.drop_before_laser = self.drop_after_laser = 0.1
+            self.drop_before_laser = 0.1
+            self.drop_after_laser = 0.0
+            self.nepoch_no_imprv = 2
+            self.transformer_drop = 0.5
         elif self.static_lstm:
             self.drop_before_laser = 0
             self.drop_after_laser = 0.3
@@ -90,38 +107,43 @@ class Config():
     dir_output = "results_lc/test/"
     dir_model = dir_output
     path_log = dir_output + "log.txt"
-    pos_target = False # flag to indicate whether to perform NER or POS tagging
+    pos_target = True # flag to indicate whether to perform NER or POS tagging
 
 
     # FILES TO TRAIN AND EVALUATE ON
-    filename_dev = "parsed_data_lowercased/ger_valid_bio_bpe.txt"
+    filename_dev = "parsed_data_lowercased/eng_valid_bio_bpe1.txt"
     filename_test = "data/test_bio_bpe.txt"
-    filename_train = "parsed_data_lowercased/ger_train_bio_bpe.txt"
+    filename_train = "parsed_data_lowercased/eng_train_bio_bpe1.txt"
 
     # training
     static_lstm = False
     nepochs = 25
     dropout = 0.5
-    transformer_drop = 0.1
-    batch_size = 128
+    transformer_drop = 0.3
+    batch_size = 32
     lr_method = "rmsprop"
-    lr = 0.002
+    lr = 0.0035
     weight_decay = 0.01
     lr_decay = 0.5
     epoch_drop = 3  # Step Decay: per # epochs to apply lr_decay
     clip = 5  # if negative, no clipping
-    nepoch_no_imprv = 2
+    nepoch_no_imprv = 1
     use_transformer = True
     learning_rate_warmup_steps = 2
     # model hyperparameters
-    hidden_size_lstm = 300  # lstm on word embeddings
+    hidden_size_lstm = 350  # lstm on word embeddings
     drop_before_laser = 0.1
-    drop_after_laser = 0.3
+    drop_after_laser = 0.0
+    drop_within_lstm = 0.25
+    num_heads = 2
+    filter_size = 350
+    num_layers = 1
 
-    model_name = 'LASEREmbedderIII.pt'
+
+    model_name = 'LASEREmbedderI.pt'
     model_folder = 'saves_lc'
     subfolder = 'POS' if pos_target else 'NER'
-    langfolder = 'ger'
+    langfolder = 'eng'
     ner_model_path = os.path.join(model_folder,langfolder ,subfolder, model_name) #'"saves/ner_{}e_glove".format(nepochs)
     results_folder = 'results_lc'
 

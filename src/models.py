@@ -24,7 +24,7 @@ class LASERHiddenExtractor(Encoder):
     """
     def __init__(
             self, num_embeddings, padding_idx, embed_dim=320, hidden_size=512, num_layers=1, bidirectional=False,
-            left_pad=True, padding_value=0., store_hidden=False, keep_static = True, drop_prob = 0.1
+            left_pad=True, padding_value=0., store_hidden=False, keep_static = True, drop_prob = 0.1, drop_within_lstm = 0.25
     ):
         super().__init__(num_embeddings, padding_idx, embed_dim, hidden_size, num_layers, bidirectional,
                          left_pad, padding_value)  # initializes original encoder
@@ -34,7 +34,7 @@ class LASERHiddenExtractor(Encoder):
         # self.lstm.requires_grad = False
         self.keep_static = keep_static
         if not keep_static:
-            self.lstm.dropout = 0.25
+            self.lstm.dropout = drop_within_lstm
 
         # static variables
         self.num_layers = 5
@@ -209,7 +209,7 @@ class LASEREmbedderBaseGRU(nn.Module):
 
 class LASEREmbedderI(nn.Module):
 
-    def __init__(self, encoder_path, bpe_pad_len=43, embedding_dim=320, encoder = LASERHiddenExtractor, static_lstm = True, drop_before = 0.1, drop_after = 0.3,  **kwargs):
+    def __init__(self, encoder_path, bpe_pad_len=43, embedding_dim=320, encoder = LASERHiddenExtractor, static_lstm = False, drop_before = 0.1, drop_after = 0.3, drop_within = 0.25,  **kwargs):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
@@ -222,7 +222,7 @@ class LASEREmbedderI(nn.Module):
         self.token_embedder = TokenEncoder(gru)
 
         state_dict = torch.load(encoder_path)
-        self.encoder = encoder(store_hidden=False, keep_static = static_lstm, drop_prob = drop_before, **state_dict['params'])
+        self.encoder = encoder(store_hidden=False, keep_static = static_lstm, drop_prob = drop_before, drop_within_lstm = drop_within, **state_dict['params'])
         self.encoder.load_state_dict(state_dict['model'])
         # Freeze parts of LASER encoder
         if self.static_lstm:
@@ -291,7 +291,7 @@ class LASEREmbedderI(nn.Module):
 
 
 class LASEREmbedderIII(nn.Module):
-    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor, static_lstm = True, drop_before = 0.1, drop_after = 0.3, **kwargs):
+    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor, static_lstm = True, drop_before = 0.1, drop_after = 0.3, drop_within = 0.25, **kwargs):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 5
@@ -304,7 +304,7 @@ class LASEREmbedderIII(nn.Module):
         self.token_embedder = TokenEncoder(gru)
 
         state_dict = torch.load(encoder_path)
-        self.encoder = encoder(**state_dict['params'], store_hidden=True, keep_static= static_lstm, drop_prob=drop_before)
+        self.encoder = encoder(**state_dict['params'], store_hidden=True, keep_static= static_lstm, drop_prob=drop_before, drop_within_lstm=drop_within)
         self.encoder.load_state_dict(state_dict['model'])
         # freeze params of LASER encoder:
         if self.static_lstm:
@@ -374,7 +374,7 @@ class LASEREmbedderIII(nn.Module):
         return embeddings
 
 class LASEREmbedderIIIELMo(nn.Module):
-    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor):
+    def __init__(self, encoder_path, bpe_pad_len = 43, embedding_dim = 320, encoder = LASERHiddenExtractor, **kwargs):
         super().__init__()
         self.ENCODER_SIZE = 512  # LASER encoder encodes to 512 dims
         self.NUM_LAYERS = 2
