@@ -16,10 +16,10 @@ def main(config = None, embedders_to_train=None):
         config = Config()
     if embedders_to_train is None:
         embedders_to_train = [
-            'LASEREmbedderBase',
-            'LASEREmbedderBaseGRU',
+            # 'LASEREmbedderBase',
+            #             # 'LASEREmbedderBaseGRU',
             'LASEREmbedderI',
-            'LASEREmbedderIII',
+            # 'LASEREmbedderIII',
          # 'LASEREmbedderIIIELMo',
         ]
 
@@ -73,7 +73,7 @@ def main(config = None, embedders_to_train=None):
         train = train_laser if laser else train_base
         dev = dev_laser if laser else dev_base
         model = embedders[embedder](config.model_path, bpe_pad_len=tr_pad_len, static_lstm = static_lstm,
-                         drop_before = config.drop_before_laser, drop_after = config.drop_after_laser, drop_within=config.drop_within_lstm)
+                         drop_before = config.drop_before_laser, drop_after = config.drop_after_laser, drop_within=config.drop_in_laser)
 
         # try:
         fit(config, model, tr_pad_len, dev_pad_len, train, dev)

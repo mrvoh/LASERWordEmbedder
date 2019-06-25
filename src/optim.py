@@ -58,13 +58,13 @@ class Optimizer:
 		self.explore_points = {
 			'dropout_before_laser':[0.1],
 			'dropout_in_laser':[0.25],
-			'transformer_drop': [0.4],
-			'dropout':[0.5],
-			'hidden_size_lstm': [300],
+			'transformer_drop': [0.0],
+			'dropout':[0.0],
+			'hidden_size_lstm': [350],
 			'weight_decay': [0.01],
 			'learning_rate_warmup_steps': [2.],
-			'num_heads': [2.],
-			'filter_size': [25.]
+			'num_heads': [4.],
+			'filter_size': [350.]
 		}
 
 		self.bo = None  # initialize variable for further error handling
@@ -112,9 +112,9 @@ class Optimizer:
 		m_train(self.config, embedders_to_train=[self.EMBEDDER])
 		results, _ = m_test(self.config)
 		score = np.mean(
-			[results[os.path.join('parsed_data_lowercased', '{}_test_bio_bpe1.txt'.format(lang))][self.EMBEDDER]
-			 for lang in ['eng'] #, 'ned', 'ger'] #, 'esp']
-])
+			[results[os.path.join('parsed_data_lowercased', '{}_test_bio_bpe.txt'.format(lang))][self.EMBEDDER]
+			 for lang in ['eng', 'ned', 'ger']#, 'esp']
+		])
 
 		return score #results[os.path.join('parsed_data_lowercased', 'eng_test_bio_bpe.txt')][self.EMBEDDER]
 
@@ -206,5 +206,5 @@ class Optimizer:
 
 if __name__ == "__main__":
 
-	optimizer = Optimizer('optimizer', 25, 3, 0, embedder='LASEREmbedderI', load_log=True, log_file_name='pos_logs_eng_eng.json', probe=False, prev_log='pos_logs_eng_eng_old.json')
+	optimizer = Optimizer('optimizer', 25, 3, 8, embedder='LASEREmbedderIII', load_log=True, log_file_name='logs_eng_eng_III_full2.json', probe=False, prev_log='logs_eng_eng_III_full.json')
 	optimizer.optimize()

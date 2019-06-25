@@ -56,8 +56,8 @@ class Config():
         self.ntags = len(self.label_to_idx)
 
     def set_manual_params(self, dropout_before_laser, dropout_in_laser, transformer_drop, dropout, hidden_size_lstm, weight_decay, learning_rate_warmup_steps, num_heads, filter_size):
-        self.dropout_before_laser   = dropout_before_laser
-        self.dropout_in_laser   = dropout_in_laser
+        self.drop_before_laser   = dropout_before_laser
+        self.drop_in_laser   = dropout_in_laser
         self.transformer_drop   = transformer_drop
         self.dropout    = dropout
         self.hidden_size_lstm   = hidden_size_lstm
@@ -107,40 +107,40 @@ class Config():
     dir_output = "results_lc/test/"
     dir_model = dir_output
     path_log = dir_output + "log.txt"
-    pos_target = True # flag to indicate whether to perform NER or POS tagging
+    pos_target = False # flag to indicate whether to perform NER or POS tagging
 
 
     # FILES TO TRAIN AND EVALUATE ON
-    filename_dev = "parsed_data_lowercased/eng_valid_bio_bpe1.txt"
+    filename_dev = "parsed_data_lowercased/eng_valid_bio_bpe.txt"
     filename_test = "data/test_bio_bpe.txt"
-    filename_train = "parsed_data_lowercased/eng_train_bio_bpe1.txt"
+    filename_train = "parsed_data_lowercased/eng_train_bio_bpe.txt"
 
     # training
     static_lstm = False
     nepochs = 25
-    dropout = 0.5
-    transformer_drop = 0.3
-    batch_size = 32
+    dropout = 0.4102888917548943
+    transformer_drop = 0.011957334642877793
+    batch_size = 64
     lr_method = "rmsprop"
     lr = 0.0035
-    weight_decay = 0.01
+    weight_decay = 0.00861998251543089
     lr_decay = 0.5
     epoch_drop = 3  # Step Decay: per # epochs to apply lr_decay
     clip = 5  # if negative, no clipping
     nepoch_no_imprv = 1
     use_transformer = True
-    learning_rate_warmup_steps = 2
+    learning_rate_warmup_steps = 3
     # model hyperparameters
-    hidden_size_lstm = 350  # lstm on word embeddings
-    drop_before_laser = 0.1
+    hidden_size_lstm = 300  # lstm on word embeddings
+    drop_before_laser = 0.39470291836505855
     drop_after_laser = 0.0
-    drop_within_lstm = 0.25
+    drop_in_laser = 0.024818696534753992
     num_heads = 2
-    filter_size = 350
+    filter_size = 25
     num_layers = 1
 
 
-    model_name = 'LASEREmbedderI.pt'
+    model_name = 'LASEREmbedderIII.pt'
     model_folder = 'saves_lc'
     subfolder = 'POS' if pos_target else 'NER'
     langfolder = 'eng'

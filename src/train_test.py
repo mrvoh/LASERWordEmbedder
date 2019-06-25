@@ -17,15 +17,14 @@ if __name__ == "__main__":
 		config.set_pos_target(task)
 
 		for lang in [
-			# 'eng',
+			'eng',
 			# 'mixed',
 			# 'ned',
 			#
 			# 'ger',
 			# 'esp',
 			# 'mixed_eng',
-			'mixed_full',
-
+			# 'mixed_full',
 					]:
 			results = None
 			config.langfolder = lang
@@ -35,9 +34,9 @@ if __name__ == "__main__":
 			config.filename_dev = os.path.join('parsed_data_lowercased',
 												 '{}_valid_bio_bpe{}.txt'.format(lang, '1' if config.pos_target else ''))
 			# for memory/speed
-			config.batch_size = 32 if config.pos_target else 128
+			config.batch_size = 32 if config.pos_target else 64
 			try:
-				# m_train(config=config)
+				m_train(config=config)
 				results, _ = m_test(config=config)
 				# muse_train(config=config, lang=lang)
 				# results, _ = muse_test(results= results, config=config)
